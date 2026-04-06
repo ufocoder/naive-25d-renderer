@@ -4,6 +4,7 @@ import tailwindcss from '@tailwindcss/vite';
 import path from 'node:path';
 
 export default defineConfig({
+  base: '/naive-25d-renderer/',
   plugins: [solid(), tailwindcss()],
   resolve: {
     alias: {
