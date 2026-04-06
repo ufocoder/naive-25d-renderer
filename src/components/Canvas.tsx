@@ -15,18 +15,22 @@ interface RendererProps {
 }
 
 const Renderer: Component<RendererProps> = ({ width, height, render, settings }) => {
-  let refContainer: HTMLCanvasElement;
+  let refContainer: HTMLCanvasElement | undefined;
 
   const tick = () => {
-    if (!refContainer!) {
+    const el = refContainer;
+    if (!el) {
       return;
     }
 
-    const ctx = refContainer.getContext('2d')!
+    const ctx = el.getContext("2d");
+    if (!ctx) {
+      return;
+    }
 
-    ctx.clearRect(0, 0, refContainer.width, refContainer.height);
+    ctx.clearRect(0, 0, el.width, el.height);
 
-    render(ctx, settings())
+    render(ctx, settings());
   };
 
   onMount(() => {
@@ -38,7 +42,14 @@ const Renderer: Component<RendererProps> = ({ width, height, render, settings })
   });
 
   return (
-    <canvas ref={refContainer!} width={width} height={height} class="border border-gray-300" />
+    <canvas
+      ref={(canvas) => {
+        refContainer = canvas;
+      }}
+      width={width}
+      height={height}
+      class="border border-gray-300"
+    />
   );
 };
 

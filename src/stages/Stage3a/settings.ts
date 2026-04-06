@@ -1,5 +1,5 @@
 import { Angle } from "@app/lib/Angle";
-import { createLine, createLineY } from "@app/lib/level";
+import { createLineY } from "@app/lib/level";
 
 const camera: Camera = {
   x: 200,
