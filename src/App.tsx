@@ -63,9 +63,20 @@ function linkClass(active: boolean) {
   }`;
 }
 
+const baseUrl = import.meta.env.BASE_URL;
+
+function pathnameWithoutBase(pathname: string): string {
+  if (baseUrl === '/') return pathname;
+  const prefix = baseUrl.endsWith('/') ? baseUrl.slice(0, -1) : baseUrl;
+  if (pathname === prefix || pathname === `${prefix}/`) return '/';
+  if (pathname.startsWith(`${prefix}/`)) return pathname.slice(prefix.length);
+  return pathname;
+}
+
 function isPathActive(pathname: string, href: string) {
-  if (href === '/') return pathname === '/';
-  return pathname === href;
+  const p = pathnameWithoutBase(pathname);
+  if (href === '/') return p === '/' || p === '';
+  return p === href;
 }
 
 const Layout: ParentComponent = (props) => {
@@ -120,8 +131,8 @@ const Layout: ParentComponent = (props) => {
 };
 
 const App: Component = () => (
-  <Router root={Layout}>
-    <Route path="/" component={() => <Navigate href="/stage-1-1" />} />
+  <Router base={baseUrl} root={Layout}>
+    <Route path="/" component={() => <Navigate href="/stage-1a" />} />
     <Route path="/stage-1a" component={Stage1a} />
     <Route path="/stage-1b" component={Stage1b} />
     <Route path="/stage-2" component={Stage2} />
