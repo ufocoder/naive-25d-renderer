@@ -14,7 +14,7 @@ const camera: Camera = {
   rotationSpeed: 1,
 };
 
-const level: Level = [
+const linedefs: Linedef[] = [
   createLineY(225, 120, 10),
   createLineY(245, 120, 10),
   createLineY(150, 120, 20),
@@ -25,7 +25,9 @@ const level: Level = [
 
 const settings: Settings = {
   camera,
-  level,
+  level: {
+    linedefs
+  }
 };
 
 export default settings;

@@ -6,8 +6,9 @@ import render2d from '@app/stages/Stage1a/render2d';
 import render25d from '../Stage4a/render25d';
 import defaultSettings from './settings';
 import { processLevel } from './utils';
+import KeyboardControls from '@app/components/Controls';
 
-const Stage3: Component = () => {
+const Stage4: Component = () => {
   const [settings, setSettings] = createSignal<Settings>(defaultSettings);
   const [settings2, setSettings2] = createSignal<Settings>(processLevel(settings()));
   
@@ -46,14 +47,17 @@ const Stage3: Component = () => {
             render={render25d}
           />
         </div>
-        <Canvas
-          width={400}
-          height={320}
-          settings={settings}
-          render={render2d} />
+        <div>
+          <Canvas
+            width={400}
+            height={320}
+            settings={settings}
+            render={render2d} />
+          <KeyboardControls />
+        </div>
       </div>
     </section>
   );
 };
 
-export default Stage3;
+export default Stage4;

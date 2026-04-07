@@ -6,6 +6,7 @@ import render2d from '@app/stages/Stage1a/render2d';
 import render25d from './render25d';
 import defaultSettings from './settings';
 import { createRender25d } from '../Stage2/render25d';
+import KeyboardControls from '@app/components/Controls';
 
 const Stage3: Component = () => {
   const [settings, setSettings] = createSignal<Settings>(defaultSettings);
@@ -28,14 +29,15 @@ const Stage3: Component = () => {
         <div class="grid gap-4">
 
 
-          <h4 class="text">Stage 2 renderer</h4>
+          <h4 class="text">Stage 2 renderer: Skip intersection</h4>
           <Canvas
             settings={settings}
             width={settings().camera.screen.width}
             height={settings().camera.screen.height}
             render={createRender25d({ withFix: true })}
           />
-          <h4 class="text">Clipping renderer</h4>
+          <h4 class="text">Clipping renderer: 
+            Polar clipping + linear interpolation</h4>
           <Canvas
             settings={settings}
             width={settings().camera.screen.width}
@@ -43,11 +45,15 @@ const Stage3: Component = () => {
             render={render25d}
           />
         </div>
-        <Canvas
-          width={400}
-          height={320}
-          settings={settings}
-          render={render2d} />
+        
+        <div>
+          <Canvas
+            width={400}
+            height={320}
+            settings={settings}
+            render={render2d} />
+          <KeyboardControls />
+        </div>
       </div>
     </section>
   );

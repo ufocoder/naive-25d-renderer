@@ -1,9 +1,9 @@
 import { Angle } from "@app/lib/Angle";
-import { createCircleLines } from "@app/lib/level";
+import { createLineX } from "@app/lib/level";
 
 const camera: Camera = {
   x: 200,
-  y: 160,
+  y: 200,
   fov: new Angle(45),
   angle: new Angle(270),
   screen: {
@@ -14,9 +14,12 @@ const camera: Camera = {
   rotationSpeed: 1,
 };
 
-const level: Level = [
-  ...createCircleLines(200, 160, 150, 16)
-];
+const level: Level = {
+  linedefs: [
+    createLineX(150, 0, 320),
+    createLineX(250, 0, 320),
+  ]
+};
 
 const settings: Settings = {
   camera,

@@ -5,6 +5,7 @@ import Canvas from "@app/components/Canvas";
 import render2d from './render2d';
 import render25d from './render25d';
 import defaultSettings from './settings';
+import KeyboardControls from '@app/components/Controls';
 
 const Stage: Component = () => {
   const [settings, setSettings] = createSignal<Settings>(defaultSettings);
@@ -22,17 +23,21 @@ const Stage: Component = () => {
         </div>
       </div>
       <div class="grid grid-cols-2 gap-4">
+        
         <Canvas
           settings={settings}
           width={settings().camera.screen.width}
           height={settings().camera.screen.height}
           render={render25d}
         />
-        <Canvas
-          width={400}
-          height={320}
-          settings={settings}
-          render={render2d} />
+        <div>
+          <Canvas
+            width={400}
+            height={320}
+            settings={settings}
+            render={render2d} />
+          <KeyboardControls />
+        </div>
       </div>
     </section>
   );

@@ -3,7 +3,7 @@ import { createCircleLines } from "@app/lib/level";
 
 const camera: Camera = {
   x: 200,
-  y: 180,
+  y: 160,
   fov: new Angle(45),
   angle: new Angle(270),
   screen: {
@@ -14,9 +14,9 @@ const camera: Camera = {
   rotationSpeed: 1,
 };
 
-const level: Level = [
-  ...createCircleLines(200, 160, 150, 16)
-];
+const level: Level = {
+  linedefs: createCircleLines(200, 160, 150, 16)
+};
 
 const settings: Settings = {
   camera,

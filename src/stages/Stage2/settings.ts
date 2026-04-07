@@ -14,16 +14,18 @@ const camera: Camera = {
   rotationSpeed: 1,
 };
 
-const level: Level = [];
+const linedefs: Linedef[] = [];
 const len = 20;
 
 for (let x = 110; x < 280; x += len) {
-  level.push(createLineY(x, 40, len));
+  linedefs.push(createLineY(x, 40, len));
 }
 
 const settings: Settings = {
   camera,
-  level,
+  level: {
+    linedefs
+  }
 };
 
 export default settings;

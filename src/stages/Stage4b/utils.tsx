@@ -110,6 +110,9 @@ export function splitLinedef(lines: Linedef[]): Linedef[] {
 export function processLevel(settings: Settings): Settings {
     return {
         ...settings,
-        level: splitLinedef(settings.level)
+        level: {
+            ...settings.level,
+            linedefs: splitLinedef(settings.level.linedefs)
+        }
     }
 }

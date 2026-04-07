@@ -23,7 +23,7 @@ function projectVertexToScreen(vertex: Vertex, camera: Camera) {
 
 export default function render25d(ctx: CanvasRenderingContext2D, settings: Settings) {
   const camera = settings.camera;
-  for (const linedef of settings.level) {
+  for (const linedef of settings.level.linedefs) {
     for (const vertex of [linedef.start, linedef.end]) {
       const screenX = projectVertexToScreen(vertex, camera);
       if (screenX == null) {

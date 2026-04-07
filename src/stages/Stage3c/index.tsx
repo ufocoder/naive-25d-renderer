@@ -3,9 +3,10 @@ import type { Component } from 'solid-js';
 import { useCameraControls } from '@app/hooks/useCameraControls';
 import Canvas from "@app/components/Canvas";
 import render2d from '@app/stages/Stage1a/render2d';
-import render25d from './render25d';
+import render25d from '../Stage3b/render25d';
 import defaultSettings from './settings';
-import render25dStage3 from '../Stage3a/render25d';
+import { createRender25d } from '../Stage2/render25d';
+import KeyboardControls from '@app/components/Controls';
 
 const Stage3: Component = () => {
   const [settings, setSettings] = createSignal<Settings>(defaultSettings);
@@ -26,26 +27,31 @@ const Stage3: Component = () => {
 
       <div class="grid grid-cols-2 gap-4">
         <div class="grid gap-4">
-          <h4 class="text">With out sorting</h4>
+
+
+          <h4 class="text">Stage 2 renderer</h4>
           <Canvas
             settings={settings}
             width={settings().camera.screen.width}
             height={settings().camera.screen.height}
-            render={render25dStage3}
+            render={createRender25d({ withFix: true })}
           />
-          <h4 class="text">Sort walls</h4>
-           <Canvas
+          <h4 class="text">Clipping renderer</h4>
+          <Canvas
             settings={settings}
             width={settings().camera.screen.width}
             height={settings().camera.screen.height}
             render={render25d}
           />
         </div>
-        <Canvas
-          width={400}
-          height={320}
-          settings={settings}
-          render={render2d} />
+        <div>
+          <Canvas
+            width={400}
+            height={320}
+            settings={settings}
+            render={render2d} />
+          <KeyboardControls />
+        </div>
       </div>
     </section>
   );

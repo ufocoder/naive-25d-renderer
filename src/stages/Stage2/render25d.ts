@@ -79,7 +79,7 @@ export function createRender25d({ withFix }: { withFix: boolean }) {
     settings: Settings,
   ) {
     const camera = settings.camera;
-    for (const linedef of settings.level) {
+    for (const linedef of settings.level.linedefs) {
       const vertexProjectionStart = projectVertexToScreen(camera, linedef.start, withFix);
       const vertexProjectionEnd = projectVertexToScreen(camera, linedef.end, withFix);
 

@@ -5,6 +5,7 @@ import Canvas from "@app/components/Canvas";
 import render2d from '@app/stages/Stage1a/render2d';
 import { createRender25d } from './render25d';
 import defaultSettings from './settings';
+import KeyboardControls from '@app/components/Controls';
 
 const Stage3: Component = () => {
   const [settings, setSettings] = createSignal<Settings>(defaultSettings);
@@ -38,11 +39,14 @@ const Stage3: Component = () => {
             render={createRender25d({ withFix: true })}
           />
         </div>
-        <Canvas
-          width={400}
-          height={320}
-          settings={settings}
-          render={render2d} />
+        <div>
+          <Canvas
+            width={400}
+            height={320}
+            settings={settings}
+            render={render2d} />
+          <KeyboardControls />
+        </div>
       </div>
     </section>
   );

@@ -75,7 +75,7 @@ export default function render25d(
   ctx: CanvasRenderingContext2D,
   settings: Settings,
 ) {
-  for (const linedef of settings.level) {
+  for (const linedef of settings.level.linedefs) {
     const vertexProjectionStart = projectVertexToScreen(settings.camera, linedef.start);
     const vertexProjectionEnd = projectVertexToScreen(settings.camera, linedef.end);
 

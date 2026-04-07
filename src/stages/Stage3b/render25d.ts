@@ -17,8 +17,53 @@ export function toDistance(a: Vertex, b: Vertex): number {
   return Math.sqrt(dx * dx + dy * dy);
 }
 
-function toScreenX(angleName: 'linedefFrom' | 'linedefTo', angles: IntersectionAngles, camera: Camera): number {
-  const angle = angles[angleName];
+function distanceToLinedef(linedef: Linedef, camera: Camera): number {
+  const len = toDistance(linedef.start, linedef.end);
+  const dx = linedef.end.x - linedef.start.x;
+  const dy = linedef.end.y - linedef.start.y;
+
+  return Math.abs(
+    dy * camera.x - dx * camera.y
+    + linedef.end.x * linedef.start.y - linedef.end.y * linedef.start.x
+  ) / len;
+}
+
+function angleFromScreenX(screenX: number, camera: Camera): Angle {
+  const fov = camera.fov.degrees;
+  const centerX = camera.screen.width / 2;
+  const angleOffset = ((screenX - centerX) / camera.screen.width) * fov;
+
+  return new Angle(angleOffset);
+}
+
+function caclulateScaleFactor(
+  screenX: number,
+  linedef: Linedef,
+  camera: Camera
+): number {
+  const distance = distanceToLinedef(linedef, camera);
+  
+  if (distance < 0.0001) {
+    return WALL_HEIGHT / distance;
+  }
+  
+  const screenXAngle = angleFromScreenX(screenX, camera);
+
+  const wallDir = toAngle(linedef.end, linedef.start);
+  const wallNormal = new Angle(wallDir.degrees + 90);
+  
+  // Угол между нормалью и направлением на точку стены
+  const viewAngle = camera.angle.degrees + screenXAngle.degrees;
+  const skewAngle = new Angle(viewAngle - wallNormal.degrees);
+  const skewAngleCos = Math.abs(skewAngle.cos);
+  
+  // Угол между направлением камеры и лучом к стене
+  const screenXAngleCos = Math.abs(screenXAngle.cos);
+  
+  return (distance * skewAngleCos) / (distance * screenXAngleCos);
+}
+
+function toScreenX(angle: number, angles: IntersectionAngles, camera: Camera): number {
   const fov = camera.fov.degrees
 
   return ((angle - angles.cameraFrom) / fov) * camera.screen.width;
@@ -109,56 +154,28 @@ export function projectLinedef(camera: Camera, linedef: Linedef) : LinedefProjec
     return null;
   }
 
-  const relativeAngleStart = new Angle(angles.linedefFrom - camera.angle.degrees);
-  const relativeAngleEnd = new Angle(angles.linedefTo - camera.angle.degrees);
+  const distanceToCamera = distanceToLinedef(linedef, camera)
 
-  const distanceStart = toDistance(linedef.start, camera) * Math.abs(relativeAngleStart.cos);
-  const distanceEnd = toDistance(linedef.end, camera) * Math.abs(relativeAngleEnd.cos);
+  const startScreenX = angles.linedefFrom < angles.cameraFrom 
+    ? 0 
+    : toScreenX(angles.linedefFrom, angles, camera);
+    
+  const endScreenX = angles.linedefTo > angles.cameraTo
+    ? camera.screen.width 
+    : toScreenX(angles.linedefTo, angles, camera);
 
-  const heightStart = WALL_HEIGHT / distanceStart;
-  const heightEnd = WALL_HEIGHT / distanceEnd;
-
-  const isLinedefStartHeigher = heightStart > heightEnd;
-  const linedefMinHeight = Math.min(heightStart, heightEnd);
-  const linedefDiffHeight = Math.abs(heightStart - heightEnd);
-  const linedefAngleRange = angles.linedefTo - angles.linedefFrom;
-
-  let start;
-  let end;
-
-  if (angles.linedefFrom < angles.cameraFrom) {
-    const percent = (angles.cameraFrom - angles.linedefFrom) / linedefAngleRange;
-    const k = isLinedefStartHeigher ? (1 - percent) : percent;
-
-    start = {
-      screenX: 0,
-      height: linedefMinHeight + linedefDiffHeight * k
-    }
-  } else {
-    start = {
-      screenX: toScreenX('linedefFrom', angles, camera),
-      height: heightStart
-    }
-  }
-  
-  if (angles.linedefTo > angles.cameraTo) {
-    const percent = (angles.cameraTo - angles.linedefFrom) / linedefAngleRange;
-    const k = isLinedefStartHeigher ? (1 - percent) : percent;
-
-    end = {
-      screenX: camera.screen.width,
-      height: linedefMinHeight + linedefDiffHeight * k
-    }
-  } else {
-    end = {
-      screenX: toScreenX('linedefTo', angles, camera),
-      height: heightEnd
-    };
-  }
+  const startScale = caclulateScaleFactor(startScreenX, linedef, camera);
+  const endScale = caclulateScaleFactor(endScreenX, linedef, camera);
 
   return {
-    start,
-    end,
+    start: {
+      screenX: startScreenX,
+      height: WALL_HEIGHT * startScale / distanceToCamera
+    },
+    end: {
+      screenX: endScreenX,
+      height: WALL_HEIGHT * endScale / distanceToCamera
+    }
   };
 }
 

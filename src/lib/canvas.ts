@@ -1,3 +1,5 @@
+import type { Angle } from "./Angle";
+
 export function drawPolygon(ctx: CanvasRenderingContext2D, points: Vertex[], fillColor = '#3498db', strokeColor = '#2980b9') {
     ctx.beginPath();
     

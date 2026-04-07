@@ -38,7 +38,7 @@ export default function render25d(
   const camera = settings.camera;
   const walls: Wall[] = [];
 
-  settings.level.forEach(function(linedef, index) {
+  settings.level.linedefs.forEach(function(linedef, index) {
     const projection = projectLinedef(camera, linedef);
 
     if (!projection) {

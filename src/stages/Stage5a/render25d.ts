@@ -1,5 +1,5 @@
 import { drawPolygon } from "@app/lib/canvas";
-import { projectionToPoints, projectLinedef, toDistance } from "../Stage3a/render25d";
+import { projectionToPoints, projectLinedef, toDistance } from "../Stage3b/render25d";
 
 interface Wall {
   projection: ReturnType<typeof projectLinedef>;
@@ -37,27 +37,28 @@ export default function render25d(
 ) {
   const camera = settings.camera;
   const walls: Wall[] = [];
+  settings.level.sectors!.forEach(function(sector) {
+    sector.segs.forEach(function(seg, index) {
+      const projection = projectLinedef(camera, seg);
 
-  settings.level.forEach(function(linedef, index) {
-    const projection = projectLinedef(camera, linedef);
+      if (!projection) {
+        return;
+      }
 
-    if (!projection) {
-      return;
-    }
+      const linedefMiddle = toMiddleVertex(
+        seg.start,
+        seg.end,
+      );
 
-    const linedefMiddle = toMiddleVertex(
-      linedef.start,
-      linedef.end,
-    );
+      const distance = toDistance(camera, linedefMiddle);
 
-    const distance = toDistance(camera, linedefMiddle);
-
-    walls.push({
-      distance, 
-      projection,
-      color: gerenateColor(index)
-    });
-  })
+      walls.push({
+        distance, 
+        projection,
+        color: gerenateColor(index)
+      });
+    })
+  });
 
   walls.sort((a, b) => b.distance - a.distance);
 

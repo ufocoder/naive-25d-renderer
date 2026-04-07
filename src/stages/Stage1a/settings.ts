@@ -14,10 +14,12 @@ const camera: Camera = {
   rotationSpeed: 1,
 };
 
-const level: Level = [
-  createLine(130, 80, 180, 30),
-  createLineY(210, 40, 80),
-];
+const level: Level = {
+  linedefs: [
+    createLine(130, 80, 180, 30),
+    createLineY(210, 40, 80),
+  ]
+};
 
 const settings: Settings = {
   camera,

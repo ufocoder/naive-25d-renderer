@@ -13,6 +13,7 @@ interface Camera {
   fov: Angle;
   x: number;
   y: number;
+  z?: number;
   moveSpeed: number;
   rotationSpeed: number;
   screen: {
@@ -26,18 +27,31 @@ interface Linedef {
   end: Vertex;
 }
 
-type Level = Linedef[];
+interface Seg extends Linedef {
+  color?: string;
+  frontSector?: Sector;
+  backSector?: Sector;
+  isTwoSide?: boolean;
+}
+
+interface Sector {
+  id?: number;
+  height?: number; // stage 5b only
+  floorHeight?: number;
+  floorColor?: string;
+  ceilHeight?: number;
+  ceilColor?: string;
+  segs: Seg[]
+}
+
+type Level = {
+  linedefs: Linedef[];
+  sectors?: Sector[];
+}
 
 interface Settings {
   camera: Camera;
   level: Level;
-}
-
-interface Angle {
-  readonly degrees: number;
-  readonly radians: number;
-  readonly cos: number;
-  readonly sin: number;
 }
 
 interface Camera {
@@ -45,6 +59,7 @@ interface Camera {
   fov: Angle;
   x: number;
   y: number;
+  z?: number;
   moveSpeed: number;
   rotationSpeed: number;
   screen: {
