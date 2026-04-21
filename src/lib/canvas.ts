@@ -41,3 +41,44 @@ export function drawAngleLine(ctx: CanvasRenderingContext2D, x: number, y: numbe
   ctx.strokeStyle = "blue";
   ctx.stroke();
 }
+
+
+export function drawPolygonDebug(
+  ctx: CanvasRenderingContext2D, 
+  points: Vertex[], 
+  color: string = '#FF0000',
+  lineWidth: number = 2,
+  markerSize: number = 4
+) {
+  if (points.length < 3) return;
+  
+  ctx.save();
+  
+  ctx.strokeStyle = color;
+  ctx.lineWidth = lineWidth;
+  ctx.setLineDash([5, 5]);
+  
+  ctx.beginPath();
+  ctx.moveTo(points[0].x, points[0].y);
+  
+  for (let i = 1; i < points.length; i++) {
+    ctx.lineTo(points[i].x, points[i].y);
+  }
+  
+  ctx.closePath();
+  ctx.stroke();
+
+  ctx.fillStyle = color;
+  ctx.setLineDash([]);
+  
+  for (const point of points) {
+    ctx.fillRect(
+      point.x - markerSize / 2, 
+      point.y - markerSize / 2, 
+      markerSize, 
+      markerSize
+    );
+  }
+  
+  ctx.restore();
+}

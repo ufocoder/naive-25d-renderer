@@ -15,7 +15,8 @@ import Stage5c from './stages/Stage5c';
 import Stage5d from './stages/Stage5d';
 import Stage5e from './stages/Stage5e';
 import Stage5f from './stages/Stage5f';
-import PlaceholderStage from './components/PlaceholderStage';
+import Stage5g from './stages/Stage5g';
+import Stage5h from './stages/Stage5h';
 
 export type MenuLink = {
   href: string;
@@ -247,8 +248,8 @@ const App: Component = () => (
     <Route path="/stage-5d" component={Stage5d} />
     <Route path="/stage-5e" component={Stage5e} />
     <Route path="/stage-5f" component={Stage5f} />
-    <Route path="/stage-5g" component={() => <PlaceholderStage title="TODO"/>} />
-    <Route path="/stage-5h" component={() => <PlaceholderStage title="TODO"/>} />
+    <Route path="/stage-5g" component={Stage5g} />
+    <Route path="/stage-5h" component={Stage5h} />
     <Route path="*" component={() => 'Not found'} />
   </HashRouter>
 );
