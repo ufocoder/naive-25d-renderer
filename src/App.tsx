@@ -1,6 +1,7 @@
-import { A, Navigate, Route, HashRouter, useLocation } from '@solidjs/router';
+import { A, Route, HashRouter, useLocation } from '@solidjs/router';
 import type { Component, ParentComponent } from 'solid-js';
 import { createSignal } from 'solid-js';
+import Welcome from './stages/Welcome';
 import Stage1a from './stages/Stage1a';
 import Stage1b from './stages/Stage1b';
 import Stage2 from './stages/Stage2';
@@ -17,6 +18,8 @@ import Stage5e from './stages/Stage5e';
 import Stage5f from './stages/Stage5f';
 import Stage5g from './stages/Stage5g';
 import Stage5h from './stages/Stage5h';
+import Stage5i from './stages/Stage5i';
+import PlaceholderStage from './components/PlaceholderStage';
 
 export type MenuLink = {
   href: string;
@@ -74,6 +77,13 @@ export const menuGroups: MenuEntry[] = [
       { href: '/stage-5f', label: 'Порталы 2D: прямоугольник' },
       { href: '/stage-5g', label: 'Высота камеры' },
       { href: '/stage-5h', label: 'Порталы 2D: трапеция' },
+      { href: '/stage-5i', label: 'Порталы 2D: многоугольник' },
+    ],
+  },
+  {
+    title: 'Stage 6: bsp',
+    links: [
+      { href: '/stage-6a', label: 'Разбиваем сектора на подсектора' },
     ],
   },
 ];
@@ -233,7 +243,7 @@ const Layout: ParentComponent = (props) => {
 
 const App: Component = () => (
   <HashRouter root={Layout}>
-    <Route path="/" component={() => <Navigate href="/stage-1a" />} />
+    <Route path="/" component={() => <Welcome />} />
     <Route path="/stage-1a" component={Stage1a} />
     <Route path="/stage-1b" component={Stage1b} />
     <Route path="/stage-2" component={Stage2} />
@@ -250,6 +260,8 @@ const App: Component = () => (
     <Route path="/stage-5f" component={Stage5f} />
     <Route path="/stage-5g" component={Stage5g} />
     <Route path="/stage-5h" component={Stage5h} />
+    <Route path="/stage-5i" component={Stage5i} />
+    <Route path="/stage-6a" component={() => <PlaceholderStage title={"TODO"} />} />
     <Route path="*" component={() => 'Not found'} />
   </HashRouter>
 );

@@ -26,15 +26,14 @@ const Stage5: Component = () => {
 
       <div class="grid grid-cols-2 gap-4">
         <div class="grid gap-4">
-          <h4 class="text">Трапецевидный клиппинг не совершен, необходимо обрезать стены по снизу и сверху</h4>
+          <h4 class="text">Трапецевидный клиппинг не совершен, необходимо обрезать стены</h4>
            <Canvas
             settings={settings}
             width={settings().camera.screen.width}
             height={settings().camera.screen.height}
             render={render25d}
           />
-
-          
+          https://en.wikipedia.org/wiki/Sutherland%E2%80%93Hodgman_algorithm
         </div>
         <div>
           <Canvas

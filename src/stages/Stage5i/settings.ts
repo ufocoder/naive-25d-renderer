@@ -2,9 +2,9 @@ import { Angle } from "@app/lib/Angle";
 import { createRectangleLines } from "@app/lib/level";
 
 const camera: Camera = {
-  x: 70,
+  x: 60,
   y: 70,
-  z: 5_000,
+  z: 2_000,
   fov: new Angle(45),
   angle: new Angle(0),
   screen: {
@@ -18,9 +18,9 @@ const camera: Camera = {
 const room1: Sector = {
   id: 1,
   floorHeight: 0,
-  floorColor: "#444",
+  floorColor: "#333",
   ceilHeight: 10_000,
-  ceilColor: "#87CEEB",
+  ceilColor: "#333",
   segs: []
 };
 
@@ -28,17 +28,17 @@ const room2: Sector = {
   id: 2,
   floorHeight: 0,
   floorColor: "#666",
-  ceilHeight: 20_000,
-  ceilColor: "#87CEEB",
+  ceilHeight: 5_000,
+  ceilColor: "#666",
   segs: []
 };
 
 const room3: Sector = {
   id: 3,
   floorHeight: 0,
-  floorColor: "#888",
+  floorColor: "#999",
   ceilHeight: 10_000,
-  ceilColor: "#87CEEB",
+  ceilColor: "#999",
   segs: []
 };
 

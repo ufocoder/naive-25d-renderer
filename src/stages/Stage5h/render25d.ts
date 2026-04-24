@@ -227,50 +227,6 @@ function renderSectorWithPortal(
         endBottomY = startBottomY + t * (endBottomY - startBottomY);
         endX = clip.rightX;
       }
-      
-      // Вертикальная обрезка по topY
-      const clipTopAtStart = getTopYAtX(clip, startX);
-      const clipTopAtEnd = getTopYAtX(clip, endX);
-      
-      if (startTopY < clipTopAtStart) {
-        const t = (clipTopAtStart - startTopY) / (endTopY - startTopY);
-        if (isFinite(t) && t > 0 && t < 1) {
-          startX = startX + t * (endX - startX);
-          startBottomY = startBottomY + t * (endBottomY - startBottomY);
-          startTopY = clipTopAtStart;
-        }
-      }
-      
-      if (endTopY < clipTopAtEnd) {
-        const t = (clipTopAtEnd - startTopY) / (endTopY - startTopY);
-        if (isFinite(t) && t > 0 && t < 1) {
-          endX = startX + t * (endX - startX);
-          endBottomY = startBottomY + t * (endBottomY - startBottomY);
-          endTopY = clipTopAtEnd;
-        }
-      }
-      
-      // Вертикальная обрезка по bottomY
-      const clipBottomAtStart = getBottomYAtX(clip, startX);
-      const clipBottomAtEnd = getBottomYAtX(clip, endX);
-      
-      if (startBottomY > clipBottomAtStart) {
-        const t = (clipBottomAtStart - startTopY) / (endTopY - startTopY);
-        if (isFinite(t) && t > 0 && t < 1) {
-          startX = startX + t * (endX - startX);
-          startTopY = startTopY + t * (endTopY - startTopY);
-          startBottomY = clipBottomAtStart;
-        }
-      }
-      
-      if (endBottomY > clipBottomAtEnd) {
-        const t = (clipBottomAtEnd - startTopY) / (endTopY - startTopY);
-        if (isFinite(t) && t > 0 && t < 1) {
-          endX = startX + t * (endX - startX);
-          endTopY = startTopY + t * (endTopY - startTopY);
-          endBottomY = clipBottomAtEnd;
-        }
-      }
     }
 
     const linedefMiddle = toMiddleVertex(seg.start, seg.end);
@@ -278,14 +234,12 @@ function renderSectorWithPortal(
 
     const clippedProjection: SegProjection = {
       ...projection,
-      start: { 
-        ...projection.start, 
+      start: {
         screenX: startX,
         topY: startTopY,
         bottomY: startBottomY
       },
-      end: { 
-        ...projection.end, 
+      end: {
         screenX: endX,
         topY: endTopY,
         bottomY: endBottomY
@@ -321,7 +275,6 @@ function renderSectorWithPortal(
   floorPolygons.sort((a, b) => b.distance - a.distance);
   ceilPolygons.sort((a, b) => b.distance - a.distance);
   
-  // Рисуем в порядке: потолок -> стены -> пол
   for (const poly of ceilPolygons) {
     drawPolygon(ctx, poly.points, poly.color);
   }
@@ -345,7 +298,7 @@ function renderSectorWithPortal(
       camera, 
       portal.backSector, 
       new Set(visitedSectors),
-      portal.clip  // Передаем трапециевидный клип
+      portal.clip
     );
   }
 }
