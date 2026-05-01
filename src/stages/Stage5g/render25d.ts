@@ -159,8 +159,7 @@ function renderSectorWithPortal(
     let startBottomY = projection.start.bottomY;
     let endTopY = projection.end.topY;
     let endBottomY = projection.end.bottomY;
-    
-    // Горизонтальный клиппинг
+
     if (clip !== null) {
       if (endX <= clip.leftX || startX >= clip.rightX) {
         return;

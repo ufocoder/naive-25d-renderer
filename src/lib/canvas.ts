@@ -2,6 +2,10 @@ import type { Angle } from "./Angle";
 
 export function drawPolygon(ctx: CanvasRenderingContext2D, points: Vertex[], fillColor = '#3498db', strokeColor = '#2980b9') {
     ctx.beginPath();
+
+    
+    ctx.lineWidth = 1;
+    ctx.strokeStyle = 'black';
     
     // Move to first point
     ctx.moveTo(points[0].x, points[0].y);

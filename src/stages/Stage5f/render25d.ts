@@ -42,15 +42,12 @@ function createFloorPolygon(
   let bottomStartY = projection.start.bottomY;
   let bottomEndY = projection.end.bottomY;
   
-  // Пол ограничен сверху порталом
   let floorTopY = 0;
   let floorBottomY = screenHeight;
   
   if (clip) {
-    // Пол не может подняться выше topY портала
     bottomStartY = Math.max(bottomStartY, clip.topY);
     bottomEndY = Math.max(bottomEndY, clip.topY);
-    // Пол ограничен снизу bottomY портала
     floorBottomY = clip.bottomY;
   }
   
@@ -102,16 +99,14 @@ function createCeilPolygon(
   const endX = projection.end.screenX;
   let topStartY = projection.start.topY;
   let topEndY = projection.end.topY;
-  
-  // Потолок ограничен снизу порталом
+
   let ceilTopY = 0;
   let ceilBottomY = screenHeight;
   
   if (clip) {
-    // Потолок не может опуститься ниже bottomY портала
     topStartY = Math.min(topStartY, clip.bottomY);
     topEndY = Math.min(topEndY, clip.bottomY);
-    // Потолок ограничен сверху topY портала
+
     ceilTopY = clip.topY;
   }
   
@@ -165,8 +160,7 @@ function renderSectorWithPortal(
     let startBottomY = projection.start.bottomY;
     let endTopY = projection.end.topY;
     let endBottomY = projection.end.bottomY;
-    
-    // Горизонтальный клиппинг
+
     if (clip !== null) {
       if (endX <= clip.leftX || startX >= clip.rightX) {
         return;

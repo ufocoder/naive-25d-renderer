@@ -72,7 +72,7 @@ export function splitLinedef(lines: Linedef[]): Linedef[] {
     hasIntersection = false;
     iterations++;
     
-    // Проверяем все пары линий
+    
     for (let i = 0; i < currentLines.length; i++) {
       for (let j = i + 1; j < currentLines.length; j++) {
         const line1 = currentLines[i];

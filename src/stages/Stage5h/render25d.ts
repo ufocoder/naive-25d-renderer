@@ -49,10 +49,8 @@ function isPointInSector(point: Vertex, sector: Sector): boolean {
 interface TrapezoidClip {
   leftX: number;
   rightX: number;
-  // Для левого края
   leftTopY: number;
   leftBottomY: number;
-  // Для правого края
   rightTopY: number;
   rightBottomY: number;
 }
@@ -63,7 +61,6 @@ function debugPortals(
   color: string = '#FF00FF'
 ) {
   for (const portal of portals) {
-    // Преобразуем clip портала в точки (трапеция)
     const points: Vertex[] = [
       { x: portal.clip.leftX, y: portal.clip.leftTopY },
       { x: portal.clip.rightX, y: portal.clip.rightTopY },
@@ -75,7 +72,6 @@ function debugPortals(
   }
 }
 
-// Функция для получения topY в любой точке X
 function getTopYAtX(clip: TrapezoidClip, x: number): number {
   if (x <= clip.leftX) return clip.leftTopY;
   if (x >= clip.rightX) return clip.rightTopY;
@@ -83,7 +79,6 @@ function getTopYAtX(clip: TrapezoidClip, x: number): number {
   return clip.leftTopY + t * (clip.rightTopY - clip.leftTopY);
 }
 
-// Функция для получения bottomY в любой точке X
 function getBottomYAtX(clip: TrapezoidClip, x: number): number {
   if (x <= clip.leftX) return clip.leftBottomY;
   if (x >= clip.rightX) return clip.rightBottomY;
@@ -91,7 +86,6 @@ function getBottomYAtX(clip: TrapezoidClip, x: number): number {
   return clip.leftBottomY + t * (clip.rightBottomY - clip.leftBottomY);
 }
 
-// Создание клипа из проекции стены
 function createTrapezoidClip(projection: SegProjection): TrapezoidClip {
   return {
     leftX: projection.start.screenX,
@@ -103,7 +97,6 @@ function createTrapezoidClip(projection: SegProjection): TrapezoidClip {
   };
 }
 
-// Обновленная функция для пола с трапециевидным клиппингом
 function createFloorPolygonWithClip(
   projection: SegProjection,
   screenHeight: number,
@@ -123,8 +116,7 @@ function createFloorPolygonWithClip(
       distance: projection.distance
     };
   }
-  
-  // Пол виден только если стена выше портала
+
   if (start.bottomY >= clip.leftBottomY && end.bottomY >= clip.rightBottomY) {
     return null;
   }
@@ -158,8 +150,7 @@ function createCeilPolygonWithClip(
       distance: projection.distance
     };
   }
-  
-  // Потолок виден только если стена ниже портала
+
   if (start.topY <= clip.leftTopY && end.topY <= clip.rightTopY) {
     return null;
   }

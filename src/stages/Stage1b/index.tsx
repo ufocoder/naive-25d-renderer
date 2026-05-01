@@ -6,6 +6,21 @@ import render2d from '@app/stages/Stage1a/render2d';
 import render25d from './render25d';
 import defaultSettings from './settings';
 import KeyboardControls from '@app/components/Controls';
+import CodeBlock from '@app/components/Code';
+import { Formula } from '@app/components/Formula';
+import Content from '@app/components/Сontent';
+
+const codeLinedefs = `
+  interface Vertex {
+    x: number;
+    y: number;
+  }
+
+  interface Linedef {
+    start: Vertex;
+    end: Vertex;
+  }
+`;
 
 const Stage3: Component = () => {
   const [settings, setSettings] = createSignal<Settings>(defaultSettings);
@@ -25,12 +40,18 @@ const Stage3: Component = () => {
       </div>
 
       <div class="grid grid-cols-2 gap-4">
-        <Canvas
-          settings={settings}
-          width={settings().camera.screen.width}
-          height={settings().camera.screen.height}
-          render={render25d}
-        />
+        <div>
+          <Canvas
+            settings={settings}
+            width={settings().camera.screen.width}
+            height={settings().camera.screen.height}
+            render={render25d}
+          />
+          <Formula latex="h = \frac{w \cdot h_{\text{orig}}}{w_{\text{orig}}}" />
+          <Content>
+            Reason
+          </Content>
+        </div>
         <div>
           <Canvas
             width={400}
@@ -38,6 +59,7 @@ const Stage3: Component = () => {
             settings={settings}
             render={render2d} />
           <KeyboardControls />
+          <CodeBlock code={codeLinedefs} lang='ts' />
         </div>
       </div>
     </section>

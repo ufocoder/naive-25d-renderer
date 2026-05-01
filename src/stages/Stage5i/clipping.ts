@@ -137,6 +137,6 @@ export function sortPointsClockwise(points: Vertex[]): Vertex[] {
   return points.sort((a, b) => {
     const angleA = Math.atan2(a.y - center.y, a.x - center.x);
     const angleB = Math.atan2(b.y - center.y, b.x - center.x);
-    return angleA - angleB; // По часовой стрелке
+    return angleA - angleB; 
   });
 }

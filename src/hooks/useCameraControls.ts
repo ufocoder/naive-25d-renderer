@@ -5,11 +5,14 @@ import { Angle } from "@app/lib/Angle";
 interface UseCameraControlsProps<T> {
   settings: Accessor<T>;
   setSettings: Setter<T>;
+  withVertical?: boolean;
 }
 
 export function useCameraControls<T extends { camera: Camera }>({
   setSettings,
+  withVertical = false,
 }: UseCameraControlsProps<T>) {
+  const [isRising, setRising] = createSignal(0);
   const [isMoving, setMoving] = createSignal(0);
   const [isRotating, setRotating] = createSignal(0);
 
@@ -23,6 +26,15 @@ export function useCameraControls<T extends { camera: Camera }>({
       ...camera,
       x: newX,
       y: newY,
+    };
+  }
+
+   function riseCamera(camera: Camera, direction: number) {
+    let newZ = camera.z! + direction * (camera.riseSpeed || 50);
+
+    return {
+      ...camera,
+      z: newZ,
     };
   }
 
@@ -47,6 +59,13 @@ export function useCameraControls<T extends { camera: Camera }>({
         camera: rotateCamera(prev.camera, isRotating()),
       }));
     }
+
+    if (isRising()) {
+      setSettings((prev) => ({
+        ...prev,
+        camera: riseCamera(prev.camera, isRising()),
+      }));
+    }
   });
 
   mainLoop.play();
@@ -56,6 +75,13 @@ export function useCameraControls<T extends { camera: Camera }>({
       return;
     }
     switch (e.code) {
+      case "KeyZ":
+      case "KeyX":
+        if (withVertical) {
+          setRising(0);
+        }
+        break;
+
       case "KeyW":
       case "ArrowUp":
       case "KeyS":
@@ -77,6 +103,16 @@ export function useCameraControls<T extends { camera: Camera }>({
       return;
     }
     switch (e.code) {
+      case "KeyZ":
+        if (withVertical) {
+          setRising(1);
+        }
+        return;
+      case "KeyX":
+        if (withVertical) {
+          setRising(-1);
+        }
+        return;
       case "KeyW":
       case "ArrowUp":
         setMoving(1);

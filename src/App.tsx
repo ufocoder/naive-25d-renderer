@@ -19,7 +19,12 @@ import Stage5f from './stages/Stage5f';
 import Stage5g from './stages/Stage5g';
 import Stage5h from './stages/Stage5h';
 import Stage5i from './stages/Stage5i';
-import PlaceholderStage from './components/PlaceholderStage';
+import Stage6a from './stages/Stage6a';
+import Stage6b from './stages/Stage6b';
+import Stage6c from './stages/Stage6c';
+import Stage6d from './stages/Stage6d';
+import Stage6e from './stages/Stage6e';
+import Stage6f from './stages/Stage6f';
 
 export type MenuLink = {
   href: string;
@@ -83,7 +88,12 @@ export const menuGroups: MenuEntry[] = [
   {
     title: 'Stage 6: bsp',
     links: [
-      { href: '/stage-6a', label: 'Разбиваем сектора на подсектора' },
+      { href: '/stage-6a', label: 'Разбитие на подсектора' },
+      { href: '/stage-6b', label: 'Один сектор с геометрией' },
+      { href: '/stage-6c', label: 'Порталы 1D: соединяем сектора' },
+      { href: '/stage-6d', label: 'Порталы 2D: соединяем сектора' },
+      { href: '/stage-6e', label: 'Высота камеры' },
+      { href: '/stage-6f', label: 'Разные высоты секторов' },
     ],
   },
 ];
@@ -166,7 +176,7 @@ const Layout: ParentComponent = (props) => {
 
       <div class="grid min-h-screen grid-cols-[300px_1fr] bg-[#f4f6fb] max-[860px]:grid-cols-1">
         <nav
-          class="hidden lg:flex flex-col gap-3 overflow-x-auto border-r border-[#d8deea] bg-[#eef2fb] p-6"
+          class="hidden lg:flex h-screen max-h-screen flex-col gap-3 overflow-y-auto overflow-x-hidden border-r border-[#d8deea] bg-[#eef2fb] p-6"
           aria-label="Stage navigation"
         >
           <p class="m-0 mb-2 min-w-max pr-2 text-xl font-bold text-[#1f2a44]">
@@ -261,7 +271,12 @@ const App: Component = () => (
     <Route path="/stage-5g" component={Stage5g} />
     <Route path="/stage-5h" component={Stage5h} />
     <Route path="/stage-5i" component={Stage5i} />
-    <Route path="/stage-6a" component={() => <PlaceholderStage title={"TODO"} />} />
+    <Route path="/stage-6a" component={Stage6a} />
+    <Route path="/stage-6b" component={Stage6b} />
+    <Route path="/stage-6c" component={Stage6c} />
+    <Route path="/stage-6d" component={Stage6d} />
+    <Route path="/stage-6e" component={Stage6e} />
+    <Route path="/stage-6f" component={Stage6f} />
     <Route path="*" component={() => 'Not found'} />
   </HashRouter>
 );

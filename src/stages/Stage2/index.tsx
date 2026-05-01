@@ -6,6 +6,7 @@ import render2d from '@app/stages/Stage1a/render2d';
 import { createRender25d } from './render25d';
 import defaultSettings from './settings';
 import KeyboardControls from '@app/components/Controls';
+import Content from '@app/components/Сontent';
 
 const Stage3: Component = () => {
   const [settings, setSettings] = createSignal<Settings>(defaultSettings);
@@ -46,6 +47,9 @@ const Stage3: Component = () => {
             settings={settings}
             render={render2d} />
           <KeyboardControls />
+          <Content>
+            Reason
+          </Content>
         </div>
       </div>
     </section>

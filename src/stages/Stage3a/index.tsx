@@ -37,7 +37,8 @@ const Stage3: Component = () => {
             render={createRender25d({ withFix: true })}
           />
           <h4 class="text">Clipping renderer: 
-            Polar clipping + linear interpolation</h4>
+            Polar clipping + linear interpolation
+            </h4>
           <Canvas
             settings={settings}
             width={settings().camera.screen.width}

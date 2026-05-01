@@ -16,6 +16,7 @@ interface Camera {
   z?: number;
   moveSpeed: number;
   rotationSpeed: number;
+  riseSpeed?: number;
   screen: {
     width: number;
     height: number;
@@ -28,6 +29,7 @@ interface Linedef {
 }
 
 interface Seg extends Linedef {
+  id?: number;
   color?: string;
   frontSector?: Sector;
   backSector?: Sector;
@@ -41,6 +43,7 @@ interface Sector {
   floorColor?: string;
   ceilHeight?: number;
   ceilColor?: string;
+  wallColor?: string;
   segs: Seg[]
 }
 
