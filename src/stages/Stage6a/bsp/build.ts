@@ -41,15 +41,15 @@ interface PartitionSegments {
 
 function partitionByInfiniteLine(
   segs: Seg[],
-  splitter: Seg,
-  allSegs: Map<number, Seg>
+  splitter: Seg
 ): PartitionSegments {
   const frontSegments: Seg[] = [];
   const backSegments: Seg[] = [];
   const onLineSegments: Seg[] = [];
   const newSegments: Seg[] = [];
   
-  const infiniteLine = extendToInfiniteLine(splitter);
+  const useInfiniteSplitLine = !isPortal(splitter);
+  const splitLine = useInfiniteSplitLine ? extendToInfiniteLine(splitter) : splitter;
   
   for (const seg of segs) {
     if (seg.id === splitter.id) {
@@ -57,7 +57,7 @@ function partitionByInfiniteLine(
       continue;
     }
     
-    const intersection = lineIntersectionWithRay(infiniteLine, seg, true);
+    const intersection = lineIntersectionWithRay(splitLine, seg, useInfiniteSplitLine);
     
     if (!intersection) {
       const midPoint = {
@@ -105,10 +105,6 @@ function partitionByInfiniteLine(
     segB.backSector = seg.backSector;
     segB.isTwoSide = seg.isTwoSide;
     
-    allSegs.set(segA.id!, segA);
-    allSegs.set(segB.id!, segB);
-    allSegs.delete(seg.id!);
-
     newSegments.push(segA, segB);
     
     const midA = {
@@ -230,15 +226,121 @@ function getSectorForLeaf(segs: Seg[]): Sector | null {
   return null;
 }
 
+function normalizeVertexKey(v: Vertex): string {
+  return `${Math.round(v.x * 1000)}/${Math.round(v.y * 1000)}`;
+}
+
+function sameVertex(a: Vertex, b: Vertex): boolean {
+  return Math.abs(a.x - b.x) < 0.001 && Math.abs(a.y - b.y) < 0.001;
+}
+
+function canMergeCollinear(a: Seg, b: Seg, pivot: Vertex): boolean {
+  if (a.isTwoSide !== b.isTwoSide) return false;
+  if (a.frontSector?.id !== b.frontSector?.id) return false;
+  if (a.backSector?.id !== b.backSector?.id) return false;
+  if (a.color !== b.color) return false;
+
+  const aOther = sameVertex(a.start, pivot) ? a.end : a.start;
+  const bOther = sameVertex(b.start, pivot) ? b.end : b.start;
+
+  const ax = aOther.x - pivot.x;
+  const ay = aOther.y - pivot.y;
+  const bx = bOther.x - pivot.x;
+  const by = bOther.y - pivot.y;
+
+  const cross = ax * by - ay * bx;
+  if (Math.abs(cross) > 0.001) return false;
+
+  const dot = ax * bx + ay * by;
+  return dot < 0;
+}
+
+function simplifyLeafSegments(segs: Seg[]): Seg[] {
+  let simplified = [...segs];
+  let changed = true;
+
+  while (changed) {
+    changed = false;
+    const vertexToIndexes = new Map<string, number[]>();
+
+    for (let i = 0; i < simplified.length; i++) {
+      const seg = simplified[i];
+      const startKey = normalizeVertexKey(seg.start);
+      const endKey = normalizeVertexKey(seg.end);
+
+      if (!vertexToIndexes.has(startKey)) vertexToIndexes.set(startKey, []);
+      if (!vertexToIndexes.has(endKey)) vertexToIndexes.set(endKey, []);
+      vertexToIndexes.get(startKey)!.push(i);
+      vertexToIndexes.get(endKey)!.push(i);
+    }
+
+    for (const [key, indexes] of vertexToIndexes) {
+      if (indexes.length !== 2) continue;
+
+      const [indexA, indexB] = indexes;
+      const segA = simplified[indexA];
+      const segB = simplified[indexB];
+      if (!segA || !segB) continue;
+
+      const [x, y] = key.split("/").map(v => Number(v) / 1000);
+      const pivot: Vertex = { x, y };
+
+      if (!canMergeCollinear(segA, segB, pivot)) continue;
+
+      const aOther = sameVertex(segA.start, pivot) ? segA.end : segA.start;
+      const bOther = sameVertex(segB.start, pivot) ? segB.end : segB.start;
+
+      const merged: Seg = {
+        ...segA,
+        start: aOther,
+        end: bOther,
+      };
+
+      simplified = simplified.filter((_, i) => i !== indexA && i !== indexB);
+      simplified.push(merged);
+      changed = true;
+      break;
+    }
+  }
+
+  return simplified;
+}
+
+function dedupeLeafGeometry(segs: Seg[]): Seg[] {
+  const seen = new Set<string>();
+  const deduped: Seg[] = [];
+
+  for (const seg of segs) {
+    const a = normalizeVertexKey(seg.start);
+    const b = normalizeVertexKey(seg.end);
+    const edgeKey = a < b ? `${a}|${b}` : `${b}|${a}`;
+    const sectorKey = `${seg.frontSector?.id ?? "n"}:${seg.backSector?.id ?? "n"}:${seg.isTwoSide ? 1 : 0}`;
+    const key = `${edgeKey}|${sectorKey}`;
+
+    if (seen.has(key)) continue;
+    seen.add(key);
+    deduped.push(seg);
+  }
+
+  return deduped;
+}
+
 function createLeaf(segs: Seg[], sector?: Sector | null): BSPLeaf {
   const uniqueSegs = segs.filter((seg, index, self) => 
     index === self.findIndex(s => s.id === seg.id)
   );
+  const mergedSegs = simplifyLeafSegments(uniqueSegs);
+  const dedupedSegs = dedupeLeafGeometry(mergedSegs);
 
   let leafSector: Sector | null = sector || null;
   if (!leafSector) {
-    leafSector = getSectorForLeaf(uniqueSegs);
+    leafSector = getSectorForLeaf(dedupedSegs);
   }
+
+  const sectorScopedSegs = leafSector
+    ? dedupedSegs.filter(seg => isSegInSector(seg, leafSector))
+    : dedupedSegs;
+  const leafSegs = sectorScopedSegs.length > 0 ? sectorScopedSegs : dedupedSegs;
   
   if (!leafSector) {
     console.warn("Warning: Leaf created without sector reference");
@@ -254,35 +356,52 @@ function createLeaf(segs: Seg[], sector?: Sector | null): BSPLeaf {
   
   return {
     kind: 'leaf',
-    segs: uniqueSegs,
-    bounds: computeBounds(uniqueSegs)
+    segs: leafSegs,
+    bounds: computeBounds(leafSegs)
   };
 }
 
-function getAvailableSplitters(segs: Seg[], usedSplitterIds: Set<number>): Seg[] {
-  const twoSideSplitters = segs.filter(s => s.isTwoSide === true && !usedSplitterIds.has(s.id!));
-  const oneSideSplitters = segs.filter(s => s.isTwoSide === false && !usedSplitterIds.has(s.id!));
-  
+function isSegInSector(seg: Seg, sector: Sector | null): boolean {
+  if (!sector) {
+    return true;
+  }
+
+  return seg.frontSector?.id === sector.id || seg.backSector?.id === sector.id;
+}
+
+function getAvailableSplitters(
+  segs: Seg[],
+  usedSplitterIds: Set<number>,
+  currentSector: Sector | null
+): Seg[] {
+  const candidates = segs.filter(seg => !usedSplitterIds.has(seg.id!));
+  const sectorScoped = candidates.filter(seg => isSegInSector(seg, currentSector));
+  const pool = sectorScoped.length > 0 ? sectorScoped : candidates;
+
+  const twoSideSplitters = pool.filter(s => s.isTwoSide === true);
+  const oneSideSplitters = pool.filter(s => s.isTwoSide === false);
+
   return [...twoSideSplitters, ...oneSideSplitters];
 }
 
-function evaluateSplitter(frontCount: number, backCount: number, isPortal: boolean): number {
-  if (isPortal) {
-    if (frontCount === 0 && backCount === 0) return Infinity;
-    if (frontCount === 0) return backCount;
-    if (backCount === 0) return frontCount;
-    return Math.abs(frontCount - backCount);
-  }
-
+function evaluateSplitter(
+  frontCount: number,
+  backCount: number,
+  isPortalSeg: boolean,
+  splitCount: number
+): number {
   if (frontCount === 0 || backCount === 0) return Infinity;
 
-  return Math.abs(frontCount - backCount);
+  const splitPenalty = splitCount * 1000;
+  const balancePenalty = Math.abs(frontCount - backCount);
+  const nonPortalPenalty = isPortalSeg ? 0 : 10;
+
+  return splitPenalty + balancePenalty + nonPortalPenalty;
 }
 
 function selectBestSplitter(
   segs: Seg[],
-  availableSplitters: Seg[],
-  allSegs: Map<number, Seg>
+  availableSplitters: Seg[]
 ): { splitter: Seg | null; front: Seg[]; back: Seg[]; onLine: Seg[]; newSegments: Seg[] } {
   let bestSplitter: Seg | null = null;
   let bestFront: Seg[] = [];
@@ -294,11 +413,15 @@ function selectBestSplitter(
   for (const splitter of availableSplitters) {
     const { frontSegments, backSegments, onLineSegments, newSegments } = partitionByInfiniteLine(
       segs,
-      splitter,
-      allSegs
+      splitter
     );
     
-    const score = evaluateSplitter(frontSegments.length, backSegments.length, isPortal(splitter));
+    const score = evaluateSplitter(
+      frontSegments.length, 
+      backSegments.length, 
+      isPortal(splitter),
+      newSegments.length
+    );
     
     if (score < bestScore) {
       bestScore = score;
@@ -323,14 +446,24 @@ function selectBestSplitter(
 
 function buildBSPTreeRecursive(
   segs: Seg[],
-  allSegs: Map<number, Seg>,
   usedSplitterIds: Set<number>,
   currentSector: Sector | null,
   depth: number,
   maxDepth: number,
   minSegments: number
 ): { success: boolean; node?: BSPNode; newSegments?: Seg[] } {
-  if (canCreateLeaf(segs, minSegments)) {
+  if (canCreateLeaf(segs, minSegments) || segs.length === 0) {
+    if (segs.length === 0) {
+      return { 
+        success: true,
+        node: {
+          kind: 'leaf',
+          segs: [],
+          bounds: { minX: 0, minY: 0, maxX: 0, maxY: 0 }
+        }
+      };
+    }
+    
     return { 
       success: true,
       node: createLeaf(segs, currentSector)
@@ -344,7 +477,7 @@ function buildBSPTreeRecursive(
     };
   }
 
-  const currentSplitters = getAvailableSplitters(segs, usedSplitterIds);
+  const currentSplitters = getAvailableSplitters(segs, usedSplitterIds, currentSector);
   
   if (currentSplitters.length === 0) {
     return {
@@ -355,8 +488,7 @@ function buildBSPTreeRecursive(
 
   const { splitter, front, back, onLine, newSegments } = selectBestSplitter(
     segs,
-    currentSplitters,
-    allSegs
+    currentSplitters
   );
   
   if (!splitter) {
@@ -366,17 +498,16 @@ function buildBSPTreeRecursive(
     };
   }
   
-  if (front.length === 0 || back.length === 0) {
+  const invertedOnLine = onLine.map(seg => invertSegment(seg));
+  const frontSegs = [...front, ...onLine];
+  const backSegs = [...back, ...invertedOnLine];
+  
+  if (frontSegs.length === 0 || backSegs.length === 0) {
     return {
       success: true,
       node: createLeaf(segs, currentSector)
     };
   }
-
-  const invertedOnLine = onLine.map(seg => invertSegment(seg));
-
-  const frontSegs = [...front, ...onLine];
-  const backSegs = [...back, ...invertedOnLine];
   
   const newUsedSplitterIds = new Set(usedSplitterIds);
   newUsedSplitterIds.add(splitter.id!);
@@ -386,7 +517,6 @@ function buildBSPTreeRecursive(
   
   const leftResult = buildBSPTreeRecursive(
     frontSegs,
-    allSegs,
     newUsedSplitterIds,
     frontSector,
     depth + 1,
@@ -400,7 +530,6 @@ function buildBSPTreeRecursive(
   
   const rightResult = buildBSPTreeRecursive(
     backSegs,
-    allSegs,
     newUsedSplitterIds,
     backSector,
     depth + 1,
@@ -433,8 +562,8 @@ function buildBSPTreeRecursive(
 export function buildBSPTree(
   segs: Seg[],
   rootSector?: Sector,
-  maxDepth: number = 10,
-  minSegments: number = 4
+  maxDepth: number = 15,
+  minSegments: number = 3
 ): BSPNode {
   resetSegIdCounter();
   
@@ -443,17 +572,10 @@ export function buildBSPTree(
     id: generateSegId()
   }));
   
-  const allSegs = new Map<number, Seg>();
-
-  for (const seg of segsWithId) {
-    allSegs.set(seg.id, seg);
-  }
-  
   const usedSplitterIds = new Set<number>();
   
   const result = buildBSPTreeRecursive(
     segsWithId,
-    allSegs,
     usedSplitterIds,
     rootSector || null,
     0,
