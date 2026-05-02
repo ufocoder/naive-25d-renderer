@@ -4,7 +4,7 @@ import { useCameraControls } from '@app/hooks/useCameraControls';
 import Canvas from "@app/components/Canvas";
 import { create2dRender as create2dRenderStage1 } from '../Stage1a/render2d';
 import { create2dRender as create2dRenderStage6 } from '../Stage6a/render2d';
-import defaultSettings from '../Stage6a/settings';
+import defaultSettings from '../Stage6a/settings/sectors.column';
 import render25d from './render25d';
 import KeyboardControls from '@app/components/Controls';
 

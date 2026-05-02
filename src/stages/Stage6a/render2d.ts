@@ -1,5 +1,5 @@
 import { Angle } from "@app/lib/Angle";
-import { drawAngleLine, drawPolygon } from "@app/lib/canvas";
+import { drawAngleLine, drawLinedef, drawPolygon } from "@app/lib/canvas";
 import { buildBSPTree } from "./bsp/build";
 import { traverseBSPTree } from "./bsp/traverse";
 import type { BSPLeaf, BSPNode } from "./bsp/typings";
@@ -57,7 +57,6 @@ function drawLeaf(
 
   drawPolygon(ctx, points, color);
 
-
   for (const point of points) {
     ctx.fillStyle = 'black';
     ctx.beginPath();
@@ -72,7 +71,6 @@ function drawLeaf(
 
 }
 
-
 export function create2dRender(options: { scale?: number } = {}) {
   const { scale = SCALE_DEFAULT } = options;
   let bspTree: BSPNode | null = null;
@@ -81,9 +79,23 @@ export function create2dRender(options: { scale?: number } = {}) {
     const camera = settings.camera;
     const allSegments = settings.level.linedefs;
 
-    if (!bspTree) {
-      bspTree = buildBSPTree(allSegments);
+    const onSplitDebug = (data: any) => {
+      
+      ctx.clearRect(0,0,1000,1000);
+
+      for (const linedef of data.frontSegs) {
+        drawLinedef(ctx, scaleLinedef(linedef, scale), 'red', 5);
+      }
+
+      for (const linedef of data.backSegs) {
+        drawLinedef(ctx, scaleLinedef(linedef, scale), 'blue', 5);
+      }
     }
+
+     if (!bspTree) {
+      bspTree = buildBSPTree(allSegments, 10, 3, onSplitDebug);
+    }
+
 
     let order = 0;
     traverseBSPTree(bspTree, camera, (bspNode: BSPLeaf) => {
@@ -92,7 +104,7 @@ export function create2dRender(options: { scale?: number } = {}) {
 
     const halfFov = camera.fov.degrees / 2;
     const angle = camera.angle.degrees;
-    
+
     drawAngleLine(ctx, camera.x * scale, camera.y * scale, new Angle(angle - halfFov), RAY_LENGTH);
     drawAngleLine(ctx, camera.x * scale, camera.y * scale, new Angle(angle), RAY_LENGTH);
     drawAngleLine(ctx, camera.x * scale, camera.y * scale, new Angle(angle + halfFov), RAY_LENGTH);
@@ -106,8 +118,6 @@ export function create2dRender(options: { scale?: number } = {}) {
     ctx.moveTo(camera.x * scale, camera.y * scale);
     ctx.lineTo(lookX, lookY);
     ctx.stroke();
-    
-    ctx.shadowBlur = 0;
   };
 }
 

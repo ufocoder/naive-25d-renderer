@@ -8,8 +8,8 @@ import settings2 from './settings/single.sector.pyramid';
 import settings3 from './settings/sectors.column';
 import settings4 from './settings/sectors.pyramid';
 import settings5 from './settings/sectors.corridor';
-import settings6 from './settings/single.sector.stairs.2';
-import settings7 from './settings/single.sector.stairs.4';
+import settings6 from './settings/single.sector.stairs.a';
+import settings7 from './settings/single.sector.stairs.b';
 import { JsonViewer } from '@app/components/JsonViewer';
 import { buildBSPTree } from './bsp/build';
 
@@ -28,7 +28,7 @@ interface RowProps {
   scale?: number;
 }
 
-const Row: Component<RowProps> = ({ settings: defaultSettings, scale = 0.5 }) => {
+const Row: Component<RowProps> = ({ settings: defaultSettings, scale = 0.4 }) => {
   const [settings] = createSignal<Settings>(defaultSettings);
 
   return (
@@ -47,7 +47,6 @@ const Row: Component<RowProps> = ({ settings: defaultSettings, scale = 0.5 }) =>
       </div>
   );
 };
-
 
 const Stage5: Component = () => {
   return (

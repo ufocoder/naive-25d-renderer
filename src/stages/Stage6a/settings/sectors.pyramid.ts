@@ -76,11 +76,9 @@ function createTwoSideSegments(x: number, y: number, size: number, frontSector: 
   ];
 }
 
-
 const step3Walls = createTwoSideSegments(centerX, centerY, step3Size, step3Sector, step2Sector);
 const step2Walls = createTwoSideSegments(centerX, centerY, step2Size, step2Sector, step1Sector);
 const step1Walls = createTwoSideSegments(centerX, centerY, step1Size, step1Sector, groundSector);
-
 
 const roomWalls = [
   { start: { x: 0, y: 0 }, end: { x: 400, y: 0 }, frontSector: groundSector, backSector: undefined, isTwoSide: false },

@@ -35,8 +35,42 @@ const sector2: Sector = {
   segs: []
 };
 
+const sector3: Sector = {
+  id: 3,
+  floorHeight: 0,
+  floorColor: "#D2691E",
+  ceilHeight: 20_000,
+  ceilColor: "#87CEEB",
+  wallColor: "#DEB887",
+  segs: []
+};
+
+const sector4: Sector = {
+  id: 4,
+  floorHeight: 0,
+  floorColor: "#F4A460",
+  ceilHeight: 10_000,
+  ceilColor: "#87CEEB",
+  wallColor: "#FFD700",
+  segs: []
+};
+
 const centerX = 400;
 const centerY = 300;
+
+const sector4Lines = createCircleLines(centerX, centerY, 80, 6).map(seg => ({
+  ...seg,
+  frontSector: sector4,
+  backSector: sector3,
+  isTwoSide: true
+}));
+
+const sector3Lines = createCircleLines(centerX, centerY, 120, 8).map(seg => ({
+  ...seg,
+  frontSector: sector3,
+  backSector: sector2,
+  isTwoSide: true
+}));
 
 const sector2Lines = createCircleLines(centerX, centerY, 160, 10).map(seg => ({
   ...seg,
@@ -53,19 +87,25 @@ const sector1Lines = createCircleLines(centerX, centerY, 400, 12).map(seg => ({
 }));
 
 sector1.segs = [...sector1Lines, ...sector2Lines];
-sector2.segs = [...sector2Lines];
+sector2.segs = [...sector2Lines, ...sector3Lines];
+sector3.segs = [...sector3Lines, ...sector4Lines];
+sector4.segs = sector4Lines;
 
 const level: Level = {
   linedefs: [
     ...sector1Lines,
-    ...sector2Lines
+    ...sector2Lines,
+    ...sector3Lines,
+    ...sector4Lines
   ],
-  sectors: [sector1, sector2]
+  sectors: [sector1, sector2, sector3, sector4]
 };
 
 const settings: Settings = {
   camera,
   level,
 };
+
+export const areaSegs = sector1Lines;
 
 export default settings;

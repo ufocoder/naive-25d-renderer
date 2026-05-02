@@ -99,21 +99,7 @@ room3.segs = segs3;
 room4.segs = segs4;
 
 const level: Level = {
-  // Keep shared portal walls only once in the global linedef list.
-  // Duplicated opposite segments create non-manifold geometry for BSP splitting.
-  linedefs: [
-    ...segs1,
-    segs2[0],
-    segs2[1],
-    segs2[2], // segs2[3] duplicates segs1[1]
-    segs3[0],
-    segs3[1],
-    segs3[2],
-    segs3[3], // portal to room2
-    segs4[1],
-    segs4[2],
-    segs4[3], // segs4[0] duplicates segs3[2]
-  ],
+  linedefs: [...segs1, ...segs2, ...segs3, ...segs4],
   sectors: [room1, room2, room3, room4]
 };
 
