@@ -283,12 +283,38 @@ export function sortPointsClockwise(points: Vertex[]): Vertex[] {
   });
 }
 
-export function areSegmentsCollinear(seg1: Seg, seg2: Seg): boolean {
-  const dx1 = seg1.end.x - seg1.start.x;
-  const dy1 = seg1.end.y - seg1.start.y;
+export function removeCollinearPoints(points: Vertex[]): Vertex[] {
+  if (points.length < 3) return points;
   
-  const cross1 = dx1 * (seg2.start.y - seg1.start.y) - dy1 * (seg2.start.x - seg1.start.x);
-  const cross2 = dx1 * (seg2.end.y - seg1.start.y) - dy1 * (seg2.end.x - seg1.start.x);
+  const result: Vertex[] = [];
   
-  return Math.abs(cross1) < 0.001 && Math.abs(cross2) < 0.001;
+  for (let i = 0; i < points.length; i++) {
+    const prev = points[(i - 1 + points.length) % points.length];
+    const curr = points[i];
+    const next = points[(i + 1) % points.length];
+    
+    const cross = (curr.x - prev.x) * (next.y - curr.y) - (curr.y - prev.y) * (next.x - curr.x);
+    
+    if (Math.abs(cross) > 0.001) {
+      result.push(curr);
+    }
+  }
+  
+  return result;
+}
+
+export function isCollinear(a: Seg, b: Seg): boolean {
+  const dx1 = a.end.x - a.start.x;
+  const dy1 = a.end.y - a.start.y;
+  const dx2 = b.end.x - b.start.x;
+  const dy2 = b.end.y - b.start.y;
+  
+  const cross = Math.abs(dx1 * dy2 - dy1 * dx2);
+  const len1 = Math.hypot(dx1, dy1);
+  const len2 = Math.hypot(dx2, dy2);
+  
+  if (len1 < 0.001 || len2 < 0.001) return true;
+  
+  const normalizedCross = cross / (len1 * len2);
+  return normalizedCross < 0.0001;
 }

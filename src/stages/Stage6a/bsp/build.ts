@@ -309,7 +309,8 @@ function buildBSPTreeRecursive(
   currentSector: Sector | null,
   depth: number,
   maxDepth: number,
-  minSegments: number
+  minSegments: number,
+  onSplitDebug?: (data: any) => void
 ): { success: boolean; node?: BSPNode; newSegments?: Seg[] } {
   if (canCreateLeaf(segs, minSegments)) {
     return { 
@@ -358,6 +359,10 @@ function buildBSPTreeRecursive(
 
   const frontSegs = [...front, ...onLine];
   const backSegs = [...back, ...invertedOnLine];
+
+  if (onSplitDebug) {
+    onSplitDebug({ frontSegs, backSegs });
+  }
   
   const newUsedSplitterIds = new Set(usedSplitterIds);
   newUsedSplitterIds.add(splitter.id!);
@@ -372,7 +377,8 @@ function buildBSPTreeRecursive(
     frontSector,
     depth + 1,
     maxDepth,
-    minSegments
+    minSegments,
+    onSplitDebug
   );
   
   if (!leftResult.success) {
@@ -386,7 +392,8 @@ function buildBSPTreeRecursive(
     backSector,
     depth + 1,
     maxDepth,
-    minSegments
+    minSegments,
+    onSplitDebug
   );
   
   if (!rightResult.success) {
@@ -414,7 +421,8 @@ function buildBSPTreeRecursive(
 export function buildBSPTree(
   segs: Seg[],
   maxDepth: number = 10,
-  minSegments: number = 3
+  minSegments: number = 3,
+  onSplitDebug?: (data: any) => void
 ): BSPNode {
   resetSegIdCounter();
   
@@ -438,7 +446,8 @@ export function buildBSPTree(
     null,
     0,
     maxDepth,
-    minSegments
+    minSegments,
+    onSplitDebug
   );
   
   if (!result.success || !result.node) {
