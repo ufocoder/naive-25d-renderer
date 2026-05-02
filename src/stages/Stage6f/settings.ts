@@ -1,104 +1,61 @@
 import { Angle } from "@app/lib/Angle";
-import { createCircleLines } from "@app/lib/level";
 
 const camera: Camera = {
-  x: 50,
-  y: 300,
-  z: 16,
+  x: 10,  
+  y: 200,
+  z: 2_000,
   fov: new Angle(45),
   angle: new Angle(0),
   screen: {
     width: 400,
     height: 320,
   },
-  moveSpeed: 1,
-  rotationSpeed: 1,
+  moveSpeed: 3,
+  rotationSpeed: 2,
 };
 
-const sector1: Sector = {
+const roomSector: Sector = {
   id: 1,
   floorHeight: 0,
-  floorColor: "#8B6914",
-  ceilHeight: 40_000,
-  ceilColor: "#87CEEB",
-  wallColor: "#8B5A2B",
-  segs: []
-};
-
-const sector2: Sector = {
-  id: 2,
-  floorHeight: 0,
-  floorColor: "#A0522D",
-  ceilHeight: 30_000,
-  ceilColor: "#87CEEB",
-  wallColor: "#CD853F",
-  segs: []
-};
-
-const sector3: Sector = {
-  id: 3,
-  floorHeight: 0,
-  floorColor: "#D2691E",
-  ceilHeight: 20_000,
-  ceilColor: "#87CEEB",
-  wallColor: "#DEB887",
-  segs: []
-};
-
-const sector4: Sector = {
-  id: 4,
-  floorHeight: 0,
-  floorColor: "#F4A460",
+  floorColor: "#777",
   ceilHeight: 10_000,
-  ceilColor: "#87CEEB",
-  wallColor: "#FFD700",
+  ceilColor: "#999",
+  wallColor: "#333",
   segs: []
 };
 
-const centerX = 400;
-const centerY = 300;
+const columnSector: Sector = {
+  id: 2,
+  floorHeight: 2_000,
+  floorColor: "green",
+  ceilHeight: 8_000,
+  ceilColor: "blue",
+  wallColor: "red",
+  segs: []
+};
 
-const sector4Lines = createCircleLines(centerX, centerY, 80, 6).map(seg => ({
-  ...seg,
-  frontSector: sector4,
-  backSector: sector3,
-  isTwoSide: true
-}));
+const roomSegs: Seg[] = [
+  { start: { x: 0, y: 0 }, end: { x: 400, y: 0 }, isTwoSide: false, frontSector: roomSector },
+  { start: { x: 400, y: 0 }, end: { x: 400, y: 400 }, isTwoSide: false, frontSector: roomSector },
+  { start: { x: 400, y: 400 }, end: { x: 0, y: 400 }, isTwoSide: false, frontSector: roomSector },
+  { start: { x: 0, y: 400 }, end: { x: 0, y: 0 }, isTwoSide: false, frontSector: roomSector },
+];
 
-const sector3Lines = createCircleLines(centerX, centerY, 120, 8).map(seg => ({
-  ...seg,
-  frontSector: sector3,
-  backSector: sector2,
-  isTwoSide: true
-}));
+const columnSegs: Seg[] = [
+  { start: { x: 150, y: 150 }, end: { x: 250, y: 150 }, isTwoSide: true, frontSector: columnSector, backSector: roomSector },
+  { start: { x: 250, y: 150 }, end: { x: 250, y: 250 }, isTwoSide: true, frontSector: columnSector, backSector: roomSector },
+  { start: { x: 250, y: 250 }, end: { x: 150, y: 250 }, isTwoSide: true, frontSector: columnSector, backSector: roomSector },
+  { start: { x: 150, y: 250 }, end: { x: 150, y: 150 }, isTwoSide: true, frontSector: columnSector, backSector: roomSector },
+];
 
-const sector2Lines = createCircleLines(centerX, centerY, 160, 10).map(seg => ({
-  ...seg,
-  frontSector: sector2,
-  backSector: sector1,
-  isTwoSide: true
-}));
+roomSector.segs = [...roomSegs, ...columnSegs];
+columnSector.segs = columnSegs;
 
-const sector1Lines = createCircleLines(centerX, centerY, 400, 12).map(seg => ({
-  ...seg,
-  frontSector: sector1,
-  backSector: undefined,
-  isTwoSide: false
-}));
-
-sector1.segs = [...sector1Lines, ...sector2Lines];
-sector2.segs = [...sector2Lines, ...sector3Lines];
-sector3.segs = [...sector3Lines, ...sector4Lines];
-sector4.segs = sector4Lines;
+const sectors = [roomSector, columnSector];
 
 const level: Level = {
-  linedefs: [
-    ...sector1Lines,
-    ...sector2Lines,
-    //...sector3Lines,
-    //...sector4Lines
-  ],
-  sectors: [sector1, sector2]//, sector3, sector4]
+  linedefs: sectors.map(r => r.segs).flat(),
+  sectors
 };
 
 const settings: Settings = {
@@ -107,3 +64,5 @@ const settings: Settings = {
 };
 
 export default settings;
+
+export const areaSegs = roomSegs;

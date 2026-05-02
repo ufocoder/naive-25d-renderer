@@ -11,7 +11,7 @@ import KeyboardControls from '@app/components/Controls';
 const Stage5: Component = () => {
   const [settings, setSettings] = createSignal<Settings>(defaultSettings);
 
-  useCameraControls<Settings>({ settings, setSettings });
+  useCameraControls<Settings>({ settings, setSettings, withVertical: true });
 
   return (
     <section class="flex flex-col gap-4">
@@ -41,14 +41,12 @@ const Stage5: Component = () => {
             height={320}
             settings={settings}
             render={create2dRenderStage1({ scale: 0.5 })} />
-          <KeyboardControls />
-
+          <KeyboardControls withVertical />
           <Canvas
             width={400}
             height={320}
             settings={settings}
             render={create2dRenderStage6({ scale: 0.5 })} />
-          <KeyboardControls />
         </div>
       </div>
     </section>

@@ -1,7 +1,7 @@
 import { traverseBSPTree } from "../Stage6a/bsp/traverse";
 import type { BSPLeaf } from "../Stage6a/bsp/typings";
 import { buildBSPTree } from "../Stage6a/bsp/build";
-import { projectSeg, type SegProjection } from "../Stage5i/projection";
+import { projectSegX, projectSegY, type ProjectionScreenX  } from "./projection";
 import { getPointSide } from "../Stage6a/bsp/geometry";
 import { removeDuplicateSegments } from "../Stage6a/utils";
 
@@ -101,7 +101,7 @@ function drawSolidSegment(
   ctx: CanvasRenderingContext2D,
   camera: Camera, 
   seg: Seg,
-  projection: SegProjection, 
+  projectionX: ProjectionScreenX, 
   solidWallRanges: SolidSegmentRange[],
   upperClip: ColumnClip[],
   lowerClip: ColumnClip[],
@@ -111,12 +111,15 @@ function drawSolidSegment(
   const floorColor = sector.floorColor!;
   const ceilColor = sector.ceilColor!;
 
-  const xStart = projection.start.screenX;
-  const xEnd = projection.end.screenX;
-  const startTop = projection.start.topY;
-  const startBottom = projection.start.bottomY;
-  const endTop = projection.end.topY;
-  const endBottom = projection.end.bottomY;
+  const projectionY = projectSegY(camera, projectionX, sector, seg);
+
+  const xStart = projectionX.start;
+  const xEnd = projectionX.end;
+
+  const startTop = projectionY.start.top;
+  const startBottom = projectionY.start.bottom;
+  const endTop = projectionY.end.top;
+  const endBottom = projectionY.end.bottom;
 
   const xFrom = Math.max(0, Math.floor(Math.min(xStart, xEnd)));
   const xTo = Math.min(camera.screen.width - 1, Math.ceil(Math.max(xStart, xEnd)));
@@ -154,31 +157,47 @@ function drawSolidSegment(
   addSolidRange(camera, xStart, xEnd, solidWallRanges);
 }
 
+type PortalWallType = 'none' | 'upper' | 'lower' | 'both';
+
+function getPortalWallType(currentSector: Sector, otherSector: Sector): PortalWallType {
+  const ceilDiff = currentSector.ceilHeight! - otherSector.ceilHeight!;
+  const floorDiff = currentSector.floorHeight! - otherSector.floorHeight!;
+  
+  const hasUpper = Math.abs(ceilDiff) > 0.01;
+  const hasLower = Math.abs(floorDiff) > 0.01;
+  
+  if (hasUpper && hasLower) return 'both';
+  if (hasUpper) return 'upper';
+  if (hasLower) return 'lower';
+
+  return 'none';
+}
+
 function drawPortalSegment(
   ctx: CanvasRenderingContext2D,
   camera: Camera, 
   seg: Seg,
-  projection: SegProjection, 
+  projectionX: ProjectionScreenX, 
   solidWallRanges: SolidSegmentRange[],
   upperClip: ColumnClip[],
   lowerClip: ColumnClip[],
 ) {
   const frontSector = seg.frontSector!;
   const backSector = seg.backSector!;
-
-  const xStart = projection.start.screenX;
-  const xEnd = projection.end.screenX;
-  const startTop = projection.start.topY;
-  const startBottom = projection.start.bottomY;
-  const endTop = projection.end.topY;
-  const endBottom = projection.end.bottomY;
-
+  
+  const xStart = projectionX.start;
+  const xEnd = projectionX.end;
   const xFrom = Math.max(0, Math.floor(Math.min(xStart, xEnd)));
   const xTo = Math.min(camera.screen.width - 1, Math.ceil(Math.max(xStart, xEnd)));
 
   const cameraSide = getPointSide(seg, { x: camera.x, y: camera.y });
   const isFront = cameraSide >= 0;
   const currentSector = isFront ? frontSector : backSector;
+  const otherSector = isFront ? backSector : frontSector;
+
+  const frontProjectionY = projectSegY(camera, projectionX, frontSector, seg);
+  const backProjectionY = projectSegY(camera, projectionX, backSector, seg);
+  const portalWallType = getPortalWallType(currentSector, otherSector);
 
   for (let x = xFrom; x <= xTo; x++) {
     if (!isWallVisible(x, solidWallRanges)) {
@@ -186,25 +205,66 @@ function drawPortalSegment(
     }
 
     const t = (x - xStart) / (xEnd - xStart);
-    const top = startTop + (endTop - startTop) * t;
-    const bottom = startBottom + (endBottom - startBottom) * t;
 
-    const drawTop = Math.max(upperClip[x].top, top);
-    const drawBottom = Math.min(lowerClip[x].bottom, bottom);
+    let frontTop, frontBottom, backTop, backBottom;
 
-    if (top >= bottom) {
+    if (Math.abs(xEnd - xStart) < 0.001) {
+      frontTop = frontProjectionY.start.top;
+      frontBottom = frontProjectionY.start.bottom;
+      backTop = backProjectionY.start.top;
+      backBottom = backProjectionY.start.bottom;
+    } else {
+      frontTop = frontProjectionY.start.top + (frontProjectionY.end.top - frontProjectionY.start.top) * t;
+      frontBottom = frontProjectionY.start.bottom + (frontProjectionY.end.bottom - frontProjectionY.start.bottom) * t;
+      backTop = backProjectionY.start.top + (backProjectionY.end.top - backProjectionY.start.top) * t;
+      backBottom = backProjectionY.start.bottom + (backProjectionY.end.bottom - backProjectionY.start.bottom) * t;
+    }
+
+    const portalTop = isFront ? frontTop : backTop;
+    const portalBottom = isFront ? frontBottom : backBottom;
+    const otherTop = isFront ? backTop : frontTop;
+    const otherBottom = isFront ? backBottom : frontBottom;
+
+    const oldTop = upperClip[x].top;
+    const oldBottom = lowerClip[x].bottom;
+
+    const drawTop = Math.max(oldTop, portalTop);
+    const drawBottom = Math.min(oldBottom, portalBottom);
+
+    if (drawTop >= drawBottom) {
       continue;
     }
 
-    if (drawTop > upperClip[x].top) {
-      drawVerticalLine(ctx, x, Math.floor(upperClip[x].top), drawTop, currentSector.ceilColor!);
+    if (drawTop > oldTop) {
+      drawVerticalLine(ctx, x, Math.floor(oldTop), drawTop, currentSector.ceilColor!);
       upperClip[x].top = drawTop;
     }
-    
-    if (drawBottom < lowerClip[x].bottom) {
-      drawVerticalLine(ctx, x, drawBottom, Math.ceil(lowerClip[x].bottom), currentSector.floorColor!);
+
+    if (portalWallType === 'upper' || portalWallType === 'both') {
+      const wallTop = drawTop;
+      const wallBottom = Math.min(drawBottom, Math.max(drawTop, otherTop));
+      if (wallTop < wallBottom) {
+        drawVerticalLine(ctx, x, Math.floor(wallTop), Math.ceil(wallBottom), otherSector.wallColor!);
+        upperClip[x].top = wallBottom; // Стена перекрывает видимость
+      }
+    }
+
+    if (portalWallType === 'lower' || portalWallType === 'both') {
+      const wallTop = Math.max(drawTop, Math.min(drawBottom, otherBottom));
+      const wallBottom = drawBottom;
+      if (wallTop < wallBottom) {
+        drawVerticalLine(ctx, x, Math.floor(wallTop), Math.ceil(wallBottom), otherSector.wallColor!);
+        lowerClip[x].bottom = wallTop;
+      }
+    }
+
+    if (drawBottom < oldBottom) {
+      drawVerticalLine(ctx, x, drawBottom, Math.ceil(oldBottom), currentSector.floorColor!);
       lowerClip[x].bottom = drawBottom;
     }
+
+    upperClip[x].top = Math.max(upperClip[x].top, Math.max(drawTop, otherTop));
+    lowerClip[x].bottom = Math.min(lowerClip[x].bottom, Math.min(drawBottom, otherBottom));
   }
 }
 
@@ -235,18 +295,16 @@ export default function render25d(
 
   traverseBSPTree(bspTree, camera, (bspNode: BSPLeaf) => {
     for (const seg of bspNode.segs) {
-      const sector = seg.frontSector!;
+      const screenProjection = projectSegX(camera, seg);
 
-      const projection = projectSeg(camera, sector, seg);
-
-      if (!projection) {
+      if (!screenProjection) {
         continue;
       }
 
       if (isPortal(seg)) {
-        drawPortalSegment(ctx, camera, seg, projection, wallRanges, upperClip, lowerClip);
+        drawPortalSegment(ctx, camera, seg, screenProjection, wallRanges, upperClip, lowerClip);
       } else {
-        drawSolidSegment(ctx, camera, seg, projection, wallRanges, upperClip, lowerClip);
+        drawSolidSegment(ctx, camera, seg, screenProjection, wallRanges, upperClip, lowerClip);
       }
     }
   });

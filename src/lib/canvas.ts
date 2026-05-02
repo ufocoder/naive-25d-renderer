@@ -25,13 +25,13 @@ export function drawPolygon(ctx: CanvasRenderingContext2D, points: Vertex[], fil
     ctx.stroke();
 }
 
-export function drawLinedef(ctx: CanvasRenderingContext2D, linedef: Linedef) {
+export function drawLinedef(ctx: CanvasRenderingContext2D, linedef: Linedef, color = 'black', lineSize = 1) {
   ctx.beginPath(); 
   ctx.moveTo(linedef.start.x, linedef.start.y);
   ctx.lineTo(linedef.end.x, linedef.end.y);
   ctx.closePath();
-  ctx.lineWidth = 1;
-  ctx.strokeStyle = 'black';
+  ctx.lineWidth = lineSize;
+  ctx.strokeStyle = color;
   ctx.stroke();
 }
 
