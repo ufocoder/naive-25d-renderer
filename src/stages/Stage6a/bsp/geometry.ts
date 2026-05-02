@@ -8,6 +8,13 @@ export function resetSegIdCounter(): void {
   nextSegId = 0;
 }
 
+export function getMidPoint(seg: Seg): Vertex {
+  return {
+    x: (seg.start.x + seg.end.x) / 2,
+    y: (seg.start.y + seg.end.y) / 2
+  };
+}
+
 export function getPointSide(line: Seg, point: { x: number; y: number }): number {
   const dx = line.end.x - line.start.x;
   const dy = line.end.y - line.start.y;
@@ -274,4 +281,14 @@ export function sortPointsClockwise(points: Vertex[]): Vertex[] {
     const angleB = Math.atan2(b.y - center.y, b.x - center.x);
     return angleA - angleB;
   });
+}
+
+export function areSegmentsCollinear(seg1: Seg, seg2: Seg): boolean {
+  const dx1 = seg1.end.x - seg1.start.x;
+  const dy1 = seg1.end.y - seg1.start.y;
+  
+  const cross1 = dx1 * (seg2.start.y - seg1.start.y) - dy1 * (seg2.start.x - seg1.start.x);
+  const cross2 = dx1 * (seg2.end.y - seg1.start.y) - dy1 * (seg2.end.x - seg1.start.x);
+  
+  return Math.abs(cross1) < 0.001 && Math.abs(cross2) < 0.001;
 }

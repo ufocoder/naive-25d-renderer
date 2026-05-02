@@ -6,7 +6,8 @@ import {
   getPointSide,
   extendToInfiniteLine,
   lineIntersectionWithRay,
-  isConvexPolygon
+  isConvexPolygon,
+  getMidPoint
 } from "./geometry";
 
 import type { BSPNode, BSPLeaf } from "./typings";
@@ -60,10 +61,7 @@ function partitionByInfiniteLine(
     const intersection = lineIntersectionWithRay(infiniteLine, seg, true);
     
     if (!intersection) {
-      const midPoint = {
-        x: (seg.start.x + seg.end.x) / 2,
-        y: (seg.start.y + seg.end.y) / 2
-      };
+      const midPoint = getMidPoint(seg);
       const side = getPointSide(splitter, midPoint);
       
       if (side > 0) {
@@ -80,10 +78,7 @@ function partitionByInfiniteLine(
     const isAtEnd = Math.hypot(intersection.x - seg.end.x, intersection.y - seg.end.y) < 0.001;
     
     if (isAtStart || isAtEnd) {
-      const midPoint = {
-        x: (seg.start.x + seg.end.x) / 2,
-        y: (seg.start.y + seg.end.y) / 2
-      };
+      const midPoint = getMidPoint(seg);
       const side = getPointSide(splitter, midPoint);
       
       if (side > 0) {
@@ -146,21 +141,6 @@ function partitionByInfiniteLine(
 
 function canCreateLeaf(segs: Seg[], minSegments: number = 3): boolean {
   if (segs.length < minSegments) return false;
-
-  const vertexCount = new Map<string, number>();
-  const norm = (x: number, y: number) => `${Math.round(x * 1000)}/${Math.round(y * 1000)}`;
-  
-  for (const seg of segs) {
-    const startKey = norm(seg.start.x, seg.start.y);
-    const endKey = norm(seg.end.x, seg.end.y);
-    vertexCount.set(startKey, (vertexCount.get(startKey) || 0) + 1);
-    vertexCount.set(endKey, (vertexCount.get(endKey) || 0) + 1);
-  }
-
-  for (const count of vertexCount.values()) {
-    if (count !== 2) return false;
-  }
-  
   if (!isConnectedPolygon(segs)) return false;
   
   return isConvexPolygon(segs);
@@ -236,6 +216,7 @@ function createLeaf(segs: Seg[], sector?: Sector | null): BSPLeaf {
   );
 
   let leafSector: Sector | null = sector || null;
+
   if (!leafSector) {
     leafSector = getSectorForLeaf(uniqueSegs);
   }
@@ -432,9 +413,8 @@ function buildBSPTreeRecursive(
 
 export function buildBSPTree(
   segs: Seg[],
-  rootSector?: Sector,
   maxDepth: number = 10,
-  minSegments: number = 4
+  minSegments: number = 3
 ): BSPNode {
   resetSegIdCounter();
   
@@ -455,14 +435,14 @@ export function buildBSPTree(
     segsWithId,
     allSegs,
     usedSplitterIds,
-    rootSector || null,
+    null,
     0,
     maxDepth,
     minSegments
   );
   
   if (!result.success || !result.node) {
-    return createLeaf(segsWithId, rootSector);
+    return createLeaf(segsWithId);
   }
   
   return result.node;
