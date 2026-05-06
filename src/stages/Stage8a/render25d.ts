@@ -1,7 +1,6 @@
 import { traverseBSPTree } from "../Stage6a/bsp/traverse";
-import type { BSPLeaf } from "../Stage6a/bsp/typings";
-import { buildBSPTree } from "../Stage6a/bsp/build";
-import { projectSegX, projectSegY, type ProjectionScreenX  } from "./projection";
+import type { BSPLeaf, BSPNode } from "../Stage6a/bsp/typings";
+import { projectSegX, projectSegY, type ProjectionScreenX  } from "../Stage7a/projection";
 import { getPointSide } from "../Stage6a/bsp/geometry";
 
 
@@ -280,31 +279,31 @@ function createColumnClip(camera: Camera): ColumnClip[] {
   return clips;
 }
 
-export default function render25d(
-  ctx: CanvasRenderingContext2D,
-  settings: Settings,
-) {
-  const camera = settings.camera;
-  const allSegments = settings.level.linedefs;
-  const bspTree = buildBSPTree(allSegments);
+export function createRender25d({ bspTree }: { bspTree: BSPNode }) {
+  return function render25d(
+    ctx: CanvasRenderingContext2D,
+    settings: Settings,
+  ) {
+    const camera = settings.camera;
+    const wallRanges = createSolidWallRanges(camera);
+    const upperClip = createColumnClip(camera);
+    const lowerClip = createColumnClip(camera);
 
-  const wallRanges = createSolidWallRanges(camera);
-  const upperClip = createColumnClip(camera);
-  const lowerClip = createColumnClip(camera);
+    traverseBSPTree(bspTree, camera, (bspNode: BSPLeaf) => {
+      for (const seg of bspNode.segs) {
+        const screenProjection = projectSegX(camera, seg);
 
-  traverseBSPTree(bspTree, camera, (bspNode: BSPLeaf) => {
-    for (const seg of bspNode.segs) {
-      const screenProjection = projectSegX(camera, seg);
+        if (!screenProjection) {
+          continue;
+        }
 
-      if (!screenProjection) {
-        continue;
+        if (isPortal(seg)) {
+          drawPortalSegment(ctx, camera, seg, screenProjection, wallRanges, upperClip, lowerClip);
+        } else {
+          drawSolidSegment(ctx, camera, seg, screenProjection, wallRanges, upperClip, lowerClip);
+        }
       }
-
-      if (isPortal(seg)) {
-        drawPortalSegment(ctx, camera, seg, screenProjection, wallRanges, upperClip, lowerClip);
-      } else {
-        drawSolidSegment(ctx, camera, seg, screenProjection, wallRanges, upperClip, lowerClip);
-      }
-    }
-  });
+    });
+  }
 }
+

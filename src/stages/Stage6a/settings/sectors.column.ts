@@ -64,5 +64,3 @@ const settings: Settings = {
 };
 
 export default settings;
-
-export const areaSegs = roomSegs;

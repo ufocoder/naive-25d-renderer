@@ -283,7 +283,7 @@ function selectBestSplitter(
     
     if (score < bestScore) {
       bestScore = score;
-      bestSplitter = splitter;
+      bestSplitter = {...splitter};
       bestFront = frontSegments;
       bestBack = backSegments;
       bestOnLine = onLineSegments;

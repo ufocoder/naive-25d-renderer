@@ -1,4 +1,3 @@
-// useAnimationValue.ts
 import { createSignal, onCleanup } from 'solid-js';
 
 interface UseAnimationValueOptions {

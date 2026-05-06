@@ -34,6 +34,7 @@ interface Seg extends Linedef {
   frontSector?: Sector;
   backSector?: Sector;
   isTwoSide?: boolean;
+  isSolid?: boolean;
 }
 
 interface Sector {
@@ -63,6 +64,7 @@ interface Camera {
   x: number;
   y: number;
   z?: number;
+  height?: number;
   moveSpeed: number;
   rotationSpeed: number;
   screen: {

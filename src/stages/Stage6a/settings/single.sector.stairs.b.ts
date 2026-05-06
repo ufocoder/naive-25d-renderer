@@ -106,6 +106,4 @@ const settings: Settings = {
   level,
 };
 
-export const areaSegs = sector1Lines;
-
 export default settings;

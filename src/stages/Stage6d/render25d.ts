@@ -3,7 +3,6 @@ import type { BSPLeaf } from "../Stage6a/bsp/typings";
 import { buildBSPTree } from "../Stage6a/bsp/build";
 import { projectSeg, type SegProjection } from "../Stage5i/projection";
 import { getPointSide } from "../Stage6a/bsp/geometry";
-import { removeDuplicateSegments } from "../Stage6a/utils";
 
 
 function isPortal(seg: Seg): boolean {
@@ -226,7 +225,7 @@ export default function render25d(
   settings: Settings,
 ) {
   const camera = settings.camera;
-  const allSegments = removeDuplicateSegments(settings.level.linedefs);
+  const allSegments = settings.level.linedefs;
   const bspTree = buildBSPTree(allSegments);
 
   const wallRanges = createSolidWallRanges(camera);

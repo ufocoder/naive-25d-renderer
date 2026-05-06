@@ -147,7 +147,6 @@ const JsonTreeNode: Component<{
   keyColor?: string;
   valueColor?: string;
 }> = (props) => {
-  // Автоматически открываем первые 2 уровня глубины
   const [expanded, setExpanded] = createSignal(props.depth < 2);
 
   const handleToggle = () => {
@@ -184,7 +183,6 @@ export const JsonViewer: Component<JsonViewerProps> = (props) => {
     return data !== null && typeof data === 'object';
   });
 
-  // Простая рекурсивная отрисовка дерева с индивидуальным состоянием
   const RecursiveTree: Component<{ 
     data: any; 
     keyName?: string | number | null;

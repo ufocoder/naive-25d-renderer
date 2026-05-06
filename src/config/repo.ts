@@ -1,0 +1,1 @@
+export const PROJECT_REPO_URL = 'https://github.com/ufocoder/25d-renderer/blob/main/src'
