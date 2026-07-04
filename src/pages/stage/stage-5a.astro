@@ -1,6 +1,5 @@
 ---
 import PageLayout from '@app/layouts/PageLayout.astro';
-import InDevelopmentGate from '@app/pages/_components/InDevelopmentGate.astro';
 import type { PageMetadata } from '@app/config/pages';
 import { codeToHtml } from 'shiki';
 
@@ -92,7 +91,6 @@ const [code1Html, code2Html, code3Html] = await Promise.all([
 ---
 
 <PageLayout>
-  <InDevelopmentGate />
   <section class="flex flex-col gap-4">
     <p class="py-2">
       В прошлом мы получили уровни, состоящие из однотонных стен, пола и потолков, однако в настоящих играх мы привыкли встречать разнообразные локации, например: лаборатории, пещеры, подземелье или что-то еще. А чтобы создать что-то подобное, необходимо реализовать текстурирование.

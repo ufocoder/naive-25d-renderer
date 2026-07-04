@@ -1,6 +1,5 @@
 ---
 import PageLayout from '@app/layouts/PageLayout.astro';
-import InDevelopmentGate from '@app/pages/_components/InDevelopmentGate.astro';
 import type { PageMetadata } from '@app/config/pages';
 import { PROJECT_REPO_URL } from '@app/config/repo';
 import { codeToHtml } from 'shiki';
@@ -81,7 +80,6 @@ const [code1Html, code2Html, code3Html] = await Promise.all([
 ---
 
 <PageLayout>
-  <InDevelopmentGate />
   <section class="flex flex-col gap-4">
     <p>
       При работе с <code>CanvasRenderingContext2D</code> и многократных вызовах <code>fillRect</code> накапливаются накладные расходы.
