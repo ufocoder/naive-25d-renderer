@@ -3,6 +3,14 @@ interface Vertex {
   y: number;
 }
 
+interface ImportMetaEnv {
+  readonly YANDEX_METRIKA_ID?: string;
+}
+
+interface ImportMeta {
+  readonly env: ImportMetaEnv;
+}
+
 interface Linedef {
   start: Vertex;
   end: Vertex;
