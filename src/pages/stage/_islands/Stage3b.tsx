@@ -105,7 +105,7 @@ const Stage: Component<StageProps> = (props) => {
                 <div class="flex min-h-5 justify-center text-sm text-gray-600">
                   Разделение {currentStep()} из {totalSteps()}
                 </div>
-                <div class="flex flex-wrap justify-center gap-2">
+                <div class="grid grid-cols-3 gap-2">
                   <StepProgressButton
                     active={isAutoPlaying()}
                     duration={animationDelay}
