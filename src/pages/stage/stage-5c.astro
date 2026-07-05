@@ -81,19 +81,19 @@ const [code1Html, code2Html, code3Html] = await Promise.all([
 
 <PageLayout>
   <section class="flex flex-col gap-4">
-    <p>
-      При работе с <code>CanvasRenderingContext2D</code> и многократных вызовах <code>fillRect</code> накапливаются накладные расходы.
+    <p class="py-2 text">
+      При работе с <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">CanvasRenderingContext2D</code> и многократных вызовах <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">fillRect</code> накапливаются накладные расходы.
     </p>
     <div set:html={code1Html} />
-    <p>
-      Лучше сделать одну дорогую операцию <code>putImageData</code>, чем миллион дешевых <code>fillRect</code>. Для этого создадим буфер и будем его передавать сквозь все функции вплоть до вызова <code>drawPixel</code>, а после вызовем <code>putImageData</code>.
+    <p class="py-2 text">
+      Лучше сделать одну дорогую операцию <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">putImageData</code>, чем миллион дешевых <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">fillRect</code>. Для этого создадим буфер и будем его передавать сквозь все функции вплоть до вызова <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">drawPixel</code>, а после вызовем <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">putImageData</code>.
     </p>
     <div set:html={code2Html} />
-    <p>
-      Внутри <code>drawPixel</code> заполняем буфер данными о необходимом пикселе.
+    <p class="py-2 text">
+      Внутри <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">drawPixel</code> заполняем буфер данными о необходимом пикселе.
     </p>
     <div set:html={code3Html} />
-    <p class="py-2">
+    <p class="py-2 text">
       <a href={`${PROJECT_REPO_URL}/stages/Stage5c/render25d.ts`} target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 text-blue-600 hover:text-blue-800 hover:underline transition-colors" >Реализация шага на github</a>
     </p>
   </section>

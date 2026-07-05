@@ -1,18 +1,145 @@
 ---
 import PageLayout from '@app/layouts/PageLayout.astro';
-import InDevelopmentGate from '@app/pages/_components/InDevelopmentGate.astro';
 import Stage from '@app/pages/stage/_islands/Stage5d';
 import type { PageMetadata } from '@app/config/pages';
+import { PROJECT_REPO_URL } from '@app/config/repo';
+import { codeToHtml } from 'shiki';
 
 export const metadata: PageMetadata = {
   title: 'Горизонтальное: пол и потолок',
   groupTitle: 'Stage 5: Текстурирование',
 };
+
+const code1 = `
+  const roomSector: Sector = {
+    // ..
+    floorHeight: 0,
+    floorTexture: 'floor',
+    ceilHeight: 400,
+    ceilTexture: 'ceil',
+    // ..
+  };
+
+`;
+
+const code2 = `
+  if (drawTop > upperClip[x]) {
+    if (sector.ceilTexture) {
+      drawTexturedFloorCeil(buffer, camera, sector, x, upperClip[x], drawTop, false);
+    } else {
+      drawVerticalLine(buffer, x, upperClip[x], drawTop, ceilColor);
+    }
+  }
+
+  // ..
+
+  if (drawBottom < lowerClip[x]) {
+    if (sector.floorTexture) {
+      drawTexturedFloorCeil(buffer, camera, sector, x, drawBottom, lowerClip[x], true);
+    } else {
+      drawVerticalLine(buffer, x, drawBottom, lowerClip[x], floorColor);
+    }
+  }
+
+`;
+
+const code3 = `
+  function drawTexturedFloorCeil(
+    imageData: ImageData,
+    camera: Camera,
+    sector: Sector,
+    x: number,
+    yStart: number,
+    yEnd: number,
+    isFloor: boolean
+  ): void {
+    const textureName = isFloor ? sector.floorTexture : sector.ceilTexture;
+    if (!textureName) return;
+
+    const texture = textures[textureName];
+    if (!texture) return;
+
+    // ..
+  }
+
+`;
+
+const code4 = `
+  const p = y - camera.screen.height / 2;
+  const rowDistance = distToPlane / Math.abs(p);
+
+  const t = x / camera.screen.width;
+  const rayDirX = camera.angle.cos + planeX * (2 * t - 1);
+  const rayDirY = camera.angle.sin + planeY * (2 * t - 1);
+
+  const worldX = camera.x + rayDirX * rowDistance;
+  const worldY = camera.y + rayDirY * rowDistance;
+
+  let texX = (worldX / texture.scale) % 1;
+  let texY = (worldY / texture.scale) % 1;
+
+`;
+
+const [code1Html, code2Html, code3Html, code4Html] = await Promise.all([
+  codeToHtml(code1, { lang: 'ts', theme: 'github-dark' }),
+  codeToHtml(code2, { lang: 'ts', theme: 'github-dark' }),
+  codeToHtml(code3, { lang: 'ts', theme: 'github-dark' }),
+  codeToHtml(code4, { lang: 'ts', theme: 'github-dark' }),
+]);
 ---
 
 <PageLayout>
-  <InDevelopmentGate />
   <section class="flex flex-col gap-4">
     <Stage client:load />
+    <p class="py-2 text">
+      Со стенами все было относительно просто: мы уже знали экранную вертикальную полосу стены и могли растянуть по ней
+      текстуру сверху вниз. Пол и потолок устроены иначе. Это горизонтальные плоскости, которые уходят в глубину, поэтому
+      для них недостаточно взять одну вертикальную координату на экране и линейно растянуть <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">bitmap</code>.
+    </p>
+    <p class="py-2 text">
+      Для пола и потолка сектору нужно хранить отдельные ID текстур. Высоты <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">floorHeight</code> и <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">ceilHeight</code>
+      уже использовались при проекции стен, а теперь они еще говорят, на какой горизонтальной плоскости <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">bitmap</code> нужно искать
+      точку пересечения луча.
+    </p>
+    <div set:html={code1Html} />
+    <p class="py-2 text">
+      Текстуры пола и потолка рисуются только там, где они действительно видны в текущем столбце. Если верх стены ниже
+      текущего верхнего отсечения, между ними виден потолок. Если низ стены выше нижнего отсечения, между ними виден пол.
+      Поэтому вызов текстурирования остается встроенным в уже существующую работу с <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">upperClip</code> и
+      <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">lowerClip</code>.
+    </p>
+    <div set:html={code2Html} />
+    <p class="py-2 text">
+      Вся отдельная логика собрана в <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">drawTexturedFloorCeil</code>. Один и тот же код подходит и для пола, и для
+      потолка: флаг <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">isFloor</code> выбирает текстуру и сторону экрана. Для пола нужны пиксели ниже центра экрана,
+      для потолка - выше центра.
+    </p>
+    <div set:html={code3Html} />
+    <p class="py-2 text">
+      <span class="font-bold">Основная идея</span>: для каждого пикселя пола или потолка мы восстанавливаем, какой точке мира он соответствует.
+    </p>
+    <div set:html={code4Html} />
+    <p class="py-2 text">
+      Сначала берем расстояние <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">p</code> от пикселя до центра экрана по вертикали. Чем ближе пиксель к центру, тем
+      дальше находится точка на плоскости. Поэтому <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">rowDistance</code> считается через расстояние от камеры до
+      плоскости и <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">Math.abs(p)</code>.
+    </p>
+    <p class="py-2 text">
+      Затем по экранной координате <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">x</code> строим направление луча: слева луч чуть повернут к левому краю <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">FOV</code>,
+      справа - к правому. Умножаем это направление на <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">rowDistance</code> и получаем мировые координаты
+      <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">worldX</code>/<code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">worldY</code>. Эти координаты уже можно превратить в координаты текстуры.
+    </p>
+    <p class="py-2 text">
+      Значение <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">texture.scale</code> задает размер повторения текстуры в мире. После деления на scale берется дробная часть:
+      так один и тот же bitmap повторяется по всей плоскости. Отрицательные координаты дополнительно приводятся к
+      диапазону от <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">0</code> до <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">1</code>, после чего <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">getTextureColor</code> возвращает цвет конкретного
+      texel.
+    </p>
+    <p class="py-2 text">
+      Получается, стены и горизонтальные поверхности используют одни и те же текстуры, но семплируются по-разному.
+    </p>
+    <p class="my-2">
+      <a href={`${PROJECT_REPO_URL}/stages/Stage5d/render25d.ts`} target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 text-blue-600 hover:text-blue-800 hover:underline transition-colors" >Реализация шага на github</a>
+    </p>
   </section>
 </PageLayout>
