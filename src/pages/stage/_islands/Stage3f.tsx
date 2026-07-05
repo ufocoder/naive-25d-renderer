@@ -41,6 +41,7 @@ const Stage: Component<StageProps> = (props) => {
                 </h2>
                 <div class="flex justify-center">
                   <Map2d
+                    withControls
                     initialZoom={0.8}
                     initialOffsetY={90}
                     width={400}
