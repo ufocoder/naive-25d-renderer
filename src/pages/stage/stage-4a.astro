@@ -1,18 +1,104 @@
 ---
 import PageLayout from '@app/layouts/PageLayout.astro';
-import InDevelopmentGate from '@app/pages/_components/InDevelopmentGate.astro';
 import Stage from '@app/pages/stage/_islands/Stage4a';
 import type { PageMetadata } from '@app/config/pages';
+import { PROJECT_REPO_URL } from '@app/config/repo';
+import { codeToHtml } from 'shiki';
 
 export const metadata: PageMetadata = {
   title: 'Учитываем высоту сектора',
   groupTitle: 'Stage 4: Улучшаем движение',
 };
+
+const code1 = `
+  function moveCamera(camera: Camera, direction: number, sector: Sector) {
+    const playerCos = camera.angle.cos * camera.moveSpeed;
+    const playerSin = camera.angle.sin * camera.moveSpeed;
+    const newX = camera.x + direction * playerCos;
+    const newY = camera.y + direction * playerSin;
+    const height = camera.height || DEFAULT_CAMERA_HEIGHT;
+    const newZ = sector.floorHeight! + height;
+
+    return {
+      ...camera,
+      x: newX,
+      y: newY,
+      z: newZ,
+    };
+  }
+
+`;
+
+const code2 = `
+  setSettings((prev) => {
+    const sector = findCameraSector(bspTree, prev.camera)!;
+
+    return {
+      ...prev,
+      camera: moveCamera(prev.camera, isMoving(), sector),
+    };
+  });
+
+`;
+
+const code3 = `
+  function riseCamera(camera: Camera, direction: number, sector: Sector) {
+    const speed = camera.riseSpeed || DEFAULT_CAMERA_VERTICAL_SPEED;
+    const height = camera.height || DEFAULT_CAMERA_HEIGHT;
+    let newZ = camera.z! + direction * speed;
+    
+    newZ = Math.max(
+      sector.floorHeight! + height,
+      Math.min(sector.ceilHeight! - height, newZ)
+    );
+
+    return {
+      ...camera,
+      z: newZ,
+    };
+  }
+
+`;
+
+const [code1Html, code2Html, code3Html] = await Promise.all([
+  codeToHtml(code1, { lang: 'ts', theme: 'github-dark' }),
+  codeToHtml(code2, { lang: 'ts', theme: 'github-dark' }),
+  codeToHtml(code3, { lang: 'ts', theme: 'github-dark' }),
+]);
 ---
 
 <PageLayout>
-  <InDevelopmentGate />
   <section class="flex flex-col gap-4">
+    <p class="py-2 text">
+      До этого шага камера двигалась по карте почти как точка на плоскости: менялись <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">x</code> и
+      <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">y</code>, а высота взгляда оставалась условно постоянной. Но в уровне уже есть сектора с разной высотой пола,
+      поэтому при переходе на ступеньку камера должна оказаться выше, а при спуске - ниже.
+    </p>
     <Stage client:load />
+    <p class="py-2 text">
+      Для этого у камеры появляется собственная высота <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">height</code>: это расстояние от пола сектора до глаз игрока.
+      Само положение глаз хранится в <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">camera.z</code>. Когда камера переходит в другой сектор, мы берем высоту пола
+      этого сектора и прибавляем к ней высоту камеры:
+    </p>
+    <div set:html={code1Html} />
+    <p class="py-2 text">
+      Главная строка здесь <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">sector.floorHeight + height</code> и она говорит, что глаза игрока всегда находятся на одной и той же высоте относительно пола текущего сектора. Поэтому при движении по лестнице меняется не только положение на карте, но и вертикальное положение камеры.
+    </p>
+    <p class="py-2 text">
+      Чтобы понять, какой пол сейчас под камерой, перед движением ищем сектор, в котором находится камера. Здесь нам уже
+      помогает BSP-дерево: <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">findCameraSector</code> возвращает текущий сектор, а движение пересчитывается с учетом его высоты.
+    </p>
+    <div set:html={code2Html} />
+    <p class="py-2 text">
+      Виджет карты, а именно клавиши <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">Z</code> и <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">X</code> позволяют поднять или опустить камеру вручную. Но даже такое движение нельзя оставлять без границ: камера не должна проваливаться ниже пола и не должна подниматься выше потолка сектора.
+    </p>
+    <div set:html={code3Html} />
+    <p class="py-2 text">
+      По итогу горизонтальное перемещение остается прежним, но высота взгляда теперь зависит от сектора. 
+      Благодаря этому ступени и разные уровни пола начинают ощущаться не только в геометрии стен, но и в поведении камеры.
+    </p>
+    <p class="my-2">
+      <a href={`${PROJECT_REPO_URL}/stages/Stage4a/hooks/useCameraControls.ts`} target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 text-blue-600 hover:text-blue-800 hover:underline transition-colors" >Реализация шага на github</a>
+    </p>
   </section>
 </PageLayout>
