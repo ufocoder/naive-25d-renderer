@@ -65,8 +65,16 @@ const code3 = `
 `;
 
 const code4 = `
+  const distToPlane = isFloor
+    ? camera.z - sector.floorHeight
+    : sector.ceilHeight - camera.z;
+
   const p = y - camera.screen.height / 2;
   const rowDistance = distToPlane / Math.abs(p);
+
+  const planeLength = Math.tan(camera.fov.radians / 2);
+  const planeX = -camera.angle.sin * planeLength;
+  const planeY = camera.angle.cos * planeLength;
 
   const t = x / camera.screen.width;
   const rayDirX = camera.angle.cos + planeX * (2 * t - 1);
@@ -120,9 +128,25 @@ const [code1Html, code2Html, code3Html, code4Html] = await Promise.all([
     </p>
     <div set:html={code4Html} />
     <p class="py-2 text">
-      Сначала берем расстояние <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">p</code> от пикселя до центра экрана по вертикали. Чем ближе пиксель к центру, тем
-      дальше находится точка на плоскости. Поэтому <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">rowDistance</code> считается через расстояние от камеры до
-      плоскости и <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">Math.abs(p)</code>.
+      Значение <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">distToPlane</code> - это расстояние от камеры до горизонтальной плоскости по вертикали.
+      Для пола камера находится выше плоскости, поэтому берем <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">camera.z - floorHeight</code>.
+      Для потолка камера находится ниже плоскости, поэтому берем <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">ceilHeight - camera.z</code>.
+      Это не расстояние вперед по взгляду, а именно высотная разница: насколько нужно опуститься до пола или подняться до потолка.
+    </p>
+    <p class="py-2 text">
+      Затем берем расстояние <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">p</code> от пикселя до центра экрана по вертикали. Чем ближе пиксель к центру, тем
+      дальше находится точка на плоскости. Поэтому <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">rowDistance</code> считается через вертикальное расстояние
+      <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">distToPlane</code> и наклон луча, который в этой упрощенной формуле выражен через
+      <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">Math.abs(p)</code>.
+    </p>
+    <p class="py-2 text">
+      Значение <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">planeX</code> и <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">planeY</code>
+      нужны, чтобы получить не только центральный луч камеры, но и луч для любого столбца экрана. Направление камеры
+      задается вектором <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">camera.angle.cos</code>/<code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">camera.angle.sin</code>.
+      А экранная плоскость идет поперек взгляда, поэтому берем перпендикуляр к этому направлению:
+      <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">(-sin, cos)</code>. Длина этого
+      бокового вектора равна <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">tan(FOV / 2)</code>:
+      так левый и правый края плоскости совпадают с границами угла обзора.
     </p>
     <p class="py-2 text">
       Затем по экранной координате <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">x</code> строим направление луча: слева луч чуть повернут к левому краю <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">FOV</code>,
@@ -130,13 +154,22 @@ const [code1Html, code2Html, code3Html, code4Html] = await Promise.all([
       <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">worldX</code>/<code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">worldY</code>. Эти координаты уже можно превратить в координаты текстуры.
     </p>
     <p class="py-2 text">
-      Значение <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">texture.scale</code> задает размер повторения текстуры в мире. После деления на scale берется дробная часть:
-      так один и тот же bitmap повторяется по всей плоскости. Отрицательные координаты дополнительно приводятся к
-      диапазону от <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">0</code> до <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">1</code>, после чего <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">getTextureColor</code> возвращает цвет конкретного
-      texel.
+      Двойка в выражении <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">2 * t - 1</code>
+      появляется из-за перевода координаты столбца из диапазона <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">0..1</code>
+      в диапазон <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">-1..1</code>.
+      При <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">t = 0</code> получаем левый край экранной плоскости,
+      при <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">t = 0.5</code> - центр, а при
+      <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">t = 1</code> - правый край.
+      Поэтому <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">planeX/planeY</code> добавляется с отрицательным,
+      нулевым или положительным весом.
     </p>
     <p class="py-2 text">
-      Получается, стены и горизонтальные поверхности используют одни и те же текстуры, но семплируются по-разному.
+      Значение <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">texture.scale</code> задает размер повторения текстуры в мире. После деления на scale берется дробная часть:
+      так один и тот же bitmap повторяется по всей плоскости. Отрицательные координаты дополнительно приводятся к
+      диапазону от <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">0</code> до <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">1</code>.
+    </p>
+    <p class="py-2 text">
+      В итоге получается, что стены и горизонтальные поверхности используют одни и те же текстуры, но семплируются по-разному.
     </p>
     <p class="my-2">
       <a href={`${PROJECT_REPO_URL}/stages/Stage5d/render25d.ts`} target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 text-blue-600 hover:text-blue-800 hover:underline transition-colors" >Реализация шага на github</a>

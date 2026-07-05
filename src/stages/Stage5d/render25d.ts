@@ -184,23 +184,18 @@ function drawTexturedFloorCeil(
     // Рассчитываем направление луча для текущего x
     const t = x / screenWidth;
     
-    // Луч от левого края (t=0) до правого (t=1)
     const rayDirX = dirX + planeX * (2 * t - 1);
     const rayDirY = dirY + planeY * (2 * t - 1);
     
-    // Мировые координаты точки на плоскости
     const worldX = camera.x + rayDirX * rowDistance;
     const worldY = camera.y + rayDirY * rowDistance;
     
-    // Координаты текстуры с учётом масштаба
     let texX = (worldX / texture.scale) % 1;
     let texY = (worldY / texture.scale) % 1;
     
-    // Корректировка для отрицательных значений
     if (texX < 0) texX += 1;
     if (texY < 0) texY += 1;
-    
-    // Преобразуем в пиксельные координаты текстуры
+
     let tx = Math.floor(texX * texture.width);
     let ty = Math.floor(texY * texture.height);
     
