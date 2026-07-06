@@ -185,7 +185,7 @@ const traversalCodeHtml = await codeToHtml(traversalCode, {
       В DOOM BSP-дерево строилось заранее при подготовке карты, то есть во время отрисовки кадра дерево не перестраивалось, а использовалось ранее сформированное. При построении дерева сложные и вогнутые области разрезались линиями-разделителями до тех пор, пока листьями дерева не становились выпуклыми подсекторами. Если разделитель пересекал стену, исходный <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">linedef</code> не изменялся, но для рендера делился на несколько более коротких <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">seg</code>.
     </p>
     <p class="py-2 text">
-      Готовое разбиение сохранялось в WAD в виде трех связанных наборов данных:
+      Готовое разбиение сохранялось в <a class="link underline" href="https://doom.fandom.com/wiki/WAD" target="_blank">WAD-файле</a> в виде трех связанных наборов данных:
     </p>
     <ul class="list-disc space-y-2 pl-6 text">
       <li><code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">NODES</code> — ветви дерева с разделителем, границами дочерних областей и ссылками на потомков;</li>
