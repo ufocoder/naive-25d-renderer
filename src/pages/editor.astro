@@ -1,0 +1,13 @@
+---
+import PageLayout from '@app/layouts/PageLayout.astro';
+import Editor from '@app/pages/_islands/Editor';
+import type { PageMetadata } from '@app/config/pages';
+
+export const metadata: PageMetadata = {
+  title: 'Редактор уровня'
+};
+---
+
+<PageLayout>
+  <Editor client:load />
+</PageLayout>
