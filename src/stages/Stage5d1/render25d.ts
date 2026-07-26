@@ -3,7 +3,7 @@ import { getPointSide } from "@app/stages/Stage3b/bsp/geometry";
 import { traverseBSPTree } from "@app/stages/Stage3b/bsp/traverse";
 import type { BSPLeaf, BSPNode } from "@app/stages/Stage3b/bsp/typings";
 import { calculateIntersectionAngles, projectSegX, projectSegY, type IntersectionAngles } from "./projection";
-import { getTextureColor, textures, type Color } from "../Stage5b/textures";
+import { getTextureColor, textures, type Color, type Texture } from "../Stage5b/textures";
 
 function isPortal(seg: Seg): boolean {
   return Boolean(seg.isTwoSide && seg.backSector && seg.backSector !== seg.frontSector);
@@ -105,29 +105,35 @@ function createSolidWallRanges(camera: Camera) {
   return ranges;
 }
 
-function getInterpolationFactor(
-  camera: Camera,
-  angles: IntersectionAngles,
-  screenX: number,
-): number {
-  const fov = camera.fov.degrees;
-  const screenWidth = camera.screen.width;
-  const angle = angles.cameraFrom + (screenX / screenWidth) * fov;
-  const t = (angle - angles.linedefFrom) / (angles.linedefTo - angles.linedefFrom);
-  
-  return Math.max(0, Math.min(1, t));
+function cross(ax: number, ay: number, bx: number, by: number): number {
+  return ax * by - ay * bx;
 }
 
-function applyBrightness(color: Color, brightness: number = 1): Color {
-  if (brightness >= 1.0) {
-    return color;
+function getWallTextureX(camera: Camera, seg: Seg, screenX: number, texture: Texture): number {
+  const dirX = camera.angle.cos;
+  const dirY = camera.angle.sin;
+  const planeLength = Math.tan(camera.fov.radians / 2);
+  const planeX = -dirY * planeLength;
+  const planeY = dirX * planeLength;
+  const t = screenX / camera.screen.width;
+  const rayDirX = dirX + planeX * (2 * t - 1);
+  const rayDirY = dirY + planeY * (2 * t - 1);
+
+  const segX = seg.end.x - seg.start.x;
+  const segY = seg.end.y - seg.start.y;
+  const denominator = cross(rayDirX, rayDirY, segX, segY);
+
+  if (Math.abs(denominator) < 0.001) {
+    return 0;
   }
 
-  return {
-    r: Math.min(255, Math.floor(color.r * brightness)),
-    g: Math.min(255, Math.floor(color.g * brightness)),
-    b: Math.min(255, Math.floor(color.b * brightness))
-  };
+  const toSegX = seg.start.x - camera.x;
+  const toSegY = seg.start.y - camera.y;
+  const segFactor = cross(toSegX, toSegY, rayDirX, rayDirY) / denominator;
+  const segLength = Math.hypot(segX, segY);
+  const worldDistanceOnWall = segFactor * segLength;
+
+  return Math.floor((worldDistanceOnWall / texture.scale) * texture.width);
 }
 
 function drawTexturedFloorCeil(
@@ -196,23 +202,18 @@ function drawTexturedFloorCeil(
     // Рассчитываем направление луча для текущего x
     const t = x / screenWidth;
     
-    // Луч от левого края (t=0) до правого (t=1)
     const rayDirX = dirX + planeX * (2 * t - 1);
     const rayDirY = dirY + planeY * (2 * t - 1);
     
-    // Мировые координаты точки на плоскости
     const worldX = camera.x + rayDirX * rowDistance;
     const worldY = camera.y + rayDirY * rowDistance;
     
-    // Координаты текстуры с учётом масштаба
     let texX = (worldX / texture.scale) % 1;
     let texY = (worldY / texture.scale) % 1;
     
-    // Корректировка для отрицательных значений
     if (texX < 0) texX += 1;
     if (texY < 0) texY += 1;
-    
-    // Преобразуем в пиксельные координаты текстуры
+
     let tx = Math.floor(texX * texture.width);
     let ty = Math.floor(texY * texture.height);
     
@@ -220,8 +221,8 @@ function drawTexturedFloorCeil(
     ty = Math.min(ty, texture.height - 1);
     
     const color = getTextureColor(texture, tx, ty);
-
-    drawPixel(imageData, x, y, applyBrightness(color, sector.brightness));
+    
+    drawPixel(imageData, x, y, color);
   }
 }
 
@@ -259,7 +260,6 @@ function drawSolidSegment(
   for (let x = xFrom; x <= xTo; x++) {
     if (!isWallVisible(x, solidWallRanges)) continue;
     
-    const tx = getInterpolationFactor(camera, angles, x);
     const ty = (x - xStart) / (xEnd - xStart);
     const top = startTop + (endTop - startTop) * ty;
     const bottom = startBottom + (endBottom - startBottom) * ty;
@@ -279,14 +279,14 @@ function drawSolidSegment(
 
     if (wallTexture) {
       const texture = textures[wallTexture];
-      const texX = Math.floor(tx * texture.width);
+      const texX = getWallTextureX(camera, seg, x, texture);
       
       for (let y = drawTop; y < drawBottom; y++) {
         const v = (y - top) / (bottom - top);
         const texY = Math.floor(v * texture.height) % texture.height;        
         const color = getTextureColor(texture, texX, texY);
         
-        drawPixel(buffer, x, y, applyBrightness(color, sector.brightness));
+        drawPixel(buffer, x, y, color);
       }
     } else {
       drawVerticalLine(buffer, x, drawTop, drawBottom, wallColor);
@@ -356,7 +356,6 @@ function drawPortalSegment(
     }
 
     const ty = (x - xStart) / (xEnd - xStart);
-    const tx = getInterpolationFactor(camera, angles, x);
 
     let frontTop, frontBottom, backTop, backBottom;
 
@@ -397,51 +396,55 @@ function drawPortalSegment(
     }
 
     if (portalWallType === 'upper' || portalWallType === 'both') {
-      const wallTop = drawTop;
-      const wallBottom = Math.min(drawBottom, Math.max(drawTop, otherTop));
+      const wallTop = portalTop;
+      const wallBottom = otherTop;
+      const visibleTop = Math.max(drawTop, wallTop);
+      const visibleBottom = Math.min(drawBottom, wallBottom);
       const wallTexture = otherSector.wallTexture;
-      if (wallTop < wallBottom) {
+      if (visibleTop < visibleBottom) {
         if (wallTexture) {
           const texture = textures[wallTexture];
-          const texX = Math.floor(tx * texture.width);
-          const yFrom = Math.max(Math.ceil(wallTop), 0);
-          const yTo = Math.min(Math.floor(wallBottom), camera.screen.height);
+          const texX = getWallTextureX(camera, seg, x, texture);
+          const yFrom = Math.max(Math.ceil(visibleTop), 0);
+          const yTo = Math.min(Math.floor(visibleBottom), camera.screen.height);
           
           for (let y = yFrom; y < yTo; y++) {
             const v = (y - wallTop) / (wallBottom - wallTop);
             const texY = Math.floor(v * texture.height) % texture.height;
             const color = getTextureColor(texture, texX, texY);
-            drawPixel(buffer, x, y, applyBrightness(color, otherSector.brightness));
+            drawPixel(buffer, x, y, color);
           }
         } else {
-          drawVerticalLine(buffer, x, Math.floor(wallTop), Math.ceil(wallBottom), otherSector.wallColor!);
+          drawVerticalLine(buffer, x, Math.floor(visibleTop), Math.ceil(visibleBottom), otherSector.wallColor!);
         }
-        upperClip[x] = wallBottom;
+        upperClip[x] = visibleBottom;
       }
     }
 
     if (portalWallType === 'lower' || portalWallType === 'both') {
-      const wallTop = Math.max(drawTop, Math.min(drawBottom, otherBottom));
-      const wallBottom = drawBottom;
+      const wallTop = otherBottom;
+      const wallBottom = portalBottom;
+      const visibleTop = Math.max(drawTop, wallTop);
+      const visibleBottom = Math.min(drawBottom, wallBottom);
       const wallTexture = otherSector.wallTexture;
 
-      if (wallTop < wallBottom) {
+      if (visibleTop < visibleBottom) {
         if (wallTexture) {
           const texture = textures[wallTexture];
-          const texX = Math.floor(tx * texture.width);
-          const yFrom = Math.max(Math.ceil(wallTop), 0);
-          const yTo = Math.min(Math.floor(wallBottom), camera.screen.height);
+          const texX = getWallTextureX(camera, seg, x, texture);
+          const yFrom = Math.max(Math.ceil(visibleTop), 0);
+          const yTo = Math.min(Math.floor(visibleBottom), camera.screen.height);
           
           for (let y = yFrom; y < yTo; y++) {
             const v = (y - wallTop) / (wallBottom - wallTop);
             const texY = Math.floor(v * texture.height) % texture.height;
             const color = getTextureColor(texture, texX, texY);
-            drawPixel(buffer, x, y, applyBrightness(color, otherSector.brightness));
+            drawPixel(buffer, x, y, color);
           }
         } else {
-          drawVerticalLine(buffer, x, Math.floor(wallTop), Math.ceil(wallBottom), otherSector.wallColor!);
+          drawVerticalLine(buffer, x, Math.floor(visibleTop), Math.ceil(visibleBottom), otherSector.wallColor!);
         }
-        lowerClip[x] = wallTop;
+        lowerClip[x] = visibleTop;
       }
     }
 

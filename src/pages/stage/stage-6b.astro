@@ -1,0 +1,150 @@
+---
+import PageLayout from '@app/layouts/PageLayout.astro';
+import InDevelopmentGate from '@app/pages/_components/InDevelopmentGate.astro';
+import Stage from '@app/stages/Stage6b';
+import type { PageMetadata } from '@app/config/pages';
+import { PROJECT_REPO_URL } from '@app/config/repo';
+import { codeToHtml } from 'shiki';
+
+export const metadata: PageMetadata = {
+  title: 'Спрайт предмета',
+  groupTitle: 'Stage 6: Прочее',
+};
+
+const code1 = `
+  health_sprite: {
+    scale: 1,
+    width: 8,
+    height: 8,
+    bitmap: [
+      [0, 0, 0, 1, 1, 0, 0, 0],
+      [0, 0, 0, 1, 1, 0, 0, 0],
+      [0, 0, 0, 1, 1, 0, 0, 0],
+      [1, 1, 1, 1, 1, 1, 1, 1],
+      [1, 1, 1, 1, 1, 1, 1, 1],
+      [0, 0, 0, 1, 1, 0, 0, 0],
+      [0, 0, 0, 1, 1, 0, 0, 0],
+      [0, 0, 0, 1, 1, 0, 0, 0],
+    ],
+    colors: [
+      { r: 0, g: 0, b: 0, a: 0 },
+      { r: 255, g: 80, b: 80, a: 255 },
+    ],
+  }
+`;
+
+const code2 = `
+  const texture = textures.health_sprite;
+  const itemAngularRadius = Math.atan2(item.radius, distance) * 180 / Math.PI;
+  const screenHalfWidth =
+    (itemAngularRadius / camera.fov.degrees) * camera.screen.width;
+
+  const ceilZ = sector.ceilHeight ?? floorZ;
+  const screenBottomY = screenCenterY - (floorZ - camera.z) * projectionScale;
+  const screenCeilY = screenCenterY - (ceilZ - camera.z) * projectionScale;
+
+  const textureRect =
+    scaleTextureToWidth(texture, screenX, screenBottomY, screenHalfWidth * 2);
+  const itemBounds = {
+    x1: textureRect.x1,
+    x2: textureRect.x2,
+    y1: Math.max(textureRect.y1, Math.ceil(screenCeilY)),
+    y2: textureRect.y2,
+  };
+
+  const visibleBounds = fitTextureIntoBounds(itemBounds, screenBounds);
+`;
+
+const code3 = `
+  const textureInnerRect = {
+    x1: textureRect.x1 + 1,
+    x2: textureRect.x2 - 1,
+    y1: textureRect.y1 + 1,
+    y2: textureRect.y2 - 1,
+  };
+  const itemInnerBounds = {
+    x1: itemBounds.x1 + 1,
+    x2: itemBounds.x2 - 1,
+    y1: itemBounds.y1 + 1,
+    y2: itemBounds.y2 - 1,
+  };
+
+  const drawBounds = fitTextureIntoBounds(textureInnerRect, itemInnerBounds);
+  if (!drawBounds) return;
+
+  const visibleDrawBounds = fitTextureIntoBounds(drawBounds, screenBounds);
+  if (!visibleDrawBounds) return;
+
+  const textureWidth = textureInnerRect.x2 - textureInnerRect.x1;
+  const textureHeight = textureInnerRect.y2 - textureInnerRect.y1;
+
+  const tx =
+    Math.floor(((x - textureInnerRect.x1) / textureWidth) * texture.width);
+  const ty =
+    Math.floor(((y - textureInnerRect.y1) / textureHeight) * texture.height);
+  const color = getTextureColor(texture, tx, ty);
+
+  if (color.a === 0) {
+    continue;
+  }
+
+  drawPixel(buffer, x, y, applyBrightness(color, projected.sector.brightness));
+`;
+
+const [code1Html, code2Html, code3Html] = await Promise.all([
+  codeToHtml(code1, { lang: 'ts', theme: 'github-dark' }),
+  codeToHtml(code2, { lang: 'ts', theme: 'github-dark' }),
+  codeToHtml(code3, { lang: 'ts', theme: 'github-dark' }),
+]);
+---
+
+<PageLayout>
+  <InDevelopmentGate />
+  <section class="flex flex-col gap-4">
+    <Stage client:load />
+    <p class="py-2 text">
+      На предыдущем шаге мы уже научились находить прямоугольную область, в которой должен появиться предмет:
+      экранная X-координата берется из угла до предмета, а нижняя граница привязана к высоте пола сектора. Теперь вместо
+      одноцветной заливки растянем внутри этой области простую bitmap-текстуру.
+    </p>
+    <p class="py-2 text">
+      Для аптечки используем <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">textures.health_sprite</code>.
+      Это маленькая сетка 8 на 8. Нулевой цвет прозрачный, единичный цвет красный:
+    </p>
+    <div set:html={code1Html} />
+    <p class="py-2 text">
+      <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">item.radius</code> остается размером в мире, тем же радиусом,
+      которым предмет отмечен на карте. Поэтому сначала переводим этот радиус в угловой размер через
+      <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">Math.atan2(radius, distance)</code>, а затем в экранные пиксели.
+      Если предмет занимает почти ширину коридора в мире, близко к камере он тоже будет занимать большую область на экране.
+      Даже когда камера оказывается внутри радиуса предмета, дистанция для масштаба все равно считается до центра окружности:
+      так спрайт не переключается в отдельный режим и плавно растет по мере приближения к центру.
+      Высоту не берем из сектора: она должна сохранять пропорции самой текстуры. Для квадратной аптечки 8 на 8 высота будет равна ширине,
+      а для вытянутого спрайта изменится по соотношению
+      <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">texture.height / texture.width</code>.
+    </p>
+    <div set:html={code2Html} />
+    <p class="py-2 text">
+      При рисовании каждого пикселя внутри полученного прямоугольника переводим его локальную позицию в координаты текстуры.
+      Если texel прозрачный, ничего не пишем в буфер. Если texel видимый, затемняем его яркостью сектора и рисуем.
+      Голубая рамка показывает bounding этой текстуры: bitmap прижимается к левому и правому краю внутренней области,
+      а высота вычисляется из пропорции <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">texture.height / texture.width</code>.
+      Поэтому спрайт не растягивается до верхней границы, если его собственные пропорции этого не требуют.
+      Если raw-bounding спрайта оказывается шире или выше canvas, его размер не сжимается до экрана.
+      Цикл рисования обрезается одновременно по экрану и по item bounding, но координаты текстуры продолжают считаться
+      от исходных <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">raw</code>-границ, поэтому видимая часть не растягивается.
+      Верхняя граница дополнительно обрезается проекцией потолка текущего сектора только в видимой области рисования, так что
+      полная высота спроецированного item не уменьшается, но спрайт не может залезть выше
+      <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">ceilHeight</code>.
+    </p>
+    <div set:html={code3Html} />
+    <p class="py-2 text">
+      Пока все предметы рисуются одной текстурой аптечки. Дальше можно будет выбирать текстуру по
+      <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">item.type</code> или хранить имя спрайта прямо в
+      <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">Item</code>.
+    </p>
+    <p class="py-2 text">
+      <a href={`${PROJECT_REPO_URL}/stages/Stage6b/render25d.ts`} target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 text-blue-600 hover:text-blue-800 hover:underline transition-colors" >Реализация шага на github</a>
+    </p>
+  </section>
+</PageLayout>

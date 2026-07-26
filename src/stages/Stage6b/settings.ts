@@ -77,7 +77,7 @@ const stepSector4: Sector = {
     {
       x: startX + 50 * 4.5,
       y: startY + 25,
-      radius: 10,
+      radius: 5,
       type: 'health'
     }
   ]

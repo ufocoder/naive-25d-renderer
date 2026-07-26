@@ -97,7 +97,7 @@ export function isPathActive(pathname: string, href: string) {
 export function getAllPages() {
   return Object.entries(pageModules)
     .filter((entry): entry is [string, PageModule & { metadata: PageMetadata }] =>
-      Boolean(entry[1].metadata),
+      Boolean(entry[1]?.metadata),
     )
     .map(([path, page]) => ({
       href: pagePathToHref(path),

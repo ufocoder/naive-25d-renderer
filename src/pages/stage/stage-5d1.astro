@@ -1,0 +1,93 @@
+---
+import PageLayout from '@app/layouts/PageLayout.astro';
+import Stage from '@app/pages/stage/_islands/Stage5d1';
+import type { PageMetadata } from '@app/config/pages';
+import { codeToHtml } from 'shiki';
+import { PROJECT_REPO_URL } from '@app/config/repo';
+
+export const metadata: PageMetadata = {
+  title: 'Текстурирование портальных стен',
+  groupTitle: 'Stage 5: Текстурирование',
+};
+
+const code1 = `
+  const stepSector1: Sector = {
+    floorHeight: 0,
+    ceilHeight: 10_000,
+    wallTexture: "wall",
+    // ..
+  };
+
+  const stepSector2: Sector = {
+    floorHeight: 750,
+    ceilHeight: 10_000,
+    wallTexture: "wall",
+    // ..
+  };
+`;
+
+const code2 = `
+  const wallTop = portalTop;
+  const wallBottom = otherTop;
+  const visibleTop = Math.max(drawTop, wallTop);
+  const visibleBottom = Math.min(drawBottom, wallBottom);
+`;
+
+const code3 = `
+  const texX = getWallTextureX(camera, seg, x, texture);
+
+  for (let y = yFrom; y < yTo; y++) {
+    const v = (y - wallTop) / (wallBottom - wallTop);
+    const texY = Math.floor(v * texture.height) % texture.height;
+    const color = getTextureColor(texture, texX, texY);
+
+    drawPixel(buffer, x, y, color);
+  }
+`;
+
+const [code1Html, code2Html, code3Html] = await Promise.all([
+  codeToHtml(code1, { lang: 'ts', theme: 'github-dark' }),
+  codeToHtml(code2, { lang: 'ts', theme: 'github-dark' }),
+  codeToHtml(code3, { lang: 'ts', theme: 'github-dark' }),
+]);
+---
+
+<PageLayout>
+  <section class="flex flex-col gap-4">
+    <Stage client:load />
+    <p class="py-2 text">
+      Этот шаг берет рендер из предыдущего этапа
+      <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">stage-5d</code>: обычные стены, пол и потолок уже
+      текстурируются. Но карту используем из следующего этапа про освещение, потому что там есть цепочка секторов с
+      разной высотой пола. На такой карте хорошо видно, что портал тоже может содержать вертикальную стенку.
+    </p>
+    <p class="py-2 text">
+      У каждого сектора есть высота пола, высота потолка и имя wall-текстуры. Из-за разных
+      <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">floorHeight</code> между соседними секторами появляются
+      нижние портальные стенки, которые тоже нужно рисовать как стены, а не как одноцветную заливку.
+    </p>
+    <div set:html={code1Html} />
+    <p class="py-2 text">
+      Важно разделять настоящие границы стенки и видимые границы. Настоящие
+      <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">wallTop</code>/<code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">wallBottom</code>
+      считаются из высот двух секторов. Экран, потолок, пол и уже нарисованные ближние поверхности только обрезают
+      <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">visibleTop</code>/<code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">visibleBottom</code>.
+      Поэтому текстура не растягивается при clipping.
+    </p>
+    <div set:html={code2Html} />
+    <p class="py-2 text">
+      Горизонтальную координату текстуры берем не из экранной доли стены, а из точки пересечения луча со стеной в мире.
+      Так bitmap закреплен на самом <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">seg</code> и не плывет при движении камеры.
+      Вертикальная координата считается относительно полных границ портальной стенки.
+    </p>
+    <div set:html={code3Html} />
+    <p class="py-2 text">
+      Пол и потолок остаются такими же, как в прошлом шаге: они уже текстурируются по мировой точке на горизонтальной
+      плоскости. Новая часть здесь только одна: верхняя и нижняя стенки портала теперь используют такой же устойчивый
+      подход к текстуре, как в <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">stage-6a</code>.
+    </p>
+    <p class="py-2 text">
+      <a href={`${PROJECT_REPO_URL}/stages/Stage5d1/render25d.ts`} target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 text-blue-600 hover:text-blue-800 hover:underline transition-colors" >Реализация шага на github</a>
+    </p>
+  </section>
+</PageLayout>

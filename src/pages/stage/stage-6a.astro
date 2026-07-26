@@ -3,16 +3,149 @@ import PageLayout from '@app/layouts/PageLayout.astro';
 import InDevelopmentGate from '@app/pages/_components/InDevelopmentGate.astro';
 import Stage from '@app/stages/Stage6a';
 import type { PageMetadata } from '@app/config/pages';
+import { PROJECT_REPO_URL } from '@app/config/repo';
+import { codeToHtml } from 'shiki';
 
 export const metadata: PageMetadata = {
   title: 'Предметы',
   groupTitle: 'Stage 6: Прочее',
 };
+
+const code1 = `
+  interface Sector {
+    // ..
+    items?: Item[];
+  }
+
+  interface Item {
+    type: string;
+    x: number;
+    y: number;
+    z?: number;
+    radius: number;
+    sprite?: {
+      width: number;
+      height: number;
+      colors: Color[];
+      bitmap: number[][];
+    };
+  }
+`;
+
+const code2 = `
+  const stepSector2: Sector = {
+    // ..
+    floorHeight: 750,
+    ceilHeight: 10_000,
+    items: [
+      {
+        x: startX + 50 * 1.5,
+        y: startY + 25,
+        radius: 10,
+        type: 'health'
+      }
+    ]
+  };
+`;
+
+const code3 = `
+  const dx = item.x - camera.x;
+  const dy = item.y - camera.y;
+  const forwardDistance = dx * camera.angle.cos + dy * camera.angle.sin;
+  const distance = Math.hypot(dx, dy);
+
+  const angleToItem = Math.atan2(dy, dx) * 180 / Math.PI;
+  const relativeAngle = angleToItem - camera.angle.degrees;
+  const screenX =
+    (relativeAngle / camera.fov.degrees) * camera.screen.width
+    + camera.screen.width / 2;
+`;
+
+const code4 = `
+  const itemAngularRadius = Math.atan2(item.radius, distance) * 180 / Math.PI;
+  const screenHalfWidth =
+    (itemAngularRadius / camera.fov.degrees) * camera.screen.width;
+
+  const projectionScale = 1 / Math.max(forwardDistance, 1);
+  const floorZ = (sector.floorHeight ?? 0) + (item.z ?? 0);
+  const ceilZ = sector.ceilHeight ?? floorZ;
+
+  const screenBottomY = screenCenterY - (floorZ - camera.z) * projectionScale;
+  const screenTopY = screenCenterY - (ceilZ - camera.z) * projectionScale;
+`;
+
+const code5 = `
+  const x1 = Math.max(0, Math.floor(screenX - screenHalfWidth));
+  const x2 = Math.min(camera.screen.width, Math.ceil(screenX + screenHalfWidth));
+  const y1 = Math.max(0, Math.floor(screenTopY));
+  const y2 = Math.min(camera.screen.height, Math.ceil(screenBottomY));
+`;
+
+const [code1Html, code2Html, code3Html, code4Html, code5Html] = await Promise.all([
+  codeToHtml(code1, { lang: 'ts', theme: 'github-dark' }),
+  codeToHtml(code2, { lang: 'ts', theme: 'github-dark' }),
+  codeToHtml(code3, { lang: 'ts', theme: 'github-dark' }),
+  codeToHtml(code4, { lang: 'ts', theme: 'github-dark' }),
+  codeToHtml(code5, { lang: 'ts', theme: 'github-dark' }),
+]);
 ---
 
 <PageLayout>
   <InDevelopmentGate />
   <section class="flex flex-col gap-4">
     <Stage client:load />
+    <p class="py-2 text">
+      На этом шаге добавим к сектору простые предметы. Пока это не полноценные спрайты с прозрачностью и текстурой, а
+      отладочные прямоугольные области: они показывают, где на 2.5D-экране будет рисоваться предмет. Важно, что предмет
+      принадлежит конкретному сектору, поэтому его вертикальные границы рассчитываются с учетом высоты пола и потолка
+      этого сектора.
+    </p>
+    <p class="py-2 text">
+      В описание сектора добавляем массив <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">items</code>.
+      Каждый <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">Item</code> хранит позицию в плоскости карты,
+      необязательное смещение по высоте, радиус и тип. Поле <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">sprite</code>
+      оставлено для следующего шага: позже вместо одноцветного прямоугольника можно будет читать пиксели из bitmap.
+    </p>
+    <div set:html={code1Html} />
+    <p class="py-2 text">
+      Предметы задаются внутри того сектора, на полу которого они стоят. Например, аптечка лежит во втором секторе:
+    </p>
+    <div set:html={code2Html} />
+    <p class="py-2 text">
+      Во время отрисовки кадра рендерер обходит BSP-дерево и встречает сегменты разных секторов. Для каждого сектора,
+      у которого есть <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">items</code>, мы один раз вычисляем экранные границы всех его предметов.
+      Сектор запоминается в наборе уже обработанных, чтобы один и тот же предмет не попал в список несколько раз через
+      разные стены этого сектора.
+    </p>
+    <p class="py-2 text">
+      Сначала предмет переводится в координаты относительно камеры. Скалярное произведение с направлением взгляда дает
+      расстояние вперед, а угол до предмета превращается в координату <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">screenX</code>.
+      Если предмет находится за камерой или его угловая область не пересекает FOV, он не рисуется.
+    </p>
+    <div set:html={code3Html} />
+    <p class="py-2 text">
+      Горизонтальная ширина берется из углового радиуса предмета. Чем ближе предмет, тем больше
+      <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">Math.atan2(radius, distance)</code>, а значит шире его область на экране.
+      Вертикальные границы считаются отдельно: низ прямоугольника привязан к полу сектора плюс
+      <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">item.z</code>, верх - к потолку сектора.
+    </p>
+    <div set:html={code4Html} />
+    <p class="py-2 text">
+      В итоге у предмета получается прямоугольник в экранных координатах:
+      <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">x1</code>,
+      <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">x2</code>,
+      <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">y1</code> и
+      <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">y2</code>.
+      Эти границы обрезаются по размеру canvas, а пустые прямоугольники отбрасываются.
+    </p>
+    <div set:html={code5Html} />
+    <p class="py-2 text">
+      После обхода BSP все найденные предметные области сортируются по расстоянию от дальних к ближним и рисуются поверх
+      геометрии. Сейчас цвет выбирается по <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">type</code> предмета и затемняется яркостью сектора.
+      На следующем шаге этот прямоугольник станет рамкой, внутри которой можно будет выбирать пиксели настоящего спрайта.
+    </p>
+    <p class="py-2 text">
+      <a href={`${PROJECT_REPO_URL}/stages/Stage6a/render25d.ts`} target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 text-blue-600 hover:text-blue-800 hover:underline transition-colors" >Реализация шага на github</a>
+    </p>
   </section>
 </PageLayout>

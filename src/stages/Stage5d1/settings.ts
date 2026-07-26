@@ -31,7 +31,7 @@ const stepSector1: Sector = {
   ceilTexture: "ceil",
   wallTexture: "wall",
   brightness: 1.0,
-  segs: [],
+  segs: []
 };
 
 const stepSector2: Sector = {
@@ -42,15 +42,7 @@ const stepSector2: Sector = {
   ceilTexture: "ceil",
   wallTexture: "wall",
   brightness: 0.8,
-  segs: [],
-  items: [
-    {
-      x: startX + 50 * 1.5,
-      y: startY + 25,
-      radius: 20,
-      type: 'health'
-    }
-  ]
+  segs: []
 };
 
 const stepSector3: Sector = {
@@ -72,15 +64,7 @@ const stepSector4: Sector = {
   ceilTexture: "ceil",
   wallTexture: "wall",
   brightness: 0.4,
-  segs: [],
-  items: [
-    {
-      x: startX + 50 * 4.5,
-      y: startY + 25,
-      radius: 10,
-      type: 'health'
-    }
-  ]
+  segs: []
 };
 
 const stepSector5: Sector = {
@@ -135,13 +119,7 @@ const level: Level = {
     ...stepSegs4,
     ...stepSegs5
   ],
-  sectors: [
-    stepSector1,
-    stepSector2,
-    stepSector3,
-    stepSector4,
-    stepSector5
-  ]
+  sectors: []
 };
 
 const settings: Settings = {

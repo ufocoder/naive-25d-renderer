@@ -82,7 +82,7 @@ interface Camera {
   }
 }
 
-interface Item extends Linedef {
+interface Item {
   type: string;
   x: number;
   y: number;

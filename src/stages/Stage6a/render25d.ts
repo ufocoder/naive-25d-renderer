@@ -3,7 +3,7 @@ import { getPointSide } from "@app/stages/Stage3b/bsp/geometry";
 import { traverseBSPTree } from "@app/stages/Stage3b/bsp/traverse";
 import type { BSPLeaf, BSPNode } from "@app/stages/Stage3b/bsp/typings";
 import { calculateIntersectionAngles, projectSegX, projectSegY, type IntersectionAngles } from "./projection";
-import { getTextureColor, textures, type Color } from "../Stage5b/textures";
+import { getTextureColor, textures, type Color, type Texture } from "./textures";
 
 function isPortal(seg: Seg): boolean {
   return Boolean(seg.isTwoSide && seg.backSector && seg.backSector !== seg.frontSector);
@@ -105,24 +105,16 @@ function createSolidWallRanges(camera: Camera) {
   return ranges;
 }
 
-function drawVisSprite(
+function drawProjectedItem(
     buffer: ImageData,
-    vsprite: VisSprite
+    projected: ProjectedItem
 ): void {
-    const { item, x1, x2, y1, y2, distance } = vsprite;
+    const { item, x1, x2, y1, y2, distance } = projected;
     
     if (distance < 0.1 || x1 >= x2 || y1 >= y2) return;
-    
-    // Выбираем цвет в зависимости от типа предмета
-    let color: Color;
-    switch (item.type) {
-        case 'health': color = { r: 255, g: 0, b: 0 }; break;
-        case 'weapon': color = { r: 255, g: 255, b: 0 }; break;
-        case 'ammo': color = { r: 255, g: 165, b: 0 }; break;
-        default: color = { r: 255, g: 255, b: 255 };
-    }
-    
-    // Рисуем прямоугольник
+
+    const color = applyBrightness(getItemColor(item), projected.sector.brightness);
+
     for (let x = x1; x < x2; x++) {
         for (let y = y1; y < y2; y++) {
             drawPixel(buffer, x, y, color);
@@ -130,17 +122,48 @@ function drawVisSprite(
     }
 }
 
-function getInterpolationFactor(
-  camera: Camera,
-  angles: IntersectionAngles,
-  screenX: number,
-): number {
-  const fov = camera.fov.degrees;
-  const screenWidth = camera.screen.width;
-  const angle = angles.cameraFrom + (screenX / screenWidth) * fov;
-  const t = (angle - angles.linedefFrom) / (angles.linedefTo - angles.linedefFrom);
-  
-  return Math.max(0, Math.min(1, t));
+function getItemColor(item: Item): Color {
+  switch (item.type) {
+    case 'health':
+      return { r: 255, g: 80, b: 80 };
+    case 'weapon':
+      return { r: 255, g: 220, b: 70 };
+    case 'ammo':
+      return { r: 255, g: 165, b: 0 };
+    default:
+      return { r: 255, g: 255, b: 255 };
+  }
+}
+
+function cross(ax: number, ay: number, bx: number, by: number): number {
+  return ax * by - ay * bx;
+}
+
+function getWallTextureX(camera: Camera, seg: Seg, screenX: number, texture: Texture): number {
+  const dirX = camera.angle.cos;
+  const dirY = camera.angle.sin;
+  const planeLength = Math.tan(camera.fov.radians / 2);
+  const planeX = -dirY * planeLength;
+  const planeY = dirX * planeLength;
+  const t = screenX / camera.screen.width;
+  const rayDirX = dirX + planeX * (2 * t - 1);
+  const rayDirY = dirY + planeY * (2 * t - 1);
+
+  const segX = seg.end.x - seg.start.x;
+  const segY = seg.end.y - seg.start.y;
+  const denominator = cross(rayDirX, rayDirY, segX, segY);
+
+  if (Math.abs(denominator) < 0.001) {
+    return 0;
+  }
+
+  const toSegX = seg.start.x - camera.x;
+  const toSegY = seg.start.y - camera.y;
+  const segFactor = cross(toSegX, toSegY, rayDirX, rayDirY) / denominator;
+  const segLength = Math.hypot(segX, segY);
+  const worldDistanceOnWall = segFactor * segLength;
+
+  return Math.floor((worldDistanceOnWall / texture.scale) * texture.width);
 }
 
 function applyBrightness(color: Color, brightness: number = 1): Color {
@@ -284,7 +307,6 @@ function drawSolidSegment(
   for (let x = xFrom; x <= xTo; x++) {
     if (!isWallVisible(x, solidWallRanges)) continue;
     
-    const tx = getInterpolationFactor(camera, angles, x);
     const ty = (x - xStart) / (xEnd - xStart);
     const top = startTop + (endTop - startTop) * ty;
     const bottom = startBottom + (endBottom - startBottom) * ty;
@@ -304,7 +326,7 @@ function drawSolidSegment(
 
     if (wallTexture) {
       const texture = textures[wallTexture];
-      const texX = Math.floor(tx * texture.width);
+      const texX = getWallTextureX(camera, seg, x, texture);
       
       for (let y = drawTop; y < drawBottom; y++) {
         const v = (y - top) / (bottom - top);
@@ -381,8 +403,6 @@ function drawPortalSegment(
     }
 
     const ty = (x - xStart) / (xEnd - xStart);
-    const tx = getInterpolationFactor(camera, angles, x);
-
     let frontTop, frontBottom, backTop, backBottom;
 
     if (Math.abs(xEnd - xStart) < 0.001) {
@@ -422,51 +442,55 @@ function drawPortalSegment(
     }
 
     if (portalWallType === 'upper' || portalWallType === 'both') {
-      const wallTop = drawTop;
-      const wallBottom = Math.min(drawBottom, Math.max(drawTop, otherTop));
+      const wallTop = portalTop;
+      const wallBottom = otherTop;
+      const visibleTop = Math.max(drawTop, wallTop);
+      const visibleBottom = Math.min(drawBottom, wallBottom);
       const wallTexture = otherSector.wallTexture;
-      if (wallTop < wallBottom) {
+      if (visibleTop < visibleBottom) {
         if (wallTexture) {
           const texture = textures[wallTexture];
-          const texX = Math.floor(tx * texture.width);
-          const yFrom = Math.max(drawTop, 0);
-          const yTo = Math.min(drawBottom, camera.screen.height);
+          const texX = getWallTextureX(camera, seg, x, texture);
+          const yFrom = Math.max(Math.ceil(visibleTop), 0);
+          const yTo = Math.min(Math.floor(visibleBottom), camera.screen.height);
           
           for (let y = yFrom; y < yTo; y++) {
-            const v = (y - portalTop) / (portalBottom - portalTop);
+            const v = (y - wallTop) / (wallBottom - wallTop);
             const texY = Math.floor(v * texture.height) % texture.height;
             const color = getTextureColor(texture, texX, texY);
             drawPixel(buffer, x, y, applyBrightness(color, otherSector.brightness));
           }
         } else {
-          drawVerticalLine(buffer, x, Math.floor(wallTop), Math.ceil(wallBottom), otherSector.wallColor!);
+          drawVerticalLine(buffer, x, Math.floor(visibleTop), Math.ceil(visibleBottom), otherSector.wallColor!);
         }
-        upperClip[x] = wallBottom;
+        upperClip[x] = visibleBottom;
       }
     }
 
     if (portalWallType === 'lower' || portalWallType === 'both') {
-      const wallTop = Math.max(drawTop, Math.min(drawBottom, otherBottom));
-      const wallBottom = drawBottom;
+      const wallTop = otherBottom;
+      const wallBottom = portalBottom;
+      const visibleTop = Math.max(drawTop, wallTop);
+      const visibleBottom = Math.min(drawBottom, wallBottom);
       const wallTexture = otherSector.wallTexture;
 
-      if (wallTop < wallBottom) {
+      if (visibleTop < visibleBottom) {
         if (wallTexture) {
           const texture = textures[wallTexture];
-          const texX = Math.floor(tx * texture.width);
-          const yFrom = Math.max(drawTop, 0);
-          const yTo = Math.min(drawBottom, camera.screen.height);
+          const texX = getWallTextureX(camera, seg, x, texture);
+          const yFrom = Math.max(Math.ceil(visibleTop), 0);
+          const yTo = Math.min(Math.floor(visibleBottom), camera.screen.height);
           
           for (let y = yFrom; y < yTo; y++) {
-            const v = (y - portalTop) / (portalBottom - portalTop);
+            const v = (y - wallTop) / (wallBottom - wallTop);
             const texY = Math.floor(v * texture.height) % texture.height;
             const color = getTextureColor(texture, texX, texY);
             drawPixel(buffer, x, y, applyBrightness(color, otherSector.brightness));
           }
         } else {
-          drawVerticalLine(buffer, x, Math.floor(wallTop), Math.ceil(wallBottom), otherSector.wallColor!);
+          drawVerticalLine(buffer, x, Math.floor(visibleTop), Math.ceil(visibleBottom), otherSector.wallColor!);
         }
-        lowerClip[x] = wallTop;
+        lowerClip[x] = visibleTop;
       }
     }
 
@@ -484,24 +508,25 @@ function drawPortalSegment(
   }
 }
 
-interface VisSprite {
+interface ProjectedItem {
     item: Item;
     sector: Sector;
     x1: number;
     x2: number;
-    y1: number;  // добавить
-    y2: number;  // добавить
+    y1: number;
+    y2: number;
     distance: number;
     floorHeight: number;
     screenX: number;
 }
 
-function calculateItemScreenX(camera: Camera, item: Item): { screenX: number; distance: number; relativeAngle: number } | null {
+function calculateItemScreenX(camera: Camera, item: Item): { screenX: number; distance: number; screenHalfWidth: number } | null {
     const dx = item.x - camera.x;
     const dy = item.y - camera.y;
-    const distance = Math.sqrt(dx * dx + dy * dy);
+    const forwardDistance = dx * camera.angle.cos + dy * camera.angle.sin;
+    const distance = Math.hypot(dx, dy);
     
-    if (distance < 0.1) return null;
+    if (forwardDistance < 0.1 || distance < 0.1) return null;
     
     const angleToItem = Math.atan2(dy, dx) * 180 / Math.PI;
     let relativeAngle = angleToItem - camera.angle.degrees;
@@ -510,41 +535,42 @@ function calculateItemScreenX(camera: Camera, item: Item): { screenX: number; di
     while (relativeAngle < -180) relativeAngle += 360;
     
     const halfFov = camera.fov.degrees / 2;
-    if (Math.abs(relativeAngle) > halfFov + 10) return null;
+    const radius = item.radius ?? 10;
+    const itemAngularRadius = Math.atan2(radius, distance) * 180 / Math.PI;
+    if (Math.abs(relativeAngle) > halfFov + itemAngularRadius) return null;
     
     const screenX = (relativeAngle / camera.fov.degrees) * camera.screen.width + camera.screen.width / 2;
-    if (screenX < 0 || screenX >= camera.screen.width) return null;
+    const screenHalfWidth = (itemAngularRadius / camera.fov.degrees) * camera.screen.width;
     
-    return { screenX, distance, relativeAngle };
+    return { screenX, distance: forwardDistance, screenHalfWidth };
 }
 
-// Добавьте новую функцию для вычисления полных границ спрайта
-function calculateItemBounds(camera: Camera, item: Item, sector: Sector): VisSprite | null {
+function calculateItemBounds(camera: Camera, item: Item, sector: Sector): ProjectedItem | null {
     const result = calculateItemScreenX(camera, item);
-    if (!result) return null;
+
+    if (!result) {
+      return null;
+    }
     
-    const { screenX, distance } = result;
+    const { screenX, distance, screenHalfWidth } = result;
     
-    // Размер спрайта на экране (как в drawSolidSegment)
-    const scale = camera.screen.height / distance;
-    const spriteWorldSize = 40;
-    const screenSpriteSize = scale * spriteWorldSize * 0.5;
-    
-    // Проекция Y (как для верха и низа стены)
-    const itemBottomZ = (sector.floorHeight || 0) + (item.z || 0);
-    const itemTopZ = itemBottomZ + spriteWorldSize;
-    const cameraZ = camera.z || 0;
-    
-    // Формула из projectSegY
-    const viewCenter = camera.screen.height / 2;
-    const screenBottomY = viewCenter - (itemBottomZ - cameraZ) * scale;
-    const screenTopY = viewCenter - (itemTopZ - cameraZ) * scale;
-    
-    const x1 = Math.max(0, Math.floor(screenX - screenSpriteSize));
-    const x2 = Math.min(camera.screen.width, Math.ceil(screenX + screenSpriteSize));
+    const projectionScale = 1 / Math.max(distance, 1);
+    const screenCenterY = camera.screen.height / 2;
+    const cameraZ = camera.z ?? 0;
+    const floorZ = (sector.floorHeight ?? 0) + (item.z ?? 0);
+    const ceilZ = sector.ceilHeight ?? floorZ;
+    const screenBottomY = screenCenterY - (floorZ - cameraZ) * projectionScale;
+    const screenTopY = screenCenterY - (ceilZ - cameraZ) * projectionScale;
+
+    const x1 = Math.max(0, Math.floor(screenX - screenHalfWidth));
+    const x2 = Math.min(camera.screen.width, Math.ceil(screenX + screenHalfWidth));
     const y1 = Math.max(0, Math.floor(screenTopY));
     const y2 = Math.min(camera.screen.height, Math.ceil(screenBottomY));
-    
+
+    if (x1 >= x2 || y1 >= y2) {
+      return null;
+    }
+
     return {
         item,
         sector,
@@ -556,6 +582,36 @@ function calculateItemBounds(camera: Camera, item: Item, sector: Sector): VisSpr
         floorHeight: sector.floorHeight ?? 0,
         screenX
     };
+}
+
+function getSectorKey(sector: Sector) {
+  return sector.id ?? sector;
+}
+
+function collectSectorItems(
+  projectedItems: ProjectedItem[],
+  camera: Camera,
+  sector: Sector | undefined,
+  collectedSectors: Set<number | Sector>,
+) {
+  if (!sector?.items?.length) {
+    return;
+  }
+
+  const key = getSectorKey(sector);
+
+  if (collectedSectors.has(key)) {
+    return;
+  }
+
+  collectedSectors.add(key);
+
+  for (const item of sector.items) {
+    const projected = calculateItemBounds(camera, item, sector);
+    if (projected) {
+      projectedItems.push(projected);
+    }
+  }
 }
 
 
@@ -577,7 +633,8 @@ export function createRender25d({ bspTree }: { bspTree: BSPNode }) {
     const wallRanges = createSolidWallRanges(camera);
     const upperClip = new Array(camera.screen.width).fill(-1);
     const lowerClip = new Array(camera.screen.width).fill(camera.screen.height);
-    const vissprites: VisSprite[] = [];
+    const projectedItems: ProjectedItem[] = [];
+    const collectedItemSectors = new Set<number | Sector>();
 
     traverseBSPTree(bspTree, camera, (bspNode: BSPLeaf) => {
       for (const seg of bspNode.segs) {
@@ -593,22 +650,13 @@ export function createRender25d({ bspTree }: { bspTree: BSPNode }) {
           drawSolidSegment(buffer, camera, seg, angles, wallRanges, upperClip, lowerClip);
         }
 
-        if (seg.frontSector?.items) {
-          for (const item of seg.frontSector.items) {
-            const vsprite = calculateItemBounds(camera, item, seg.frontSector);
-            if (vsprite) {
-                vissprites.push(vsprite);
-            }
-          }
-        }
+        collectSectorItems(projectedItems, camera, seg.frontSector, collectedItemSectors);
       }
     });
 
-    vissprites.sort((a, b) => b.distance - a.distance);
-
-    for (const vsprite of vissprites) {
-      drawVisSprite(buffer, vsprite);
-    }
+    projectedItems
+      .sort((a, b) => b.distance - a.distance)
+      .forEach((projected) => drawProjectedItem(buffer, projected));
 
     ctx.putImageData(buffer, 0, 0);
   };
