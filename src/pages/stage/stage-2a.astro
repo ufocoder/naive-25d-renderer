@@ -10,17 +10,13 @@ export const metadata: PageMetadata = {
   groupTitle: 'Stage 2: Отрисовка секторов',
 };
 
-const codeSector = `
-  interface Sector {
+const codeSector = `  interface Sector {
     segs: Seg[];
   }
 
-  interface Seg extends Linedef {}
+  interface Seg extends Linedef {}`;
 
-`;
-
-const codeLinedefs = `
-  function render25d(
+const codeLinedefs = `  function render25d(
     ctx: CanvasRenderingContext2D,
     settings: Settings,
   ) {
@@ -29,12 +25,9 @@ const codeLinedefs = `
 
     settings.level.linedefs.forEach(function(linedef, index) {
       const projection = projectLinedef(camera, linedef);
-      // ..
+      // ..`;
 
-`;
-
-const codeSectors = `
-  function render25d(
+const codeSectors = `  function render25d(
     ctx: CanvasRenderingContext2D,
     settings: Settings,
   ) {
@@ -44,13 +37,11 @@ const codeSectors = `
     settings.level.sectors!.forEach(function(sector) {
       sector.segs.forEach(function(seg, index) {
         const projection = projectLinedef(camera, seg);
-        // ...
+        // ...`;
 
-`;
-
-const codeSectorHtml = await codeToHtml(codeSector, { lang: 'ts', theme: 'github-dark' });
-const codeLinedefsHtml = await codeToHtml(codeLinedefs, { lang: 'ts', theme: 'github-dark' });
-const codeSectorsHtml = await codeToHtml(codeSectors, { lang: 'ts', theme: 'github-dark' });
+const codeSectorHtml = await codeToHtml(codeSector, { lang: 'ts', theme: 'github-light' });
+const codeLinedefsHtml = await codeToHtml(codeLinedefs, { lang: 'ts', theme: 'github-light' });
+const codeSectorsHtml = await codeToHtml(codeSectors, { lang: 'ts', theme: 'github-light' });
 ---
 
 <PageLayout>

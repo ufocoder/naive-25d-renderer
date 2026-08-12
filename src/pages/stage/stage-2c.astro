@@ -10,17 +10,13 @@ export const metadata: PageMetadata = {
   groupTitle: 'Stage 2: Отрисовка секторов',
 };
 
-const code1 = `
-  interface Sector {
+const code1 = `  interface Sector {
     segs: Seg[];
     ceilHeight: number;
     floorHeight: number;
-  }
+  }`;
 
-`;
-
-const code2 = `
-  function projectLinedef(
+const code2 = `  function projectLinedef(
     camera: Camera, 
     sector: Sector,
     linedef: Linedef
@@ -38,12 +34,10 @@ const code2 = `
         bottomY: horizontalCenter + (sector.floorHeight! * endScale / distanceToCamera)
       }
     };
-  }
+  }`;
 
-`;
-
-const code1Html = await codeToHtml(code1, { lang: 'ts', theme: 'github-dark' });
-const code2Html = await codeToHtml(code2, { lang: 'ts', theme: 'github-dark' });
+const code1Html = await codeToHtml(code1, { lang: 'ts', theme: 'github-light' });
+const code2Html = await codeToHtml(code2, { lang: 'ts', theme: 'github-light' });
 ---
 
 <PageLayout>

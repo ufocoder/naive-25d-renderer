@@ -11,8 +11,7 @@ export const metadata: PageMetadata = {
   groupTitle: 'Stage 6: Прочее',
 };
 
-const code1 = `
-  health_sprite: {
+const code1 = `  health_sprite: {
     scale: 1,
     width: 8,
     height: 8,
@@ -30,11 +29,9 @@ const code1 = `
       { r: 0, g: 0, b: 0, a: 0 },
       { r: 255, g: 80, b: 80, a: 255 },
     ],
-  }
-`;
+  }`;
 
-const code2 = `
-  const texture = textures.health_sprite;
+const code2 = `  const texture = textures.health_sprite;
   const itemAngularRadius = Math.atan2(item.radius, distance) * 180 / Math.PI;
   const screenHalfWidth =
     (itemAngularRadius / camera.fov.degrees) * camera.screen.width;
@@ -52,11 +49,9 @@ const code2 = `
     y2: textureRect.y2,
   };
 
-  const visibleBounds = fitTextureIntoBounds(itemBounds, screenBounds);
-`;
+  const visibleBounds = fitTextureIntoBounds(itemBounds, screenBounds);`;
 
-const code3 = `
-  const textureInnerRect = {
+const code3 = `  const textureInnerRect = {
     x1: textureRect.x1 + 1,
     x2: textureRect.x2 - 1,
     y1: textureRect.y1 + 1,
@@ -88,13 +83,12 @@ const code3 = `
     continue;
   }
 
-  drawPixel(buffer, x, y, applyBrightness(color, projected.sector.brightness));
-`;
+  drawPixel(buffer, x, y, applyBrightness(color, projected.sector.brightness));`;
 
 const [code1Html, code2Html, code3Html] = await Promise.all([
-  codeToHtml(code1, { lang: 'ts', theme: 'github-dark' }),
-  codeToHtml(code2, { lang: 'ts', theme: 'github-dark' }),
-  codeToHtml(code3, { lang: 'ts', theme: 'github-dark' }),
+  codeToHtml(code1, { lang: 'ts', theme: 'github-light' }),
+  codeToHtml(code2, { lang: 'ts', theme: 'github-light' }),
+  codeToHtml(code3, { lang: 'ts', theme: 'github-light' }),
 ]);
 ---
 

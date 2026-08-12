@@ -12,8 +12,7 @@ export const metadata: PageMetadata = {
   groupTitle: 'Stage 1: Отрисовка стен',
 };
 
-const code1 = `
-  function render25d(ctx: CanvasRenderingContext2D, settings: Settings) {
+const code1 = `  function render25d(ctx: CanvasRenderingContext2D, settings: Settings) {
     const camera = settings.camera;
     for (const linedef of settings.level.linedefs) {
       for (const vertex of [linedef.start, linedef.end]) {
@@ -25,13 +24,10 @@ const code1 = `
         ctx.fillRect(screenX, 0, 1, screen.height);
       }
     }
-  }
-
-`;
+  }`;
 
 
-const code2 = `
-  function projectVertexToScreen(vertex: Vertex, camera: Camera) {
+const code2 = `  function projectVertexToScreen(vertex: Vertex, camera: Camera) {
     const vertexAngle = toAngle(vertex, camera).degrees;
     const cameraAngleFrom = camera.angle.degrees - camera.fov.degrees / 2;
     const cameraAngleTo = camera.angle.degrees + camera.fov.degrees / 2;
@@ -43,13 +39,11 @@ const code2 = `
     return (
       ((vertexAngle - cameraAngleFrom) / camera.fov.degrees) * camera.screen.width
     );
-  }
-
-`;
+  }`;
 
 
-const code1Html = await codeToHtml(code1, { lang: 'ts', theme: 'github-dark' });
-const code2Html = await codeToHtml(code2, { lang: 'ts', theme: 'github-dark' });
+const code1Html = await codeToHtml(code1, { lang: 'ts', theme: 'github-light' });
+const code2Html = await codeToHtml(code2, { lang: 'ts', theme: 'github-light' });
 
 const renderFormula = (latex: string) => katex.renderToString(latex, {
   displayMode: true,

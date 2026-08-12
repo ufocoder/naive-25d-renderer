@@ -10,16 +10,12 @@ export const metadata: PageMetadata = {
   groupTitle: 'Stage 5: Текстурирование',
 };
 
-const code1 = `
-  interface Sector {
+const code1 = `  interface Sector {
     // ...
     brightness?: number;
-  }
+  }`;
 
-`;
-
-const code0 = `
-  const stepSector1: Sector = {
+const code0 = `  const stepSector1: Sector = {
     // ..
     brightness: 1.0,
   };
@@ -32,12 +28,9 @@ const code0 = `
   const stepSector3: Sector = {
     // ..
     brightness: 0.6,
-  };
+  };`;
 
-`;
-
-const code2 = `
-  function applyBrightness(color: Color, brightness: number = 1): Color {
+const code2 = `  function applyBrightness(color: Color, brightness: number = 1): Color {
     if (brightness >= 1.0) {
       return color;
     }
@@ -47,12 +40,10 @@ const code2 = `
       g: Math.min(255, Math.floor(color.g * brightness)),
       b: Math.min(255, Math.floor(color.b * brightness))
     };
-  }
-`;
+  }`;
 
 
-const code3 = `
-  function drawTexturedFloorCeil(...) {
+const code3 = `  function drawTexturedFloorCeil(...) {
     // ..
     drawPixel(buffer, x, y, applyBrightness(color, sector.brightness));
     // ..
@@ -68,11 +59,9 @@ const code3 = `
     // ..
     drawPixel(buffer, x, y, applyBrightness(color, otherSector.brightness));
     // ..
-  }
-`;
+  }`;
 
-const code4 = `
-  if (wallTexture) {
+const code4 = `  if (wallTexture) {
     const texture = textures[wallTexture];
     const texX = Math.floor(tx * texture.width);
 
@@ -83,16 +72,14 @@ const code4 = `
 
       drawPixel(buffer, x, y, applyBrightness(color, sector.brightness));
     }
-  }
-
-`;
+  }`;
 
 const [code0Html, code1Html, code2Html, code3Html, code4Html] = await Promise.all([
-  codeToHtml(code0, { lang: 'ts', theme: 'github-dark' }),
-  codeToHtml(code1, { lang: 'ts', theme: 'github-dark' }),
-  codeToHtml(code2, { lang: 'ts', theme: 'github-dark' }),
-  codeToHtml(code3, { lang: 'ts', theme: 'github-dark' }),
-  codeToHtml(code4, { lang: 'ts', theme: 'github-dark' }),
+  codeToHtml(code0, { lang: 'ts', theme: 'github-light' }),
+  codeToHtml(code1, { lang: 'ts', theme: 'github-light' }),
+  codeToHtml(code2, { lang: 'ts', theme: 'github-light' }),
+  codeToHtml(code3, { lang: 'ts', theme: 'github-light' }),
+  codeToHtml(code4, { lang: 'ts', theme: 'github-light' }),
 ]);
 ---
 

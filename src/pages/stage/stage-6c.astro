@@ -10,18 +10,15 @@ export const metadata: PageMetadata = {
   groupTitle: 'Stage 6: Прочее',
 };
 
-const code1 = `
-  interface Actor extends Item {
+const code1 = `  interface Actor extends Item {
     sector?: Sector;
     floorZ?: number;
     ceilZ?: number;
     vx: number;
     vy: number;
-  }
-`;
+  }`;
 
-const code2 = `
-  function moveActor(actor: Actor, dx: number, dy: number, level: Level) {
+const code2 = `  function moveActor(actor: Actor, dx: number, dy: number, level: Level) {
     const nextX = actor.x + dx;
     const nextY = actor.y + dy;
     const nextSector = findSectorAt(level, nextX, nextY);
@@ -35,11 +32,9 @@ const code2 = `
     actor.sector = nextSector;
     actor.floorZ = nextSector.floorHeight ?? 0;
     actor.ceilZ = nextSector.ceilHeight ?? actor.floorZ;
-  }
-`;
+  }`;
 
-const code3 = `
-  const actorsBySector = new Map<Sector, Actor[]>();
+const code3 = `  const actorsBySector = new Map<Sector, Actor[]>();
 
   for (const actor of level.actors) {
     const sector = actor.sector ?? findSectorAt(level, actor.x, actor.y);
@@ -48,13 +43,12 @@ const code3 = `
     const actors = actorsBySector.get(sector) ?? [];
     actors.push(actor);
     actorsBySector.set(sector, actors);
-  }
-`;
+  }`;
 
 const [code1Html, code2Html, code3Html] = await Promise.all([
-  codeToHtml(code1, { lang: 'ts', theme: 'github-dark' }),
-  codeToHtml(code2, { lang: 'ts', theme: 'github-dark' }),
-  codeToHtml(code3, { lang: 'ts', theme: 'github-dark' }),
+  codeToHtml(code1, { lang: 'ts', theme: 'github-light' }),
+  codeToHtml(code2, { lang: 'ts', theme: 'github-light' }),
+  codeToHtml(code3, { lang: 'ts', theme: 'github-light' }),
 ]);
 ---
 

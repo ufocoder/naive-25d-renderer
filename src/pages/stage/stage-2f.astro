@@ -8,8 +8,7 @@ export const metadata: PageMetadata = {
   groupTitle: 'Stage 2: Отрисовка секторов',
 };
 
-const code1 = `
-  interface Seg {
+const code1 = `  interface Seg {
     // ..
     frontSector: Sector;
     backSector: Sector;
@@ -18,11 +17,9 @@ const code1 = `
 
   function isPortal(seg: Seg): boolean {
     return Boolean(seg.isTwoSide && seg.backSector && seg.backSector !== seg.frontSector);
-  }
+  }`;
 
-`;
-
-const code1Html = await codeToHtml(code1, { lang: 'ts', theme: 'github-dark' });
+const code1Html = await codeToHtml(code1, { lang: 'ts', theme: 'github-light' });
 ---
 
 <PageLayout>

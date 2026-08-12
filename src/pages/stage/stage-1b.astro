@@ -12,8 +12,7 @@ export const metadata: PageMetadata = {
   groupTitle: 'Stage 1: Отрисовка стен',
 };
 
-const code1 = `
-  function projectionToPoints(
+const code1 = `  function projectionToPoints(
     camera: Camera,
     vertexProjectionStart: VertexProjection,
     vertexProjectionEnd: VertexProjection,
@@ -34,13 +33,10 @@ const code1 = `
       { x: vertexProjectionEnd.screenX, y: horizontalHeight + wallEndHeight / 2 },
       { x: vertexProjectionEnd.screenX, y: horizontalHeight - wallEndHeight / 2 },
     ];
-  }
-
-`;
+  }`;
 
 
-const code2 = `
-  function render25d(
+const code2 = `  function render25d(
     ctx: CanvasRenderingContext2D,
     settings: Settings,
   ) {
@@ -57,13 +53,11 @@ const code2 = `
         projectionToPoints(settings.camera, vertexProjectionStart, vertexProjectionEnd),
       );
     }
-  }
-
-`;
+  }`;
 
 
-const code1Html = await codeToHtml(code1, { lang: 'ts', theme: 'github-dark' });
-const code2Html = await codeToHtml(code2, { lang: 'ts', theme: 'github-dark' });
+const code1Html = await codeToHtml(code1, { lang: 'ts', theme: 'github-light' });
+const code2Html = await codeToHtml(code2, { lang: 'ts', theme: 'github-light' });
 
 const renderFormula = (latex: string) => katex.renderToString(latex, {
   displayMode: true,

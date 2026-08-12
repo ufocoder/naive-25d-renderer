@@ -9,8 +9,7 @@ export const metadata: PageMetadata = {
   groupTitle: 'Stage 3: Binary Space Partition',
 };
 
-const code1 = `
-  function render25d(
+const code1 = `  function render25d(
     ctx: CanvasRenderingContext2D,
     settings: Settings,
   ) {
@@ -39,12 +38,9 @@ const code1 = `
         }
       }
     });
-  }
-  
-`;
+  }`;
 
-const code2 = `
-  function drawPortalSegment(
+const code2 = `  function drawPortalSegment(
     ctx: CanvasRenderingContext2D,
     camera: Camera, 
     seg: Seg,
@@ -80,13 +76,11 @@ const code2 = `
         lowerClip[x] = drawBottom;
       }
     }
-  }
-
-`;
+  }`;
 
 const [code1Html, code2Html] = await Promise.all([
-  codeToHtml(code1, { lang: 'ts', theme: 'github-dark' }),
-  codeToHtml(code2, { lang: 'ts', theme: 'github-dark' }),
+  codeToHtml(code1, { lang: 'ts', theme: 'github-light' }),
+  codeToHtml(code2, { lang: 'ts', theme: 'github-light' }),
 ]);
 ---
 

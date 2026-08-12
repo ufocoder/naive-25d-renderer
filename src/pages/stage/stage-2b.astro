@@ -10,16 +10,12 @@ export const metadata: PageMetadata = {
   groupTitle: 'Stage 2: Отрисовка секторов',
 };
 
-const code1 = `
-  interface Sector {
+const code1 = `  interface Sector {
     segs: Seg[];
     height: number;
-  }
+  }`;
 
-`;
-
-const code2 = `
-  function createCircleLines(
+const code2 = `  function createCircleLines(
     centerX: number,
     centerY: number,
     radius: number,
@@ -56,11 +52,10 @@ const code2 = `
       ...sector4.segs,
     ],
     sectors: [sector1, sector2, sector3, sector4]
-  };
-`;
+  };`;
 
-const code1Html = await codeToHtml(code1, { lang: 'ts', theme: 'github-dark' });
-const code2Html = await codeToHtml(code2, { lang: 'ts', theme: 'github-dark' });
+const code1Html = await codeToHtml(code1, { lang: 'ts', theme: 'github-light' });
+const code2Html = await codeToHtml(code2, { lang: 'ts', theme: 'github-light' });
 ---
 
 <PageLayout>

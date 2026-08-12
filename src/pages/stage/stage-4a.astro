@@ -10,8 +10,7 @@ export const metadata: PageMetadata = {
   groupTitle: 'Stage 4: Улучшаем движение',
 };
 
-const code1 = `
-  function moveCamera(camera: Camera, direction: number, sector: Sector) {
+const code1 = `  function moveCamera(camera: Camera, direction: number, sector: Sector) {
     const playerCos = camera.angle.cos * camera.moveSpeed;
     const playerSin = camera.angle.sin * camera.moveSpeed;
     const newX = camera.x + direction * playerCos;
@@ -25,24 +24,18 @@ const code1 = `
       y: newY,
       z: newZ,
     };
-  }
+  }`;
 
-`;
-
-const code2 = `
-  setSettings((prev) => {
+const code2 = `  setSettings((prev) => {
     const sector = findCameraSector(bspTree, prev.camera)!;
 
     return {
       ...prev,
       camera: moveCamera(prev.camera, isMoving(), sector),
     };
-  });
+  });`;
 
-`;
-
-const code3 = `
-  function riseCamera(camera: Camera, direction: number, sector: Sector) {
+const code3 = `  function riseCamera(camera: Camera, direction: number, sector: Sector) {
     const speed = camera.riseSpeed || DEFAULT_CAMERA_VERTICAL_SPEED;
     const height = camera.height || DEFAULT_CAMERA_HEIGHT;
     let newZ = camera.z! + direction * speed;
@@ -56,14 +49,12 @@ const code3 = `
       ...camera,
       z: newZ,
     };
-  }
-
-`;
+  }`;
 
 const [code1Html, code2Html, code3Html] = await Promise.all([
-  codeToHtml(code1, { lang: 'ts', theme: 'github-dark' }),
-  codeToHtml(code2, { lang: 'ts', theme: 'github-dark' }),
-  codeToHtml(code3, { lang: 'ts', theme: 'github-dark' }),
+  codeToHtml(code1, { lang: 'ts', theme: 'github-light' }),
+  codeToHtml(code2, { lang: 'ts', theme: 'github-light' }),
+  codeToHtml(code3, { lang: 'ts', theme: 'github-light' }),
 ]);
 ---
 

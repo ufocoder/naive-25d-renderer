@@ -10,8 +10,7 @@ export const metadata: PageMetadata = {
   groupTitle: 'Stage 3: Binary Space Partition',
 };
 
-const bspTypesCode = `
-type BSPBranch = {
+const bspTypesCode = `type BSPBranch = {
   kind: 'branch';
   splitter: Seg;
   front: BSPNode;
@@ -23,11 +22,9 @@ type BSPLeaf = {
   segs: Seg[];
 };
 
-type BSPNode = BSPBranch | BSPLeaf;
-`;
+type BSPNode = BSPBranch | BSPLeaf;`;
 
-const traversalCode = `
-function traverseBSPTree(
+const traversalCode = `function traverseBSPTree(
   node: BSPNode,
   camera: Camera,
   renderLeaf: (leaf: BSPLeaf) => void,
@@ -51,17 +48,16 @@ function traverseBSPTree(
     traverseBSPTree(node.front, camera, renderLeaf);
     traverseBSPTree(node.back, camera, renderLeaf);
   }
-}
-`;
+}`;
 
 const bspTypesCodeHtml = await codeToHtml(bspTypesCode, {
   lang: 'ts',
-  theme: 'github-dark',
+  theme: 'github-light',
 });
 
 const traversalCodeHtml = await codeToHtml(traversalCode, {
   lang: 'ts',
-  theme: 'github-dark',
+  theme: 'github-light',
 });
 ---
 

@@ -1,18 +1,12 @@
 ---
 import Drawer from '@app/layouts/Drawer.astro';
 import { YandexMetrika } from 'astro-yandex-metrika';
-import {
-  getPageHeader,
-  getPrevNextLinks,
-  normalizePathname,
-  withBase,
-} from '@app/config/pages';
+import { getPageHeader, normalizePathname, withBase } from '@app/config/pages';
 import StageNavigation from '@app/layouts/StageNavigation.astro';
 import '@app/style.css';
 
 const currentPath = normalizePathname(Astro.url.pathname);
 const header = getPageHeader(currentPath);
-const { next } = getPrevNextLinks(currentPath);
 const pageTitle = header
   ? `${header.label ?? header.title} | 2.5D Renderer`
   : '2.5D Renderer';
@@ -25,52 +19,93 @@ const yandexMetrikaId = import.meta.env.PROD
 ---
 
 <!doctype html>
-<html lang="ru">
+<html lang="ru" data-theme="light">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="generator" content={Astro.generator} />
     <link rel="icon" type="image/svg+xml" href={withBase('/favicon.svg')} />
     <title>{pageTitle}</title>
+    <script is:inline>
+      try {
+        if (localStorage.getItem('docs-sidebar-collapsed') === 'true') {
+          document.documentElement.classList.add('docs-sidebar-collapsed');
+        }
+      } catch {}
+    </script>
     {yandexMetrikaId && <YandexMetrika id={yandexMetrikaId} />}
   </head>
   <body>
-    <Drawer currentPath={currentPath} />
+    <div class="site-shell min-h-screen">
+      <Drawer currentPath={currentPath} />
+      <div class="docs-content-wrap px-4 py-6 lg:px-8 lg:py-12">
+        <div class="docs-content-topbar">
+          <a href={withBase('/about')} class="docs-topbar-brand">
+            <span>2.5D Renderer</span>
+            <small>почти как в DOOM 1993</small>
+          </a>
+          <div class="docs-topbar-actions">
+            <button
+              type="button"
+              class="docs-sidebar-toggle"
+              aria-label="Скрыть меню"
+              aria-pressed="false"
+              title="Скрыть меню"
+              data-sidebar-toggle
+              data-drawer-open
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.8"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <rect x="3" y="4" width="18" height="16"></rect>
+                <path d="M9 4v16"></path>
+                <path d="M14 10l3 2-3 2"></path>
+              </svg>
+              <span>Навигация</span>
+            </button>
 
-    <div class="min-h-screen bg-[#f8faff]">
-      <div class="mx-auto w-full max-w-[1024px] px-4 py-6">
-        <div class="h-14 lg:hidden"></div>
-        <div class="flex min-h-[calc(100vh-3rem)] flex-col">
+            <a
+              href="https://github.com/ufocoder/25d-renderer"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="docs-icon-button"
+              aria-label="GitHub"
+            >
+              <span>GitHub</span>
+              <svg width="22" height="22" aria-hidden="true">
+                <use href={withBase('/icons.svg#github-icon')}></use>
+              </svg>
+            </a>
+          </div>
+        </div>
+        <div class="content-card flex min-h-[calc(100vh-3rem)] flex-col">
           <main class="flex-1">
             {
               header && (
-                <div class="relative mb-6 border-b border-[#d8deea] pb-3">
-                  <div class="flex items-center justify-between gap-4">
-                    <div>
-                      {header.isLink ? (
-                        <>
-                          <p class="mb-1 text-sm text-[#6b7a8f]">{header.title}</p>
-                          <h1 class="text-3xl font-semibold text-[#1f2a44]">
-                            {header.label}
-                          </h1>
-                        </>
-                      ) : (
-                        <h1 class="text-3xl font-semibold text-[#1f2a44]">
+                <div class="relative mb-8 pb-2">
+                  <div>
+                    {header.isLink ? (
+                      <>
+                        <p class="mb-2 text-sm font-medium text-[color:var(--muted)]">
                           {header.title}
+                        </p>
+                        <h1 class="text-3xl font-semibold text-[color:var(--ink)] lg:text-4xl">
+                          {header.label}
                         </h1>
-                      )}
-                    </div>
-
-                    {next && (
-                      <div class="text-right">
-                        <a
-                          href={withBase(next.href)}
-                          class="inline-flex h-10 w-10 items-center justify-center text-2xl text-[#6b7a8f] transition-all hover:translate-x-0.5 hover:text-[#1f2a44]"
-                          aria-label="Следующий этап"
-                        >
-                          →
-                        </a>
-                      </div>
+                      </>
+                    ) : (
+                      <h1 class="text-3xl font-semibold text-[color:var(--ink)] lg:text-4xl">
+                        {header.title}
+                      </h1>
                     )}
                   </div>
                 </div>
@@ -78,8 +113,8 @@ const yandexMetrikaId = import.meta.env.PROD
             }
             <slot />
           </main>
-          <StageNavigation currentPath={currentPath} />
         </div>
+        <StageNavigation currentPath={currentPath} />
       </div>
     </div>
     <script define:vars={{ enableServiceWorker, serviceWorkerScope, serviceWorkerUrl }}>
@@ -91,6 +126,37 @@ const yandexMetrikaId = import.meta.env.PROD
           });
         });
       }
+    </script>
+    <script>
+      const sidebarToggle = document.querySelector('[data-sidebar-toggle]');
+      const isDesktopSidebar = () => window.matchMedia('(min-width: 1024px)').matches;
+      const syncSidebarToggle = () => {
+        const isCollapsed = document.documentElement.classList.contains('docs-sidebar-collapsed');
+
+        sidebarToggle?.setAttribute('aria-pressed', String(isCollapsed));
+        sidebarToggle?.setAttribute(
+          'aria-label',
+          isCollapsed && isDesktopSidebar() ? 'Показать меню' : 'Скрыть меню',
+        );
+        sidebarToggle?.setAttribute(
+          'title',
+          isCollapsed && isDesktopSidebar() ? 'Показать меню' : 'Скрыть меню',
+        );
+      };
+
+      sidebarToggle?.addEventListener('click', () => {
+        if (!isDesktopSidebar()) return;
+
+        const isCollapsed = document.documentElement.classList.toggle('docs-sidebar-collapsed');
+
+        try {
+          localStorage.setItem('docs-sidebar-collapsed', String(isCollapsed));
+        } catch {}
+
+        syncSidebarToggle();
+      });
+
+      syncSidebarToggle();
     </script>
   </body>
 </html>

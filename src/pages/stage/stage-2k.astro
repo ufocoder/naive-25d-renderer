@@ -5,16 +5,13 @@ import Stage from '@app/pages/stage/_islands/Stage2k';
 import type { PageMetadata } from '@app/config/pages';
 import { PROJECT_REPO_URL } from '@app/config/repo';
 
-const codeCamera = `
-  interface Camera {
+const codeCamera = `  interface Camera {
     // ..
     z: number;
-  }
-
-`;
+  }`;
 
 
-const codeCameraHtml = await codeToHtml(codeCamera, { lang: 'ts', theme: 'github-dark' });
+const codeCameraHtml = await codeToHtml(codeCamera, { lang: 'ts', theme: 'github-light' });
 
 export const metadata: PageMetadata = {
   title: 'Высота камеры',

@@ -8,8 +8,7 @@ export const metadata: PageMetadata = {
   groupTitle: 'Stage 0: Введение',
 };
 
-const code1 = `
-  interface Vertex {
+const code1 = `  interface Vertex {
     x: number;
     y: number;
   }
@@ -72,13 +71,11 @@ const code1 = `
     lightlevel: number;
     type: number;
     tag: number;
-  }
-
-`;
+  }`;
 
 const codeHtml = await codeToHtml(code1, {
   lang: 'ts',
-  theme: 'github-dark',
+  theme: 'github-light',
 });
 
 ---

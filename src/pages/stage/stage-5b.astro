@@ -10,17 +10,13 @@ export const metadata: PageMetadata = {
   groupTitle: 'Stage 5: Текстурирование',
 };
 
-const code1 = `
-  interface Sector {
+const code1 = `  interface Sector {
     // ..
     wallTexture: string;
-  }
-
-`;
+  }`;
 
 
-const code2 = `
-  function drawSolidSegment(
+const code2 = `  function drawSolidSegment(
     ctx: CanvasRenderingContext2D,
     camera: Camera, 
     seg: Seg,
@@ -52,12 +48,10 @@ const code2 = `
     }
 
     // ..
-  }
-`;
+  }`;
 
 
-const code3 = `
-  function getInterpolationFactor(
+const code3 = `  function getInterpolationFactor(
     camera: Camera,
     angles: IntersectionAngles,
     screenX: number,
@@ -68,14 +62,12 @@ const code3 = `
     const t = (angle - angles.linedefFrom) / (angles.linedefTo - angles.linedefFrom);
     
     return Math.max(0, Math.min(1, t));
-  }
-
-`;
+  }`;
 
 
-const code1Html = await codeToHtml(code1, { lang: 'ts', theme: 'github-dark' });
-const code2Html = await codeToHtml(code2, { lang: 'ts', theme: 'github-dark' });
-const code3Html = await codeToHtml(code3, { lang: 'ts', theme: 'github-dark' });
+const code1Html = await codeToHtml(code1, { lang: 'ts', theme: 'github-light' });
+const code2Html = await codeToHtml(code2, { lang: 'ts', theme: 'github-light' });
+const code3Html = await codeToHtml(code3, { lang: 'ts', theme: 'github-light' });
 ---
 
 <PageLayout>

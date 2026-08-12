@@ -10,8 +10,7 @@ export const metadata: PageMetadata = {
   groupTitle: 'Stage 5: Текстурирование',
 };
 
-const code1 = `
-  const stepSector1: Sector = {
+const code1 = `  const stepSector1: Sector = {
     floorHeight: 0,
     ceilHeight: 10_000,
     wallTexture: "wall",
@@ -23,18 +22,14 @@ const code1 = `
     ceilHeight: 10_000,
     wallTexture: "wall",
     // ..
-  };
-`;
+  };`;
 
-const code2 = `
-  const wallTop = portalTop;
+const code2 = `  const wallTop = portalTop;
   const wallBottom = otherTop;
   const visibleTop = Math.max(drawTop, wallTop);
-  const visibleBottom = Math.min(drawBottom, wallBottom);
-`;
+  const visibleBottom = Math.min(drawBottom, wallBottom);`;
 
-const code3 = `
-  const texX = getWallTextureX(camera, seg, x, texture);
+const code3 = `  const texX = getWallTextureX(camera, seg, x, texture);
 
   for (let y = yFrom; y < yTo; y++) {
     const v = (y - wallTop) / (wallBottom - wallTop);
@@ -42,13 +37,12 @@ const code3 = `
     const color = getTextureColor(texture, texX, texY);
 
     drawPixel(buffer, x, y, color);
-  }
-`;
+  }`;
 
 const [code1Html, code2Html, code3Html] = await Promise.all([
-  codeToHtml(code1, { lang: 'ts', theme: 'github-dark' }),
-  codeToHtml(code2, { lang: 'ts', theme: 'github-dark' }),
-  codeToHtml(code3, { lang: 'ts', theme: 'github-dark' }),
+  codeToHtml(code1, { lang: 'ts', theme: 'github-light' }),
+  codeToHtml(code2, { lang: 'ts', theme: 'github-light' }),
+  codeToHtml(code3, { lang: 'ts', theme: 'github-light' }),
 ]);
 ---
 

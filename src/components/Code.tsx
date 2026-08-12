@@ -14,7 +14,7 @@ const CodeHighlight = (props: CodeBlockProps) => {
   const [html] = createResource(async () => {
     return await codeToHtml(props.code, {
       lang: props.lang,
-      theme: props.theme || 'github-dark',
+      theme: props.theme || 'github-light',
     });
   });
 

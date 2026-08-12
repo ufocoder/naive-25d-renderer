@@ -8,28 +8,21 @@ export const metadata: PageMetadata = {
   groupTitle: 'Stage 5: Текстурирование',
 };
 
-const code1 = `
-  interface Color {
+const code1 = `  interface Color {
     r: number
     g: number
     b: number
-  }
+  }`;
 
-`;
-
-const code2 = `
-  type Texture = {
+const code2 = `  type Texture = {
     width: number;
     height: number;
     bitmap: number[][];
     colors: Color[];
     scale: number;
-  }
+  }`;
 
-`;
-
-const code3 = `
-  const textures: Record<string, Texture> = {
+const code3 = `  const textures: Record<string, Texture> = {
     ceil: {
       scale: 4,
       width: 4,
@@ -79,14 +72,12 @@ const code3 = `
         { r: 200, g: 100, b: 100 },
       ],
     },
-  };
-
-`;
+  };`;
 
 const [code1Html, code2Html, code3Html] = await Promise.all([
-  codeToHtml(code1, { lang: 'ts', theme: 'github-dark' }),
-  codeToHtml(code2, { lang: 'ts', theme: 'github-dark' }),
-  codeToHtml(code3, { lang: 'ts', theme: 'github-dark' }),
+  codeToHtml(code1, { lang: 'ts', theme: 'github-light' }),
+  codeToHtml(code2, { lang: 'ts', theme: 'github-light' }),
+  codeToHtml(code3, { lang: 'ts', theme: 'github-light' }),
 ]);
 ---
 

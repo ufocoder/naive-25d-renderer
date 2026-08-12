@@ -50,10 +50,11 @@ function pagePathToHref(path: string) {
 }
 
 function pageSortRank(href: string) {
-  if (href === '/') return 0;
+  if (href === '/about') return 0;
   if (href === '/preface') return 0.5;
   if (href.startsWith('/stage/')) return 1;
   if (href === '/demo') return 2;
+  if (href === '/editor') return 10;
   return 3;
 }
 
@@ -62,11 +63,7 @@ export function isMenuGroup(entry: MenuEntry): entry is MenuGroup {
 }
 
 export function linkClass(active: boolean) {
-  return `block rounded-lg border px-3 py-2 text-sm no-underline transition-colors ${
-    active
-      ? 'border-[#9eb3da] bg-[#dce6fa] text-[#1f2a44]'
-      : 'border-transparent text-[#4a5a75] hover:border-[#c3d0ea] hover:bg-[#e3ebfa]'
-  }`;
+  return `docs-nav-link ${active ? 'docs-nav-link-active' : ''}`;
 }
 
 export function normalizePathname(pathname: string) {

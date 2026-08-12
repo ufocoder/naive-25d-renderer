@@ -10,8 +10,7 @@ export const metadata: PageMetadata = {
   groupTitle: 'Stage 3: Binary Space Partition',
 };
 
-const code1 = `
-  function render25d(
+const code1 = `  function render25d(
     ctx: CanvasRenderingContext2D,
     settings: Settings,
   ) {
@@ -35,13 +34,10 @@ const code1 = `
         }
       }
     });
-  }
-
-`;
+  }`;
 
 
-const code2 = `
-  interface SolidSegmentRange {
+const code2 = `  interface SolidSegmentRange {
     xStart: number;
     xEnd: number;
   }
@@ -53,13 +49,10 @@ const code2 = `
     ranges.push({ xStart: camera.screen.width, xEnd: Number.MAX_SAFE_INTEGER });
 
     return ranges;
-  }
-
-`;
+  }`;
 
 
-const code3 = `
-  function drawSolidWall(
+const code3 = `  function drawSolidWall(
     ctx: CanvasRenderingContext2D,
     camera:Camera, 
     // .. 
@@ -80,14 +73,12 @@ const code3 = `
     }
   
     addSolidRange(camera, xStart, xEnd, solidWallRanges);
-  }
-
-`;
+  }`;
 
 
-const code1Html = await codeToHtml(code1, { lang: 'ts', theme: 'github-dark' });
-const code2Html = await codeToHtml(code2, { lang: 'ts', theme: 'github-dark' });
-const code3Html = await codeToHtml(code3, { lang: 'ts', theme: 'github-dark' });
+const code1Html = await codeToHtml(code1, { lang: 'ts', theme: 'github-light' });
+const code2Html = await codeToHtml(code2, { lang: 'ts', theme: 'github-light' });
+const code3Html = await codeToHtml(code3, { lang: 'ts', theme: 'github-light' });
 ---
 
 <PageLayout>

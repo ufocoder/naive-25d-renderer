@@ -10,8 +10,7 @@ export const metadata: PageMetadata = {
   groupTitle: 'Stage 1: Отрисовка стен',
 };
 
-const code1 = `
-  function render25d(
+const code1 = `  function render25d(
     ctx: CanvasRenderingContext2D,
     settings: Settings,
   ) {
@@ -26,13 +25,10 @@ const code1 = `
       
       drawPolygon(ctx, projectionToPoints(camera, projection));
     }
-  }
-
-`;
+  }`;
 
 
-const code2 = `
-  interface IntersectionAngles {
+const code2 = `  interface IntersectionAngles {
     linedefFrom: number;
     linedefTo: number;
     cameraFrom: number;
@@ -41,13 +37,10 @@ const code2 = `
 
   function calculateIntersectionAngles(linedef: Linedef, camera: Camera): null | IntersectionAngles {
     // ..
-  }
-
-`;
+  }`;
 
 
-const code3 = `
-  function projectLinedef(camera: Camera, linedef: Linedef) : LinedefProjection | null {
+const code3 = `  function projectLinedef(camera: Camera, linedef: Linedef) : LinedefProjection | null {
     const angles = calculateIntersectionAngles(linedef, camera);
 
     if (angles === null) {
@@ -84,14 +77,12 @@ const code3 = `
       }
     }
 
-    // ..
-
-`;
+    // ..`;
 
 
-const code1Html = await codeToHtml(code1, { lang: 'ts', theme: 'github-dark' });
-const code2Html = await codeToHtml(code2, { lang: 'ts', theme: 'github-dark' });
-const code3Html = await codeToHtml(code3, { lang: 'ts', theme: 'github-dark' });
+const code1Html = await codeToHtml(code1, { lang: 'ts', theme: 'github-light' });
+const code2Html = await codeToHtml(code2, { lang: 'ts', theme: 'github-light' });
+const code3Html = await codeToHtml(code3, { lang: 'ts', theme: 'github-light' });
 ---
 
 <PageLayout>

@@ -9,8 +9,7 @@ export const metadata: PageMetadata = {
   groupTitle: 'Stage 3: Binary Space Partition',
 };
 
-const code1 = `
- function render25d(
+const code1 = ` function render25d(
     ctx: CanvasRenderingContext2D,
     settings: Settings,
   ) {
@@ -32,12 +31,10 @@ const code1 = `
         drawSolidWall(ctx, camera, seg, projection, solidWallRanges);
       }
     });
-  }
-
-`;
+  }`;
 
 
-const code1Html = await codeToHtml(code1, { lang: 'ts', theme: 'github-dark' });
+const code1Html = await codeToHtml(code1, { lang: 'ts', theme: 'github-light' });
 ---
 
 <PageLayout>

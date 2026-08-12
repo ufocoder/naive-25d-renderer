@@ -11,20 +11,16 @@ export const metadata: PageMetadata = {
   groupTitle: 'Stage 4: Улучшаем движение',
 };
 
-const code1 = `
-  export const DEFAULT_CONFIG = {
+const code1 = `  export const DEFAULT_CONFIG = {
     playerRadius: 5,
     stepHeight: 1000
   };
 
   export function isSolidWall(seg: Seg): boolean {
     return Boolean(!seg.isTwoSide || seg.isSolid);
-  }
+  }`;
 
-`;
-
-const code2 = `
-  export function closestPointOnSegment(seg: Seg, point: Vertex): Vertex {
+const code2 = `  export function closestPointOnSegment(seg: Seg, point: Vertex): Vertex {
     const ax = seg.end.x - seg.start.x;
     const ay = seg.end.y - seg.start.y;
     const len2 = ax * ax + ay * ay;
@@ -36,12 +32,9 @@ const code2 = `
       x: seg.start.x + ax * t,
       y: seg.start.y + ay * t
     };
-  }
+  }`;
 
-`;
-
-const code3 = `
-  export function circleSegmentCollision(center: Vertex, radius: number, seg: Seg) {
+const code3 = `  export function circleSegmentCollision(center: Vertex, radius: number, seg: Seg) {
     const closest = closestPointOnSegment(seg, center);
     const dx = center.x - closest.x;
     const dy = center.y - closest.y;
@@ -59,12 +52,9 @@ const code3 = `
       pushY: ny * overlap,
       distance
     };
-  }
+  }`;
 
-`;
-
-const code4 = `
-  const collision = checkCollisionOptimized(
+const code4 = `  const collision = checkCollisionOptimized(
     camera.x,
     camera.y,
     camera.x + moveX,
@@ -79,12 +69,9 @@ const code4 = `
     x: collision.x,
     y: collision.y,
     z: newZ,
-  };
+  };`;
 
-`;
-
-const code5 = `
-  const oldFloorZ = camera.z! - height;
+const code5 = `  const oldFloorZ = camera.z! - height;
   const newFloorZ = sector.floorHeight!;
   const stepUp = newFloorZ - oldFloorZ;
   
@@ -92,16 +79,14 @@ const code5 = `
     newZ = sector.floorHeight! + height;
   } else if (stepUp > DEFAULT_CONFIG.stepHeight) {
     return { ...camera };
-  }
-
-`;
+  }`;
 
 const [code1Html, code2Html, code3Html, code4Html, code5Html] = await Promise.all([
-  codeToHtml(code1, { lang: 'ts', theme: 'github-dark' }),
-  codeToHtml(code2, { lang: 'ts', theme: 'github-dark' }),
-  codeToHtml(code3, { lang: 'ts', theme: 'github-dark' }),
-  codeToHtml(code4, { lang: 'ts', theme: 'github-dark' }),
-  codeToHtml(code5, { lang: 'ts', theme: 'github-dark' }),
+  codeToHtml(code1, { lang: 'ts', theme: 'github-light' }),
+  codeToHtml(code2, { lang: 'ts', theme: 'github-light' }),
+  codeToHtml(code3, { lang: 'ts', theme: 'github-light' }),
+  codeToHtml(code4, { lang: 'ts', theme: 'github-light' }),
+  codeToHtml(code5, { lang: 'ts', theme: 'github-light' }),
 ]);
 ---
 

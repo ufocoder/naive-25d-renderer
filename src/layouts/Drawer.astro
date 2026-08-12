@@ -4,6 +4,7 @@ import {
   isMenuGroup,
   isPathActive,
   linkClass,
+  type MenuGroup,
   withBase,
 } from '@app/config/pages';
 
@@ -13,68 +14,173 @@ type Props = {
 
 const { currentPath } = Astro.props;
 const menuEntries = getMenuEntries();
+const rootEntries = menuEntries.filter((entry) => !isMenuGroup(entry));
+const aboutEntry = rootEntries.find((entry) => entry.href === '/about');
+const prefaceEntry = rootEntries.find((entry) => entry.href === '/preface');
+const editorEntry = rootEntries.find((entry) => entry.href === '/editor');
+const primaryRootEntries = rootEntries.filter(
+  (entry) => entry.href !== '/about' && entry.href !== '/preface' && entry.href !== '/editor',
+);
+const stageGroups = menuEntries.filter(
+  (entry): entry is MenuGroup => isMenuGroup(entry) && entry.title.startsWith('Stage '),
+);
+const isGroupActive = (entry: MenuGroup) =>
+  entry.links.some((link) => isPathActive(currentPath, link.href));
+const isPrefaceActive = prefaceEntry ? isPathActive(currentPath, prefaceEntry.href) : false;
+const isContentActive = isPrefaceActive || stageGroups.some((entry) => isGroupActive(entry));
 ---
 
-<div
-  data-mobile-menu
-  class="fixed inset-x-0 top-0 z-40 border-b border-[#d8deea] bg-white/95 px-4 py-3 shadow-[0_1px_3px_rgba(31,42,68,0.08)] backdrop-blur transition-transform duration-200 lg:hidden"
->
-  <div class="flex items-center justify-between gap-3">
-    <button
-      type="button"
-      aria-label="Открыть меню"
-      data-drawer-open
-      class="inline-flex items-center rounded-lg border border-[#d8deea] bg-white p-2 text-[#1f2a44] transition-all hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-[#9eb3da]"
-    >
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        width="24"
-        height="24"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        stroke-width="2"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-        aria-hidden="true"
-      >
-        <line x1="4" x2="20" y1="12" y2="12"></line>
-        <line x1="4" x2="20" y1="6" y2="6"></line>
-        <line x1="4" x2="20" y1="18" y2="18"></line>
-      </svg>
-    </button>
-    <span class="text-base font-semibold text-[#1f2a44]">2.5D Renderer</span>
-  </div>
-</div>
+<aside class="docs-sidebar hidden min-w-0 flex-col lg:flex">
+  <a href={withBase('/about')} class="docs-site-brand">
+    <span>
+      <span>2.5D Renderer</span>
+      <small>почти как в DOOM 1993</small>
+    </span>
+  </a>
 
-<button
-  type="button"
-  aria-label="Открыть меню"
-  data-drawer-open
-  class="fixed left-4 top-4 z-40 hidden rounded-lg border border-[#d8deea] bg-white p-2.5 text-[#1f2a44] transition-all hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-[#9eb3da] lg:inline-flex"
->
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width="24"
-    height="24"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    stroke-width="2"
-    stroke-linecap="round"
-    stroke-linejoin="round"
-    aria-hidden="true"
-  >
-    <line x1="4" x2="20" y1="12" y2="12"></line>
-    <line x1="4" x2="20" y1="6" y2="6"></line>
-    <line x1="4" x2="20" y1="18" y2="18"></line>
-  </svg>
-</button>
+  <nav class="docs-sidebar-nav flex-1 overflow-y-auto px-3">
+    <div class="flex flex-col">
+      {primaryRootEntries.map((entry) => (
+        <a
+          href={withBase(entry.href)}
+          class={`${linkClass(isPathActive(currentPath, entry.href))} docs-nav-link-root`}
+        >
+          <span>{entry.label}</span>
+        </a>
+      ))}
 
-<div
-  data-drawer
-  class="pointer-events-none fixed inset-0 z-50 transition-all duration-300"
->
+      {stageGroups.length > 0 && (
+        <section class="docs-nav-section flex min-w-0 flex-col">
+          <div class={`docs-nav-heading ${isContentActive ? 'docs-nav-heading-active' : ''}`}>
+            Основное содержание
+          </div>
+
+          <div data-drawer-group-content class="overflow-hidden opacity-100">
+            <div class="docs-stage-menu">
+              {prefaceEntry && (
+                <section class="flex min-w-0 flex-col gap-1">
+                  <a
+                    href={withBase(prefaceEntry.href)}
+                    class={`${linkClass(isPathActive(currentPath, prefaceEntry.href))} docs-nav-link-root docs-preface-link`}
+                  >
+                    {prefaceEntry.label}
+                  </a>
+                </section>
+              )}
+
+              {stageGroups.map((entry) => (
+                <section class="flex min-w-0 flex-col gap-1">
+                  <a
+                    href={withBase(entry.links[0].href)}
+                    data-drawer-group
+                    data-expanded={isGroupActive(entry) ? 'true' : 'false'}
+                    class="docs-group"
+                  >
+                    <span class="flex-1 truncate text-left">{entry.title}</span>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="15"
+                      height="15"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      class="shrink-0 rotate-180 transition-transform"
+                      aria-hidden="true"
+                    >
+                      <path d="m6 9 6 6 6-6"></path>
+                    </svg>
+                  </a>
+
+                  {isGroupActive(entry) && (
+                    <div
+                      data-drawer-group-content
+                      class="overflow-hidden opacity-100"
+                    >
+                      <ul class="m-0 list-none space-y-1 pl-0">
+                        {entry.links.map((link) => (
+                          <li>
+                            <a
+                              href={withBase(link.href)}
+                              class={linkClass(isPathActive(currentPath, link.href))}
+                            >
+                              {link.label}
+                            </a>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                </section>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {(editorEntry || aboutEntry) && (
+        <section class="docs-nav-section flex min-w-0 flex-col">
+          <div class="docs-nav-heading">Дополнительно</div>
+
+          <div class="docs-nav-section-items">
+            {editorEntry && (
+              <a
+                href={withBase(editorEntry.href)}
+                class={`${linkClass(isPathActive(currentPath, editorEntry.href))} docs-nav-link-root docs-nav-link-with-icon`}
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="15"
+                  height="15"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.8"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <path d="M12 20h9"></path>
+                  <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"></path>
+                </svg>
+                <span>{editorEntry.label}</span>
+              </a>
+            )}
+
+            {aboutEntry && (
+              <a
+                href={withBase(aboutEntry.href)}
+                class={`${linkClass(isPathActive(currentPath, aboutEntry.href))} docs-nav-link-root docs-nav-link-with-icon`}
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="15"
+                  height="15"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.8"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <path d="M12 16v-4"></path>
+                  <path d="M12 8h.01"></path>
+                </svg>
+                <span>{aboutEntry.label}</span>
+              </a>
+            )}
+          </div>
+        </section>
+      )}
+    </div>
+  </nav>
+</aside>
+
+<div data-drawer class="pointer-events-none fixed inset-0 z-50 transition-all duration-300 lg:hidden">
   <button
     type="button"
     aria-label="Закрыть меню"
@@ -84,20 +190,15 @@ const menuEntries = getMenuEntries();
 
   <aside
     data-drawer-panel
-    class="absolute bottom-0 left-0 top-0 w-80 max-w-[85vw] -translate-x-full transform bg-[#eef2fb] shadow-2xl transition-transform duration-300 ease-out"
+    class="docs-drawer-panel absolute bottom-0 left-0 top-0 w-80 max-w-[85vw] -translate-x-full transform transition-transform duration-300 ease-out"
   >
-    <div class="flex items-center justify-between border-b border-[#d8deea] px-4 py-4">
-      <span class="text-lg font-bold text-[#1f2a44]">2.5D Renderer</span>
-      <button
-        type="button"
-        aria-label="Закрыть меню"
-        data-drawer-close
-        class="rounded p-1.5 text-[#1f2a44] transition-colors hover:bg-[#d8deea]"
-      >
+    <div class="flex items-center justify-between px-4 py-4">
+      <span class="text-lg font-normal text-[color:var(--ink)]">2.5D Renderer</span>
+      <button type="button" aria-label="Закрыть меню" data-drawer-close class="docs-icon-button">
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          width="24"
-          height="24"
+          width="22"
+          height="22"
           viewBox="0 0 24 24"
           fill="none"
           stroke="currentColor"
@@ -112,76 +213,144 @@ const menuEntries = getMenuEntries();
       </button>
     </div>
 
-    <nav class="flex flex-col gap-5 overflow-y-auto p-4" style="max-height: calc(100vh - 60px);">
-      <div class="flex flex-col gap-4">
-        {
-          menuEntries.map((entry) =>
-            isMenuGroup(entry) ? (
-              <div class="flex min-w-0 flex-col gap-1">
-                <button
-                  type="button"
-                  data-drawer-group
-                  data-expanded={entry.links.some((link) =>
-                    isPathActive(currentPath, link.href)
-                  )
-                    ? 'true'
-                    : 'false'}
-                  class="group flex w-full items-center justify-between rounded-md px-3 py-3 text-sm font-semibold uppercase tracking-wide text-[#6b7a8f] transition-all duration-200 hover:bg-[#d8deea] hover:text-[#1f2a44]"
+    <nav class="flex flex-col gap-5 overflow-y-auto p-4" style="max-height: calc(100vh - 5rem);">
+      <div class="flex flex-col">
+        {primaryRootEntries.map((entry) => (
+          <a
+            href={withBase(entry.href)}
+            class={`${linkClass(isPathActive(currentPath, entry.href))} docs-nav-link-root`}
+          >
+            <span>{entry.label}</span>
+          </a>
+        ))}
+
+        {stageGroups.length > 0 && (
+          <section class="docs-nav-section flex min-w-0 flex-col">
+            <div class={`docs-nav-heading ${isContentActive ? 'docs-nav-heading-active' : ''}`}>
+              Основное содержание
+            </div>
+
+            <div data-drawer-group-content class="overflow-hidden opacity-100">
+              <div class="docs-stage-menu">
+                {prefaceEntry && (
+                  <section class="flex min-w-0 flex-col gap-1">
+                    <a
+                      href={withBase(prefaceEntry.href)}
+                      class={`${linkClass(isPathActive(currentPath, prefaceEntry.href))} docs-nav-link-root docs-preface-link`}
+                    >
+                      {prefaceEntry.label}
+                    </a>
+                  </section>
+                )}
+
+                {stageGroups.map((entry) => (
+                  <section class="flex min-w-0 flex-col gap-1">
+                    <a
+                      href={withBase(entry.links[0].href)}
+                      data-drawer-group
+                      data-expanded={isGroupActive(entry) ? 'true' : 'false'}
+                      class="docs-group"
+                    >
+                      <span class="flex-1 text-left">{entry.title}</span>
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="15"
+                        height="15"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="rotate-180 transition-transform"
+                        aria-hidden="true"
+                      >
+                        <path d="m6 9 6 6 6-6"></path>
+                      </svg>
+                    </a>
+
+                    {isGroupActive(entry) && (
+                      <div
+                        data-drawer-group-content
+                        class="overflow-hidden opacity-100"
+                      >
+                        <ul class="m-0 list-none space-y-1 pl-0">
+                          {entry.links.map((link) => (
+                            <li>
+                              <a
+                                href={withBase(link.href)}
+                                class={linkClass(isPathActive(currentPath, link.href))}
+                              >
+                                {link.label}
+                              </a>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                  </section>
+                ))}
+              </div>
+            </div>
+          </section>
+        )}
+
+        {(editorEntry || aboutEntry) && (
+          <section class="docs-nav-section flex min-w-0 flex-col">
+            <div class="docs-nav-heading">Дополнительно</div>
+
+            <div class="docs-nav-section-items">
+              {editorEntry && (
+                <a
+                  href={withBase(editorEntry.href)}
+                  class={`${linkClass(isPathActive(currentPath, editorEntry.href))} docs-nav-link-root docs-nav-link-with-icon`}
                 >
-                  <span class="flex-1 text-left">{entry.title}</span>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
-                    width="16"
-                    height="16"
+                    width="15"
+                    height="15"
                     viewBox="0 0 24 24"
                     fill="none"
                     stroke="currentColor"
-                    stroke-width="2"
+                    stroke-width="1.8"
                     stroke-linecap="round"
                     stroke-linejoin="round"
-                    class={`transition-all duration-200 ${
-                      entry.links.some((link) => isPathActive(currentPath, link.href))
-                        ? 'rotate-180'
-                        : ''
-                    }`}
                     aria-hidden="true"
                   >
-                    <path d="m6 9 6 6 6-6"></path>
+                    <path d="M12 20h9"></path>
+                    <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"></path>
                   </svg>
-                </button>
+                  <span>{editorEntry.label}</span>
+                </a>
+              )}
 
-                <div
-                  data-drawer-group-content
-                  class={`overflow-hidden transition-all duration-200 ${
-                    entry.links.some((link) => isPathActive(currentPath, link.href))
-                      ? 'opacity-100'
-                      : 'max-h-0 opacity-0'
-                  }`}
+              {aboutEntry && (
+                <a
+                  href={withBase(aboutEntry.href)}
+                  class={`${linkClass(isPathActive(currentPath, aboutEntry.href))} docs-nav-link-root docs-nav-link-with-icon`}
                 >
-                  <ul class="m-0 list-none space-y-0.5 pl-0">
-                    {entry.links.map((link) => (
-                      <li>
-                        <a
-                          href={withBase(link.href)}
-                          class={linkClass(isPathActive(currentPath, link.href))}
-                        >
-                          {link.label}
-                        </a>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
-            ) : (
-              <a
-                href={withBase(entry.href)}
-                class={linkClass(isPathActive(currentPath, entry.href))}
-              >
-                {entry.label}
-              </a>
-            )
-          )
-        }
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="15"
+                    height="15"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.8"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    aria-hidden="true"
+                  >
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <path d="M12 16v-4"></path>
+                    <path d="M12 8h.01"></path>
+                  </svg>
+                  <span>{aboutEntry.label}</span>
+                </a>
+              )}
+            </div>
+          </section>
+        )}
       </div>
     </nav>
   </aside>
@@ -192,19 +361,10 @@ const menuEntries = getMenuEntries();
   const panel = document.querySelector('[data-drawer-panel]');
   const openButtons = document.querySelectorAll('[data-drawer-open]');
   const closeButtons = document.querySelectorAll('[data-drawer-close]');
-  const mobileMenu = document.querySelector('[data-mobile-menu]');
-  let lastScrollY = window.scrollY;
-  let isDrawerOpen = false;
-
-  const showMobileMenu = () => {
-    mobileMenu?.classList.toggle('-translate-y-full', false);
-    lastScrollY = window.scrollY;
-  };
-
+  const isMobileDrawer = () => window.matchMedia('(max-width: 1023px)').matches;
   const setDrawerOpen = (isOpen: boolean) => {
     if (!drawer || !panel) return;
 
-    isDrawerOpen = isOpen;
     drawer.classList.toggle('pointer-events-auto', isOpen);
     drawer.classList.toggle('pointer-events-none', !isOpen);
     drawer.querySelector('[data-drawer-close]')?.classList.toggle('opacity-50', isOpen);
@@ -212,7 +372,6 @@ const menuEntries = getMenuEntries();
     panel.classList.toggle('translate-x-0', isOpen);
     panel.classList.toggle('-translate-x-full', !isOpen);
     document.body.style.overflow = isOpen ? 'hidden' : '';
-    showMobileMenu();
   };
 
   const syncGroup = (button: Element) => {
@@ -227,26 +386,16 @@ const menuEntries = getMenuEntries();
   };
 
   openButtons.forEach((button) => {
-    button.addEventListener('click', () => setDrawerOpen(true));
+    button.addEventListener('click', () => {
+      if (isMobileDrawer()) {
+        setDrawerOpen(true);
+      }
+    });
   });
   closeButtons.forEach((button) => {
     button.addEventListener('click', () => setDrawerOpen(false));
   });
 
-  window.addEventListener(
-    'scroll',
-    () => {
-      if (!mobileMenu || isDrawerOpen) return;
-
-      const currentScrollY = window.scrollY;
-      const isScrollingDown = currentScrollY > lastScrollY;
-      const shouldHide = isScrollingDown && currentScrollY > 64;
-
-      mobileMenu.classList.toggle('-translate-y-full', shouldHide);
-      lastScrollY = currentScrollY;
-    },
-    { passive: true },
-  );
   document.addEventListener('keydown', (event) => {
     if (event.key === 'Escape') {
       setDrawerOpen(false);
@@ -255,10 +404,5 @@ const menuEntries = getMenuEntries();
 
   document.querySelectorAll('[data-drawer-group]').forEach((button) => {
     syncGroup(button);
-    button.addEventListener('click', () => {
-      const isExpanded = button.getAttribute('data-expanded') === 'true';
-      button.setAttribute('data-expanded', isExpanded ? 'false' : 'true');
-      syncGroup(button);
-    });
   });
 </script>

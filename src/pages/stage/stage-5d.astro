@@ -10,20 +10,16 @@ export const metadata: PageMetadata = {
   groupTitle: 'Stage 5: Текстурирование',
 };
 
-const code1 = `
-  const roomSector: Sector = {
+const code1 = `  const roomSector: Sector = {
     // ..
     floorHeight: 0,
     floorTexture: 'floor',
     ceilHeight: 400,
     ceilTexture: 'ceil',
     // ..
-  };
+  };`;
 
-`;
-
-const code2 = `
-  if (drawTop > upperClip[x]) {
+const code2 = `  if (drawTop > upperClip[x]) {
     if (sector.ceilTexture) {
       drawTexturedFloorCeil(buffer, camera, sector, x, upperClip[x], drawTop, false);
     } else {
@@ -39,12 +35,9 @@ const code2 = `
     } else {
       drawVerticalLine(buffer, x, drawBottom, lowerClip[x], floorColor);
     }
-  }
+  }`;
 
-`;
-
-const code3 = `
-  function drawTexturedFloorCeil(
+const code3 = `  function drawTexturedFloorCeil(
     imageData: ImageData,
     camera: Camera,
     sector: Sector,
@@ -60,12 +53,9 @@ const code3 = `
     if (!texture) return;
 
     // ..
-  }
+  }`;
 
-`;
-
-const code4 = `
-  const distToPlane = isFloor
+const code4 = `  const distToPlane = isFloor
     ? camera.z - sector.floorHeight
     : sector.ceilHeight - camera.z;
 
@@ -84,15 +74,13 @@ const code4 = `
   const worldY = camera.y + rayDirY * rowDistance;
 
   let texX = (worldX / texture.scale) % 1;
-  let texY = (worldY / texture.scale) % 1;
-
-`;
+  let texY = (worldY / texture.scale) % 1;`;
 
 const [code1Html, code2Html, code3Html, code4Html] = await Promise.all([
-  codeToHtml(code1, { lang: 'ts', theme: 'github-dark' }),
-  codeToHtml(code2, { lang: 'ts', theme: 'github-dark' }),
-  codeToHtml(code3, { lang: 'ts', theme: 'github-dark' }),
-  codeToHtml(code4, { lang: 'ts', theme: 'github-dark' }),
+  codeToHtml(code1, { lang: 'ts', theme: 'github-light' }),
+  codeToHtml(code2, { lang: 'ts', theme: 'github-light' }),
+  codeToHtml(code3, { lang: 'ts', theme: 'github-light' }),
+  codeToHtml(code4, { lang: 'ts', theme: 'github-light' }),
 ]);
 ---
 

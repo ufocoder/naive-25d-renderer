@@ -9,8 +9,7 @@ export const metadata: PageMetadata = {
   groupTitle: 'Stage 5: Текстурирование',
 };
 
-const code1 = `
-  function drawPixel(
+const code1 = `  function drawPixel(
     ctx: CanvasRenderingContext2D,
     x: number,
     y: number,
@@ -18,12 +17,9 @@ const code1 = `
   ): void {
     ctx.fillStyle = \`rgb(\${color.r}, \${color.g}, \${color.b})\`;
     ctx.fillRect(x, y, 1, 1);
-  }
-  
-`;
+  }`;
 
-const code2 = `
-  export function createRender25d({ bspTree }: { bspTree: BSPNode }) {
+const code2 = `  export function createRender25d({ bspTree }: { bspTree: BSPNode }) {
     return function render25d(
       ctx: CanvasRenderingContext2D,
       settings: Settings,
@@ -51,12 +47,9 @@ const code2 = `
 
       ctx.putImageData(buffer, 0, 0);
     }
-  }
-    
-`;
+  }`;
 
-const code3 = `
-  function drawPixel(
+const code3 = `  function drawPixel(
     buffer: ImageData,
     x: number,
     y: number,
@@ -68,14 +61,12 @@ const code3 = `
     buffer.data[index + 1] = color.g;
     buffer.data[index + 2] = color.b;
     buffer.data[index + 3] = 255;
-  }
-
-`;
+  }`;
 
 const [code1Html, code2Html, code3Html] = await Promise.all([
-  codeToHtml(code1, { lang: 'ts', theme: 'github-dark' }),
-  codeToHtml(code2, { lang: 'ts', theme: 'github-dark' }),
-  codeToHtml(code3, { lang: 'ts', theme: 'github-dark' }),
+  codeToHtml(code1, { lang: 'ts', theme: 'github-light' }),
+  codeToHtml(code2, { lang: 'ts', theme: 'github-light' }),
+  codeToHtml(code3, { lang: 'ts', theme: 'github-light' }),
 ]);
 ---
 

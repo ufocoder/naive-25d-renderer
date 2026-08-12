@@ -12,8 +12,7 @@ export const metadata: PageMetadata = {
 
 const labelClass = 'px-2 py-1 bg-gray-100 text-gray-800 text-xs font-semibold rounded';
 
-const code1 = `
-  interface Vertex {
+const code1 = `  interface Vertex {
     x: number;
     y: number;
   }
@@ -21,12 +20,9 @@ const code1 = `
   interface Linedef {
     start: Vertex;
     end: Vertex;
-  }
+  }`;
 
-`;
-
-const code2 = `
-  class Angle {
+const code2 = `  class Angle {
     private _degrees: number;
 
     constructor(degrees: number) {
@@ -48,39 +44,31 @@ const code2 = `
     get sin() {
       return Math.sin(this.radians);
     }
-  }
+  }`;
 
-`;
-
-const code3 = `
-  interface Camera {
+const code3 = `  interface Camera {
     angle: Angle;
     fov: Angle;
     x: number;
     y: number;
     moveSpeed: number;
     rotationSpeed: number;
-  }
+  }`;
 
-`;
-
-const code4 = `
-  interface Settings {
+const code4 = `  interface Settings {
     camera: Camera;
     level: Level;
   }
 
   type Level = {
     linedefs: Linedef[];
-  }
-
-`;
+  }`;
 
 const [code1Html, code2Html, code3Html, code4Html] = await Promise.all([
-  codeToHtml(code1, { lang: 'ts', theme: 'github-dark' }),
-  codeToHtml(code2, { lang: 'ts', theme: 'github-dark' }),
-  codeToHtml(code3, { lang: 'ts', theme: 'github-dark' }),
-  codeToHtml(code4, { lang: 'ts', theme: 'github-dark' }),
+  codeToHtml(code1, { lang: 'ts', theme: 'github-light' }),
+  codeToHtml(code2, { lang: 'ts', theme: 'github-light' }),
+  codeToHtml(code3, { lang: 'ts', theme: 'github-light' }),
+  codeToHtml(code4, { lang: 'ts', theme: 'github-light' }),
 ]);
 ---
 

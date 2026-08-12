@@ -10,8 +10,7 @@ export const metadata: PageMetadata = {
   groupTitle: 'Stage 1: Отрисовка стен',
 };
 
-const code1 = `
-    function caclulateScaleFactor(
+const code1 = `    function caclulateScaleFactor(
       screenX: number,
       linedef: Linedef,
       camera: Camera
@@ -29,13 +28,10 @@ const code1 = `
       const screenXAngleCos = Math.abs(screenXAngle.cos);
       
       return (distance * skewAngleCos) / (distance * screenXAngleCos);
-    }
-
-`;
+    }`;
 
 
-const code2 = `
-  function projectLinedef(camera: Camera, linedef: Linedef) : LinedefProjection | null {
+const code2 = `  function projectLinedef(camera: Camera, linedef: Linedef) : LinedefProjection | null {
     const angles = calculateIntersectionAngles(linedef, camera);
 
     if (angles === null) {
@@ -65,13 +61,11 @@ const code2 = `
         height: WALL_HEIGHT * endScale / distanceToCamera
       }
     };
-  }
-
-`;
+  }`;
 
 
-const code1Html = await codeToHtml(code1, { lang: 'ts', theme: 'github-dark' });
-const code2Html = await codeToHtml(code2, { lang: 'ts', theme: 'github-dark' });
+const code1Html = await codeToHtml(code1, { lang: 'ts', theme: 'github-light' });
+const code2Html = await codeToHtml(code2, { lang: 'ts', theme: 'github-light' });
 ---
 
 <PageLayout>

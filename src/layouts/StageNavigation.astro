@@ -11,12 +11,12 @@ const { previous, next } = getPrevNextLinks(currentPath);
 
 {
   (previous || next) && (
-    <nav class="mt-8 border-t border-[#d8deea] pt-6" aria-label="Навигация по этапам">
+    <nav class="px-1 pb-2 pt-3" aria-label="Навигация по этапам">
       <div class="flex items-center justify-between gap-4">
         {previous ? (
           <a
             href={withBase(previous.href)}
-            class="group flex items-center gap-3 py-3 pr-3 text-[#1f2a44] hover:text-blue-800"
+            class="group flex items-center gap-3 rounded-lg py-3 pr-3 text-[color:var(--ink)] no-underline transition-colors hover:text-[color:var(--accent-ink)]"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -34,7 +34,7 @@ const { previous, next } = getPrevNextLinks(currentPath);
               <path d="m15 18-6-6 6-6"></path>
             </svg>
             <span class="flex flex-col items-start">
-              <span class="text-xs">{previous.groupTitle}</span>
+              <span class="text-xs font-medium text-[color:var(--muted)]">{previous.groupTitle}</span>
               <span class="text-sm font-medium">{previous.label}</span>
             </span>
           </a>
@@ -45,10 +45,10 @@ const { previous, next } = getPrevNextLinks(currentPath);
         {next ? (
           <a
             href={withBase(next.href)}
-            class="group flex items-center gap-3 py-3 pl-3 text-[#1f2a44] hover:text-blue-800"
+            class="group flex items-center gap-3 rounded-lg py-3 pl-3 text-[color:var(--ink)] no-underline transition-colors hover:text-[color:var(--accent-ink)]"
           >
             <span class="flex flex-col items-end text-right">
-              <span class="text-xs">{next.groupTitle}</span>
+              <span class="text-xs font-medium text-[color:var(--muted)]">{next.groupTitle}</span>
               <span class="text-sm font-medium">{next.label}</span>
             </span>
             <svg

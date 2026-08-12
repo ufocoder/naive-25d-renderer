@@ -11,8 +11,7 @@ export const metadata: PageMetadata = {
   groupTitle: 'Stage 6: Прочее',
 };
 
-const code1 = `
-  interface Sector {
+const code1 = `  interface Sector {
     // ..
     items?: Item[];
   }
@@ -29,11 +28,9 @@ const code1 = `
       colors: Color[];
       bitmap: number[][];
     };
-  }
-`;
+  }`;
 
-const code2 = `
-  const stepSector2: Sector = {
+const code2 = `  const stepSector2: Sector = {
     // ..
     floorHeight: 750,
     ceilHeight: 10_000,
@@ -45,11 +42,9 @@ const code2 = `
         type: 'health'
       }
     ]
-  };
-`;
+  };`;
 
-const code3 = `
-  const dx = item.x - camera.x;
+const code3 = `  const dx = item.x - camera.x;
   const dy = item.y - camera.y;
   const forwardDistance = dx * camera.angle.cos + dy * camera.angle.sin;
   const distance = Math.hypot(dx, dy);
@@ -58,11 +53,9 @@ const code3 = `
   const relativeAngle = angleToItem - camera.angle.degrees;
   const screenX =
     (relativeAngle / camera.fov.degrees) * camera.screen.width
-    + camera.screen.width / 2;
-`;
+    + camera.screen.width / 2;`;
 
-const code4 = `
-  const itemAngularRadius = Math.atan2(item.radius, distance) * 180 / Math.PI;
+const code4 = `  const itemAngularRadius = Math.atan2(item.radius, distance) * 180 / Math.PI;
   const screenHalfWidth =
     (itemAngularRadius / camera.fov.degrees) * camera.screen.width;
 
@@ -71,22 +64,19 @@ const code4 = `
   const ceilZ = sector.ceilHeight ?? floorZ;
 
   const screenBottomY = screenCenterY - (floorZ - camera.z) * projectionScale;
-  const screenTopY = screenCenterY - (ceilZ - camera.z) * projectionScale;
-`;
+  const screenTopY = screenCenterY - (ceilZ - camera.z) * projectionScale;`;
 
-const code5 = `
-  const x1 = Math.max(0, Math.floor(screenX - screenHalfWidth));
+const code5 = `  const x1 = Math.max(0, Math.floor(screenX - screenHalfWidth));
   const x2 = Math.min(camera.screen.width, Math.ceil(screenX + screenHalfWidth));
   const y1 = Math.max(0, Math.floor(screenTopY));
-  const y2 = Math.min(camera.screen.height, Math.ceil(screenBottomY));
-`;
+  const y2 = Math.min(camera.screen.height, Math.ceil(screenBottomY));`;
 
 const [code1Html, code2Html, code3Html, code4Html, code5Html] = await Promise.all([
-  codeToHtml(code1, { lang: 'ts', theme: 'github-dark' }),
-  codeToHtml(code2, { lang: 'ts', theme: 'github-dark' }),
-  codeToHtml(code3, { lang: 'ts', theme: 'github-dark' }),
-  codeToHtml(code4, { lang: 'ts', theme: 'github-dark' }),
-  codeToHtml(code5, { lang: 'ts', theme: 'github-dark' }),
+  codeToHtml(code1, { lang: 'ts', theme: 'github-light' }),
+  codeToHtml(code2, { lang: 'ts', theme: 'github-light' }),
+  codeToHtml(code3, { lang: 'ts', theme: 'github-light' }),
+  codeToHtml(code4, { lang: 'ts', theme: 'github-light' }),
+  codeToHtml(code5, { lang: 'ts', theme: 'github-light' }),
 ]);
 ---
 

@@ -10,8 +10,7 @@ export const metadata: PageMetadata = {
   groupTitle: 'Stage 3: Binary Space Partition',
 };
 
-const code1 = `
-  const outsideSector: Sector = {
+const code1 = `  const outsideSector: Sector = {
     // ..
     floorHeight: 0,
     ceilHeight: 10_000,
@@ -21,12 +20,10 @@ const code1 = `
     // ..
     floorHeight: 2_000,
     ceilHeight: 10_000,
-  };
-
-`;
+  };`;
 
 
-const code1Html = await codeToHtml(code1, { lang: 'ts', theme: 'github-dark' });
+const code1Html = await codeToHtml(code1, { lang: 'ts', theme: 'github-light' });
 ---
 
 <PageLayout>
