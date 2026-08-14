@@ -1,0 +1,26 @@
+---
+import imageGameSrc from '@app/stages/Preface/assets/wolf3d-like.png';
+import imageDemoSrc from '@app/stages/Preface/assets/raycasting.png';
+import imageDoomqlSrc from '@app/stages/Preface/assets/doomql.png';
+---
+
+<section class="flex flex-col gap-4">
+  <p class="py-2">
+    В прошлом я хотел ближе познакомиться с компьютерной графикой и одновременно с этим создать уже что-то рабочее. Погружаться в мир шейдеров оказалось не таким интересным занятием, нельзя было получить быстрый результат, сорвать низковисящий фрукт, поэтому я отложил изучение шейдеров в долгий ящик и решил найти для себя иной подход. На глаза попадались статьи про такую технику отрисовки как <a class="link underline" href="https://en.wikipedia.org/wiki/Ray_casting" target="_blank">Raycasting</a>. Если вы немного помните курс школьной геометрии и умеете программировать, то достаточно будет потратить несколько выходных, чтобы создать свой мир в виде лабиринта.
+  </p>
+  <p class="py-2">
+    Изучив эту технику, я <a class="link underline" href="https://github.com/ufocoder/fps" target="_blank">реализовал</a> браузерную игру похожую на продвинутую версию <a class="link underline" href="https://en.wikipedia.org/wiki/Wolfenstein_3D" target="_blank">Wolfenstein 3D</a> с использованием паттерна <a class="link underline" href="https://en.wikipedia.org/wiki/Entity_component_system target="_blank"">Entity-Component-System</a> (плюс спасибо ребятам за <a class="link underline" href="https://github.com/ufocoder/fps/pull/36 target="_blank"">систему подсветки</a> и <a class="link underline" href="https://github.com/ufocoder/fps/pull/27" target="_blank">открытия дверей</a>):
+  </p>
+  <img src={imageGameSrc.src} class="max-w-150" alt="Wolfenstein 3D-like browser game screenshot" />
+  <p class="py-2">
+    Однако многие, кто не знаком с отрисовщиками прошлого, скажут, что <a class="link underline" href="https://ufocoder.github.io/fps/" target="_blank">эта игра</a> похожа на DOOM, но к сожалению это не он. И кстати, некоторые разработчики не стесняются этим незнанием пользоваться, например, проект <a class="link underline" href="https://github.com/cedardb/DOOMQL" target="_blank">DOOMQL</a> под капотом содержит wolf3d-like отрисовщик:
+  </p>
+  <img src={imageDoomqlSrc.src} class="max-w-150" alt="DOOMQL screenshot" />
+  <p>
+    Чтобы передать другим свой опыт изучения raycasting, я реализовал отдельное <a class="link underline" href="https://ufocoder.github.io/raycasting-demo/" target="_blank">raycasting demo</a>, где любой может проанализировть, как заданные параметры отрисовки влияют на конечный результат:
+  </p>
+  <img src={imageDemoSrc.src} class="max-w-150" alt="Raycasting demo screenshot" />
+  <p>
+    Что ж. Теперь настало время перейти к DOOM-like отрисовщику.
+  </p>
+</section>

@@ -74,7 +74,8 @@ export function normalizePathname(pathname: string) {
     path = path.slice(base.length) || '/';
   }
 
-  return path.replace(/\/$/, '') || '/';
+  const normalizedPath = path.replace(/\/$/, '') || '/';
+  return normalizedPath === '/' ? '/preface' : normalizedPath;
 }
 
 export function withBase(href: string) {
@@ -92,7 +93,7 @@ export function isPathActive(pathname: string, href: string) {
 }
 
 export function getAllPages() {
-  return Object.entries(pageModules)
+  const pages = Object.entries(pageModules)
     .filter((entry): entry is [string, PageModule & { metadata: PageMetadata }] =>
       Boolean(entry[1]?.metadata),
     )
@@ -100,8 +101,17 @@ export function getAllPages() {
       href: pagePathToHref(path),
       label: page.metadata.title,
       groupTitle: page.metadata.groupTitle ?? '',
-    }))
-    .sort((a, b) => {
+    }));
+
+  if (!pages.some((page) => page.href === '/about')) {
+    pages.push({
+      href: '/about',
+      label: 'О проекте',
+      groupTitle: '',
+    });
+  }
+
+  return pages.sort((a, b) => {
       const rankDiff = pageSortRank(a.href) - pageSortRank(b.href);
       if (rankDiff !== 0) return rankDiff;
 

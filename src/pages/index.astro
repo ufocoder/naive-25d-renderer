@@ -1,5 +1,8 @@
 ---
-import { withBase } from '@app/config/pages';
-
-return Astro.redirect(withBase('/about'));
+import PageLayout from '@app/layouts/PageLayout.astro';
+import PrefaceContent from './_components/PrefaceContent.astro';
 ---
+
+<PageLayout>
+  <PrefaceContent />
+</PageLayout>
