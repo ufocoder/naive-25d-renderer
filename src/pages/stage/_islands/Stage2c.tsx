@@ -1,3 +1,5 @@
+import content from '@app/styles/content.module.css';
+import stageStyles from '@app/styles/stage.module.css';
 import Canvas from "@app/components/Canvas/CanvasBase";
 import { useCameraControls } from '@app/hooks/useCameraControls';
 import render25dStage2b from '@app/stages/Stage2b/render25d';
@@ -23,12 +25,12 @@ const Stage: Component<StageProps> = (props) => {
       case 0:
         return (
           <>
-            <div class="my-10 flex flex-col justify-center gap-6 md:grid md:grid-cols-2 md:gap-4 md:items-start justify-items">
-              <div class="flex flex-col gap-2">
-                <h2 class="flex justify-center text-2xl">
+            <div class={stageStyles.demoGridWithSpacing}>
+              <div class={stageStyles.demoColumn}>
+                <h2 class={stageStyles.demoTitle}>
                   Исходная проекция
                 </h2>
-                <div class="flex justify-center">
+                <div class={stageStyles.centered}>
                   <Canvas
                     settings={settings2b}
                     width={settings2b().camera.screen.width}
@@ -37,11 +39,11 @@ const Stage: Component<StageProps> = (props) => {
                   />
                 </div>
               </div>
-              <div class="flex flex-col gap-2">
-                <h2 class="flex justify-center text-2xl">
+              <div class={stageStyles.demoColumn}>
+                <h2 class={stageStyles.demoTitle}>
                   Исправленная проекция
                 </h2>
-                <div class="flex justify-center">
+                <div class={stageStyles.centered}>
                   <Canvas
                     settings={settings2c}
                     width={settings2c().camera.screen.width}
@@ -59,7 +61,7 @@ const Stage: Component<StageProps> = (props) => {
   };
 
   return (
-    <div class="flex flex-col gap-4">
+    <div class={content.contentSection}>
       {renderPart(props.part ?? 0)}
     </div>
   );

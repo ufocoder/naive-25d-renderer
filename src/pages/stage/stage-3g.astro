@@ -1,4 +1,6 @@
 ---
+import content from '@app/styles/content.module.css';
+import stageStyles from '@app/styles/stage.module.css';
 import PageLayout from '@app/layouts/PageLayout.astro';
 import InDevelopmentGate from '@app/pages/_components/InDevelopmentGate.astro';
 import Stage from '@app/pages/stage/_islands/Stage3g';
@@ -28,18 +30,18 @@ const code1Html = await codeToHtml(code1, { lang: 'ts', theme: 'github-light' })
 
 <PageLayout>
   <InDevelopmentGate />
-  <section class="flex flex-col gap-4">
-    <p class="py-2 text">
+  <section class={content.contentSection}>
+    <p class={content.paragraph}>
       Теперь зададим соседним секторам разные уровни пола. Портал между ними уже не является полностью открытым проемом: разница высот должна образовать нижнюю стенку ступени. Аналогично разница потолков должна создавать верхнюю стенку.
     </p>
     <Stage part={0} client:load />
-    <p class="py-2 text">
+    <p class={content.paragraph}>
       Текущий рендерер пропускает портальный сегмент целиком, поэтому перепад высот не закрывается стеной и граница между секторами выглядит неверно. Перемещение камеры по вертикали дополнительно показывает, что видимая часть проема зависит от стороны наблюдения.
     </p>
-    <h2 class="text-2xl">
+    <h2 class={stageStyles.stageHeading}>
       Немного кода
     </h2>
-    <p class="py-2 text">
+    <p class={content.paragraph}>
       В примере внутренний сектор поднят относительно внешнего. На следующем шаге портал будет сравнивать высоты обоих секторов и рисовать только недостающие верхнюю и нижнюю части стены.
     </p>
     <div set:html={code1Html} />

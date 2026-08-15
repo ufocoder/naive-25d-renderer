@@ -1,3 +1,4 @@
+import editorStyles from '@app/styles/editor.module.css';
 import type { Component, JSX } from 'solid-js';
 
 type ToolbarGroupProps = {
@@ -6,11 +7,11 @@ type ToolbarGroupProps = {
 };
 
 const ToolbarGroup: Component<ToolbarGroupProps> = (props) => (
-  <div class="flex flex-col gap-1">
+  <div class={editorStyles.toolbarGroup}>
     {props.title ? (
-      <span class="text-xs font-semibold uppercase text-[#6b7a8f]">{props.title}</span>
+      <span class={editorStyles.toolbarTitle}>{props.title}</span>
     ) : null}
-    <div class="flex flex-wrap gap-2">{props.children}</div>
+    <div class={editorStyles.toolbarItems}>{props.children}</div>
   </div>
 );
 

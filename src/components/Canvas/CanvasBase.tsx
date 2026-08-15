@@ -1,3 +1,4 @@
+import canvasStyles from '@app/styles/canvas.module.css';
 import { type Accessor, type Component, createEffect } from "solid-js";
 
 export interface RendererProps {
@@ -46,7 +47,7 @@ const Renderer: Component<RendererProps> = ({
       }}
       width={width}
       height={height}
-      class={`border border-gray-300 ${className}`}
+      class={`${canvasStyles.canvasSurface} ${className}`}
     />
   );
 };

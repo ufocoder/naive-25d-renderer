@@ -1,8 +1,10 @@
 ---
+import pageStyles from '@app/styles/page.module.css';
 import Drawer from '@app/layouts/Drawer.astro';
 import { YandexMetrika } from 'astro-yandex-metrika';
 import { getPageHeader, normalizePathname, withBase } from '@app/config/pages';
 import StageNavigation from '@app/layouts/StageNavigation.astro';
+import styles from '@app/layouts/PageLayout.module.css';
 import '@app/style.css';
 
 const currentPath = normalizePathname(Astro.url.pathname);
@@ -36,18 +38,18 @@ const yandexMetrikaId = import.meta.env.PROD
     {yandexMetrikaId && <YandexMetrika id={yandexMetrikaId} />}
   </head>
   <body>
-    <div class="site-shell min-h-screen">
+    <div class={styles.siteShell}>
       <Drawer currentPath={currentPath} />
-      <div class="docs-content-wrap px-4 py-6 lg:px-8 lg:py-12">
-        <div class="docs-content-topbar">
-          <a href={withBase('/')} class="docs-topbar-brand">
+      <div class={styles.contentWrap}>
+        <div class={styles.topbar}>
+          <a href={withBase('/')} class={styles.topbarBrand}>
             <span>2.5D Renderer</span>
             <small>почти как в DOOM 1993</small>
           </a>
-          <div class="docs-topbar-actions">
+          <div class={styles.topbarActions}>
             <button
               type="button"
-              class="docs-sidebar-toggle"
+              class={`${styles.button} ${styles.sidebarToggle}`}
               aria-label="Скрыть меню"
               aria-pressed="false"
               title="Скрыть меню"
@@ -77,7 +79,7 @@ const yandexMetrikaId = import.meta.env.PROD
               href="https://github.com/ufocoder/25d-renderer"
               target="_blank"
               rel="noopener noreferrer"
-              class="docs-icon-button"
+              class={styles.button}
               aria-label="GitHub"
             >
               <span>GitHub</span>
@@ -87,22 +89,22 @@ const yandexMetrikaId = import.meta.env.PROD
             </a>
           </div>
         </div>
-        <div class="content-card flex min-h-[calc(100vh-3rem)] flex-col">
-          <main class="flex-1">
+        <div class={styles.contentCard}>
+          <main class={pageStyles.contentMain}>
             {
               header && (
-                <div class="relative mb-6">
+                <div class={pageStyles.pageHeader}>
                     {header.isLink ? (
                       <>
-                        <p class="text-sm font-medium text-[color:var(--muted)]">
+                        <p class={pageStyles.pageEyebrow}>
                           {header.title}
                         </p>
-                        <h1 class="text-2xl font-semibold text-[color:var(--ink)] lg:text-3xl">
+                        <h1 class={pageStyles.pageTitle}>
                           {header.label}
                         </h1>
                       </>
                     ) : (
-                      <h1 class="text-2xl font-semibold text-[color:var(--ink)] lg:text-3xl">
+                      <h1 class={pageStyles.pageTitle}>
                         {header.title}
                       </h1>
                     )}

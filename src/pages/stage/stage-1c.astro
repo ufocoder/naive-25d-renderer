@@ -1,4 +1,6 @@
 ---
+import content from '@app/styles/content.module.css';
+import stageStyles from '@app/styles/stage.module.css';
 import PageLayout from '@app/layouts/PageLayout.astro';
 import Stage from '@app/pages/stage/_islands/Stage1c';
 import type { PageMetadata } from '@app/config/pages';
@@ -21,34 +23,34 @@ const renderFormula = (latex: string) => katex.renderToString(latex, {
 ---
 
 <PageLayout>
-  <section class="flex flex-col gap-4">
-    <p class="py-2 text">
+  <section class={content.contentSection}>
+    <p class={content.paragraph}>
       Если построить несколько линий в ряд и использовать формулу из прошлой заметки, то можно обнаружить, что изображение будто проходит через линзу — получается немного выпуклым. Этот эффект называется эффектом рыбьего глаза.
     </p>
     <Stage part={0} client:load />
-    <p class="py-2 text">
+    <p class={content.paragraph}>
       Дело в том, что вычисление высоты не зависело от угла относительно камеры. Благо, решается эта проблема очень просто:
     </p>
     <Stage part={1} client:load />
-    <h2 class="text-2xl">
+    <h2 class={stageStyles.stageHeading}>
       Как это рассчитать
     </h2>
-    <p class="py-2 text">
+    <p class={content.paragraph}>
       Рассчитаем относительный угол между направлением камеры и направлением на вершину:
     </p>
-    <div class="bg-gray-100 border border-gray-200 p-4 text">
+    <div class={content.noteBlock}>
       <div set:html={renderFormula("\\theta_{\\text{rel}} = \\theta_{\\text{vertex}} - \\theta_{\\text{camera}}")} />
     </div>
-    <p class="py-2 text">
+    <p class={content.paragraph}>
       Проекционное расстояние (с учётом угла обзора):
     </p>
-    <div class="bg-gray-100 border border-gray-200 p-4 text">
+    <div class={content.noteBlock}>
       <div set:html={renderFormula("d = \\sqrt{\\Delta x^2 + \\Delta y^2}")} />
       <div set:html={renderFormula("d_{\\text{proj}} = d \\cdot \\cos(\\theta_{\\text{rel}})")} />
       <div set:html={renderFormula("h = \\frac{H_{\\text{wall}}}{d_{\\text{proj}}}")} />
     </div>
-    <p class="py-2">
-      <a href={`${PROJECT_REPO_URL}/stages/Stage1c/render25d.ts`} target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 text-blue-600 hover:text-blue-800 hover:underline transition-colors" >Реализация шага на github</a>
+    <p class={content.paragraph}>
+      <a href={`${PROJECT_REPO_URL}/stages/Stage1c/render25d.ts`} target="_blank" rel="noopener noreferrer" class={content.referenceLink} >Реализация шага на github</a>
     </p>
   </section>
 </PageLayout>

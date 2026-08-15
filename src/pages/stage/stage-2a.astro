@@ -1,4 +1,5 @@
 ---
+import content from '@app/styles/content.module.css';
 import PageLayout from '@app/layouts/PageLayout.astro';
 import Stage from '@app/pages/stage/_islands/Stage2a';
 import type { PageMetadata } from '@app/config/pages';
@@ -45,31 +46,31 @@ const codeSectorsHtml = await codeToHtml(codeSectors, { lang: 'ts', theme: 'gith
 ---
 
 <PageLayout>
-  <section class="flex flex-col gap-4">
-    <p class="py-2 text">
+  <section class={content.contentSection}>
+    <p class={content.paragraph}>
       До этого уровень был просто набором отрезков. Для дальнейшей отрисовки пола, потолка и переходов между комнатами нам нужна более содержательная структура. Сейчас это может показаться не совсем интуитивным шагом, но давайте введем такое понятие как сектор. Будем называть сектором множество стен, которые при виде сверху образуют замкнутый многоугольник.
     </p>
-    <p class="py-2 text">
-      Также вместо понятия «отрезок» <code class="px-2 py-1 bg-gray-100 text-gray-800 text-xs font-semibold rounded">Linedef</code> будем использовать понятие «сегмент» <code class="px-2 py-1 bg-gray-100 text-gray-800 text-xs font-semibold rounded">Seg</code>, поскольку линия в дальнейшем может быть разбита на несколько частей. Теперь сектор будем описывать как множество сегментов:
+    <p class={content.paragraph}>
+      Также вместо понятия «отрезок» <code class={content.inlineCode}>Linedef</code> будем использовать понятие «сегмент» <code class={content.inlineCode}>Seg</code>, поскольку линия в дальнейшем может быть разбита на несколько частей. Теперь сектор будем описывать как множество сегментов:
     </p>
     <div set:html={codeSectorHtml} />
     <Stage part={0} client:load />
-    <p class="py-2 text">
+    <p class={content.paragraph}>
       Проекции выглядят одинаково: мы пока не изменили математику отрисовщика, а только изменили способ обхода геометрии. Это важный промежуточный результат — новая модель уровня сохраняет прежнее изображение.
     </p>
-    <p class="py-2 text">
-      И если раньше мы строили проекции на основе множества <code class="px-2 py-1 bg-gray-100 text-gray-800 text-xs font-semibold rounded">Linedef</code> из уровня:
+    <p class={content.paragraph}>
+      И если раньше мы строили проекции на основе множества <code class={content.inlineCode}>Linedef</code> из уровня:
     </p>
     <div set:html={codeLinedefsHtml} />
-    <p class="py-2 text">
-      То теперь строим на основе множества <code class="px-2 py-1 bg-gray-100 text-gray-800 text-xs font-semibold rounded">Seg</code>, которое содержит каждый сектор:
+    <p class={content.paragraph}>
+      То теперь строим на основе множества <code class={content.inlineCode}>Seg</code>, которое содержит каждый сектор:
     </p>
     <div set:html={codeSectorsHtml} />
-    <p class="py-2 text">
+    <p class={content.paragraph}>
       Поскольку геометрия сектора может быть произвольной, все видимые стены по-прежнему собираются в общий список и рисуются от дальних к ближним. На следующих шагах свойства сектора начнут влиять на его проекцию.
     </p>
-    <p class="py-2">
-      <a href={`${PROJECT_REPO_URL}/stages/Stage2a/render25d.ts`} target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 text-blue-600 hover:text-blue-800 hover:underline transition-colors" >Реализация шага на github</a>
+    <p class={content.paragraph}>
+      <a href={`${PROJECT_REPO_URL}/stages/Stage2a/render25d.ts`} target="_blank" rel="noopener noreferrer" class={content.referenceLink} >Реализация шага на github</a>
     </p>
   </section>
 </PageLayout>

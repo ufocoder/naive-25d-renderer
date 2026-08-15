@@ -62,10 +62,6 @@ export function isMenuGroup(entry: MenuEntry): entry is MenuGroup {
   return 'links' in entry;
 }
 
-export function linkClass(active: boolean) {
-  return `docs-nav-link ${active ? 'docs-nav-link-active' : ''}`;
-}
-
 export function normalizePathname(pathname: string) {
   const base = (import.meta.env.BASE_URL || '/').replace(/\/$/, '');
   let path = pathname;

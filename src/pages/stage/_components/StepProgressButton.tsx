@@ -1,3 +1,4 @@
+import editorStyles from '@app/styles/editor.module.css';
 import type { Component, JSX } from 'solid-js';
 import { createEffect, createSignal, onCleanup } from 'solid-js';
 
@@ -36,12 +37,12 @@ const StepProgressButton: Component<StepProgressButtonProps> = (props) => {
   return (
     <button
       type="button"
-      class="relative overflow-hidden border border-[#9eb3da] bg-[#dce6fa] px-4 py-2 text-sm font-medium text-[#1f2a44] transition-colors hover:bg-[#c8d8f5]"
+      class={editorStyles.toolbarProgressButton}
       onClick={props.onClick}
     >
       <span
         aria-hidden="true"
-        class="absolute inset-y-0 left-0 bg-[#9eb3da]"
+        class={editorStyles.toolbarProgressFill}
         style={{
           transition: filled()
             ? `width ${props.duration}ms linear`
@@ -49,7 +50,7 @@ const StepProgressButton: Component<StepProgressButtonProps> = (props) => {
           width: filled() ? '100%' : '0%',
         }}
       />
-      <span class="relative">{props.children}</span>
+      <span class={editorStyles.relativeLayer}>{props.children}</span>
     </button>
   );
 };

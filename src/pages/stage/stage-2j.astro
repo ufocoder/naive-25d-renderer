@@ -1,4 +1,5 @@
 ---
+import content from '@app/styles/content.module.css';
 import PageLayout from '@app/layouts/PageLayout.astro';
 import Stage from '@app/pages/stage/_islands/Stage2j';
 import type { PageMetadata } from '@app/config/pages';
@@ -11,20 +12,20 @@ export const metadata: PageMetadata = {
 ---
 
 <PageLayout>
-  <section class="flex flex-col gap-4">
-    <p class="py-2 text">
+  <section class={content.contentSection}>
+    <p class={content.paragraph}>
       Обрезка в виде трапеции хорошо работает для одного портала, однако цепочка порталов может образовать область сложнее одной трапеции. Чтобы корректно сохранить пересечение всех пройденных окон, потребуется представлять область видимости произвольным многоугольником.
     </p>
-    <p class="py-2 text">
-      Для пересечения выпуклых многоугольников используем алгоритм <a href="https://en.wikipedia.org/wiki/Sutherland%E2%80%93Hodgman_algorithm" class="link underline" target="_blank" rel="noopener noreferrer">Сазерленда—Ходжмана</a>. Он по очереди обрезает исходный многоугольник каждой стороной окна и передает получившиеся вершины на следующий шаг. В результате каждый сектор рисуется только через реально видимую часть всей цепочки порталов, включая наклонные границы и окна более сложной формы.
+    <p class={content.paragraph}>
+      Для пересечения выпуклых многоугольников используем алгоритм <a href="https://en.wikipedia.org/wiki/Sutherland%E2%80%93Hodgman_algorithm" class={content.articleLink} target="_blank" rel="noopener noreferrer">Сазерленда—Ходжмана</a>. Он по очереди обрезает исходный многоугольник каждой стороной окна и передает получившиеся вершины на следующий шаг. В результате каждый сектор рисуется только через реально видимую часть всей цепочки порталов, включая наклонные границы и окна более сложной формы.
     </p>
     <Stage part={0} client:load />
-    <p class="py-2">
+    <p class={content.paragraph}>
       <a
         href={`${PROJECT_REPO_URL}/stages/Stage2j/render25d.ts`}
         target="_blank"
         rel="noopener noreferrer"
-        class="inline-flex items-center gap-1 text-blue-600 transition-colors hover:text-blue-800 hover:underline"
+        class={content.referenceLink}
       >
         Реализация шага на github
       </a>

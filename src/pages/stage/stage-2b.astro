@@ -1,4 +1,5 @@
 ---
+import content from '@app/styles/content.module.css';
 import PageLayout from '@app/layouts/PageLayout.astro';
 import Stage from '@app/pages/stage/_islands/Stage2b';
 import type { PageMetadata } from '@app/config/pages';
@@ -59,24 +60,24 @@ const code2Html = await codeToHtml(code2, { lang: 'ts', theme: 'github-light' })
 ---
 
 <PageLayout>
-  <section class="flex flex-col gap-4">
-    <p class="py-2 text">
+  <section class={content.contentSection}>
+    <p class={content.paragraph}>
       Добавим в описание сектора высоту. Пусть стены сектора будут использовать одно и то же значение при построении проекции:
     </p>
     <div set:html={code1Html} />
-    <p class="py-2 text">
+    <p class={content.paragraph}>
       Затем, используя ранее созданный отрисовщик, попробуем сделать проекцию уровеня:
     </p>
     <Stage part={0} client:load />
-    <p class="py-2 text">
+    <p class={content.paragraph}>
       Для примера выше используем следующее описание уровня:
     </p>
     <div set:html={code2Html} />
-    <p class="py-2 text">
-      В описании уровня мы продолжаем хранить <code class="py-2 py-1 bg-gray-100 text-gray-800 text-xs font-semibold rounded">level.linedefs</code>. Это необходимо для отрисовки карты,  2D-уровня, вид сверху.
+    <p class={content.paragraph}>
+      В описании уровня мы продолжаем хранить <code class={content.inlineCode}>level.linedefs</code>. Это необходимо для отрисовки карты,  2D-уровня, вид сверху.
     </p>
-    <p class="py-2">
-      <a href={`${PROJECT_REPO_URL}/stages/Stage2a/render25d.ts`} target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 text-blue-600 hover:text-blue-800 hover:underline transition-colors" >Реализация шага на github</a>
+    <p class={content.paragraph}>
+      <a href={`${PROJECT_REPO_URL}/stages/Stage2a/render25d.ts`} target="_blank" rel="noopener noreferrer" class={content.referenceLink} >Реализация шага на github</a>
     </p>
   </section>
 </PageLayout>

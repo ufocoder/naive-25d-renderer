@@ -1,4 +1,5 @@
 ---
+import content from '@app/styles/content.module.css';
 import PageLayout from '@app/layouts/PageLayout.astro';
 import InDevelopmentGate from '@app/pages/_components/InDevelopmentGate.astro';
 import Stage from '@app/pages/stage/_islands/Stage4c';
@@ -12,7 +13,7 @@ export const metadata: PageMetadata = {
 
 <PageLayout>
   <InDevelopmentGate />
-  <section class="flex flex-col gap-4">
+  <section class={content.contentSection}>
     <Stage client:load />
   </section>
 </PageLayout>

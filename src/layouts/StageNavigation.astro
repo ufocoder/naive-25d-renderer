@@ -1,5 +1,6 @@
 ---
 import { getPrevNextLinks, withBase } from '@app/config/pages';
+import styles from '@app/layouts/StageNavigation.module.css';
 
 type Props = {
   currentPath: string;
@@ -11,12 +12,12 @@ const { previous, next } = getPrevNextLinks(currentPath);
 
 {
   (previous || next) && (
-    <nav class="px-1 pb-2 pt-3" aria-label="Навигация по этапам">
-      <div class="flex items-center justify-between gap-4">
+    <nav class={styles.nav} aria-label="Навигация по этапам">
+      <div class={styles.grid}>
         {previous ? (
           <a
             href={withBase(previous.href)}
-            class="group flex items-center gap-3 rounded-lg py-3 pr-3 text-[color:var(--ink)] no-underline transition-colors hover:text-[color:var(--accent-ink)]"
+            class={`${styles.link} ${styles.previous}`}
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -28,28 +29,27 @@ const { previous, next } = getPrevNextLinks(currentPath);
               stroke-width="2"
               stroke-linecap="round"
               stroke-linejoin="round"
-              class="transition-transform group-hover:-translate-x-0.5"
               aria-hidden="true"
             >
               <path d="m15 18-6-6 6-6"></path>
             </svg>
-            <span class="flex flex-col items-start">
-              <span class="text-xs font-medium text-[color:var(--muted)]">{previous.groupTitle}</span>
-              <span class="text-sm font-medium">{previous.label}</span>
+            <span class={`${styles.text} ${styles.textStart}`}>
+              <span class={styles.group}>{previous.groupTitle}</span>
+              <span class={styles.label}>{previous.label}</span>
             </span>
           </a>
         ) : (
-          <div class="invisible"></div>
+          <div class={styles.placeholder}></div>
         )}
 
         {next ? (
           <a
             href={withBase(next.href)}
-            class="group flex items-center gap-3 rounded-lg py-3 pl-3 text-[color:var(--ink)] no-underline transition-colors hover:text-[color:var(--accent-ink)]"
+            class={`${styles.link} ${styles.next}`}
           >
-            <span class="flex flex-col items-end text-right">
-              <span class="text-xs font-medium text-[color:var(--muted)]">{next.groupTitle}</span>
-              <span class="text-sm font-medium">{next.label}</span>
+            <span class={`${styles.text} ${styles.textEnd}`}>
+              <span class={styles.group}>{next.groupTitle}</span>
+              <span class={styles.label}>{next.label}</span>
             </span>
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -61,14 +61,13 @@ const { previous, next } = getPrevNextLinks(currentPath);
               stroke-width="2"
               stroke-linecap="round"
               stroke-linejoin="round"
-              class="transition-transform group-hover:translate-x-0.5"
               aria-hidden="true"
             >
               <path d="m9 18 6-6-6-6"></path>
             </svg>
           </a>
         ) : (
-          <div class="invisible"></div>
+          <div class={styles.placeholder}></div>
         )}
       </div>
     </nav>

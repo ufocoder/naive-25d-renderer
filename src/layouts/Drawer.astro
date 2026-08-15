@@ -3,10 +3,10 @@ import {
   getMenuEntries,
   isMenuGroup,
   isPathActive,
-  linkClass,
   type MenuGroup,
   withBase,
 } from '@app/config/pages';
+import styles from '@app/layouts/Drawer.module.css';
 
 type Props = {
   currentPath: string;
@@ -28,40 +28,54 @@ const isGroupActive = (entry: MenuGroup) =>
   entry.links.some((link) => isPathActive(currentPath, link.href));
 const isPrefaceActive = prefaceEntry ? isPathActive(currentPath, prefaceEntry.href) : false;
 const isContentActive = isPrefaceActive || stageGroups.some((entry) => isGroupActive(entry));
+const navLinkClass = (active: boolean, ...extraClasses: string[]) =>
+  [styles.navLink, active ? styles.navLinkActive : '', ...extraClasses]
+    .filter(Boolean)
+    .join(' ');
+const drawerClasses = {
+  drawerOpen: styles.drawerOpen,
+  drawerClosed: styles.drawerClosed,
+  drawerBackdropVisible: styles.drawerBackdropVisible,
+  drawerPanelOpen: styles.drawerPanelOpen,
+};
 ---
 
-<aside class="docs-sidebar hidden min-w-0 flex-col lg:flex">
-  <a href={withBase('/')} class="docs-site-brand">
+<aside class={styles.sidebar}>
+  <a href={withBase('/')} class={styles.brand}>
     <span>
       <span>2.5D Renderer</span>
       <small>почти как в DOOM 1993</small>
     </span>
   </a>
 
-  <nav class="docs-sidebar-nav flex-1 overflow-y-auto px-3">
-    <div class="flex flex-col">
+  <nav class={styles.sidebarNav}>
+    <div class={styles.navList}>
       {primaryRootEntries.map((entry) => (
         <a
           href={withBase(entry.href)}
-          class={`${linkClass(isPathActive(currentPath, entry.href))} docs-nav-link-root`}
+          class={navLinkClass(isPathActive(currentPath, entry.href), styles.navLinkRoot)}
         >
           <span>{entry.label}</span>
         </a>
       ))}
 
       {stageGroups.length > 0 && (
-        <section class="docs-nav-section flex min-w-0 flex-col">
-          <div class={`docs-nav-heading ${isContentActive ? 'docs-nav-heading-active' : ''}`}>
+        <section class={styles.navSection}>
+          <div class={`${styles.navHeading} ${isContentActive ? styles.navHeadingActive : ''}`}>
             Основное содержание
           </div>
 
-          <div data-drawer-group-content class="overflow-hidden opacity-100">
-            <div class="docs-stage-menu">
+          <div data-drawer-group-content class={styles.navContent}>
+            <div class={styles.stageMenu}>
               {prefaceEntry && (
-                <section class="flex min-w-0 flex-col gap-1">
+                <section class={styles.stageSection}>
                   <a
                     href={withBase(prefaceEntry.href)}
-                    class={`${linkClass(isPathActive(currentPath, prefaceEntry.href))} docs-nav-link-root docs-preface-link`}
+                    class={navLinkClass(
+                      isPathActive(currentPath, prefaceEntry.href),
+                      styles.navLinkRoot,
+                      styles.prefaceLink,
+                    )}
                   >
                     {prefaceEntry.label}
                   </a>
@@ -69,42 +83,27 @@ const isContentActive = isPrefaceActive || stageGroups.some((entry) => isGroupAc
               )}
 
               {stageGroups.map((entry) => (
-                <section class="flex min-w-0 flex-col gap-1">
+                <section class={styles.stageSection}>
                   <a
                     href={withBase(entry.links[0].href)}
                     data-drawer-group
                     data-expanded={isGroupActive(entry) ? 'true' : 'false'}
-                    class="docs-group"
+                    class={styles.groupLink}
                   >
-                    <span class="flex-1 truncate text-left">{entry.title}</span>
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="15"
-                      height="15"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      class="shrink-0 rotate-180 transition-transform"
-                      aria-hidden="true"
-                    >
-                      <path d="m6 9 6 6 6-6"></path>
-                    </svg>
+                    <span class={styles.groupTitle}>{entry.title}</span>
                   </a>
 
                   {isGroupActive(entry) && (
                     <div
                       data-drawer-group-content
-                      class="overflow-hidden opacity-100"
+                      class={styles.groupContent}
                     >
-                      <ul class="m-0 list-none space-y-1 pl-0">
+                      <ul>
                         {entry.links.map((link) => (
                           <li>
                             <a
                               href={withBase(link.href)}
-                              class={linkClass(isPathActive(currentPath, link.href))}
+                              class={navLinkClass(isPathActive(currentPath, link.href))}
                             >
                               {link.label}
                             </a>
@@ -121,14 +120,18 @@ const isContentActive = isPrefaceActive || stageGroups.some((entry) => isGroupAc
       )}
 
       {(editorEntry || aboutEntry) && (
-        <section class="docs-nav-section flex min-w-0 flex-col">
-          <div class="docs-nav-heading">Дополнительно</div>
+        <section class={styles.navSection}>
+          <div class={styles.navHeading}>Дополнительно</div>
 
-          <div class="docs-nav-section-items">
+          <div class={styles.navContent}>
             {editorEntry && (
               <a
                 href={withBase(editorEntry.href)}
-                class={`${linkClass(isPathActive(currentPath, editorEntry.href))} docs-nav-link-root docs-nav-link-with-icon`}
+                class={navLinkClass(
+                  isPathActive(currentPath, editorEntry.href),
+                  styles.navLinkRoot,
+                  styles.navLinkIcon,
+                )}
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -152,7 +155,11 @@ const isContentActive = isPrefaceActive || stageGroups.some((entry) => isGroupAc
             {aboutEntry && (
               <a
                 href={withBase(aboutEntry.href)}
-                class={`${linkClass(isPathActive(currentPath, aboutEntry.href))} docs-nav-link-root docs-nav-link-with-icon`}
+                class={navLinkClass(
+                  isPathActive(currentPath, aboutEntry.href),
+                  styles.navLinkRoot,
+                  styles.navLinkIcon,
+                )}
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -180,21 +187,21 @@ const isContentActive = isPrefaceActive || stageGroups.some((entry) => isGroupAc
   </nav>
 </aside>
 
-<div data-drawer class="pointer-events-none fixed inset-0 z-50 transition-all duration-300 lg:hidden">
+<div data-drawer class={`${styles.drawer} ${styles.drawerClosed}`}>
   <button
     type="button"
     aria-label="Закрыть меню"
     data-drawer-close
-    class="absolute inset-0 bg-black opacity-0 transition-opacity duration-300"
+    class={styles.drawerBackdrop}
   ></button>
 
   <aside
     data-drawer-panel
-    class="docs-drawer-panel absolute bottom-0 left-0 top-0 w-80 max-w-[85vw] -translate-x-full transform transition-transform duration-300 ease-out"
+    class={styles.drawerPanel}
   >
-    <div class="flex items-center justify-between px-4 py-4">
-      <span class="text-lg font-normal text-[color:var(--ink)]">2.5D Renderer</span>
-      <button type="button" aria-label="Закрыть меню" data-drawer-close class="docs-icon-button">
+    <div class={styles.drawerHeader}>
+      <span class={styles.drawerTitle}>2.5D Renderer</span>
+      <button type="button" aria-label="Закрыть меню" data-drawer-close class={styles.iconButton}>
         <svg
           xmlns="http://www.w3.org/2000/svg"
           width="22"
@@ -213,30 +220,34 @@ const isContentActive = isPrefaceActive || stageGroups.some((entry) => isGroupAc
       </button>
     </div>
 
-    <nav class="flex flex-col gap-5 overflow-y-auto p-4" style="max-height: calc(100vh - 5rem);">
-      <div class="flex flex-col">
+    <nav class={styles.drawerNav}>
+      <div class={styles.navList}>
         {primaryRootEntries.map((entry) => (
           <a
             href={withBase(entry.href)}
-            class={`${linkClass(isPathActive(currentPath, entry.href))} docs-nav-link-root`}
+            class={navLinkClass(isPathActive(currentPath, entry.href), styles.navLinkRoot)}
           >
             <span>{entry.label}</span>
           </a>
         ))}
 
         {stageGroups.length > 0 && (
-          <section class="docs-nav-section flex min-w-0 flex-col">
-            <div class={`docs-nav-heading ${isContentActive ? 'docs-nav-heading-active' : ''}`}>
+          <section class={styles.navSection}>
+            <div class={`${styles.navHeading} ${isContentActive ? styles.navHeadingActive : ''}`}>
               Основное содержание
             </div>
 
-            <div data-drawer-group-content class="overflow-hidden opacity-100">
-              <div class="docs-stage-menu">
+            <div data-drawer-group-content class={styles.navContent}>
+              <div class={styles.stageMenu}>
                 {prefaceEntry && (
-                  <section class="flex min-w-0 flex-col gap-1">
+                  <section class={styles.stageSection}>
                     <a
                       href={withBase(prefaceEntry.href)}
-                      class={`${linkClass(isPathActive(currentPath, prefaceEntry.href))} docs-nav-link-root docs-preface-link`}
+                      class={navLinkClass(
+                        isPathActive(currentPath, prefaceEntry.href),
+                        styles.navLinkRoot,
+                        styles.prefaceLink,
+                      )}
                     >
                       {prefaceEntry.label}
                     </a>
@@ -244,42 +255,27 @@ const isContentActive = isPrefaceActive || stageGroups.some((entry) => isGroupAc
                 )}
 
                 {stageGroups.map((entry) => (
-                  <section class="flex min-w-0 flex-col gap-1">
+                  <section class={styles.stageSection}>
                     <a
                       href={withBase(entry.links[0].href)}
                       data-drawer-group
                       data-expanded={isGroupActive(entry) ? 'true' : 'false'}
-                      class="docs-group"
+                      class={styles.groupLink}
                     >
-                      <span class="flex-1 text-left">{entry.title}</span>
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="15"
-                        height="15"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        class="rotate-180 transition-transform"
-                        aria-hidden="true"
-                      >
-                        <path d="m6 9 6 6 6-6"></path>
-                      </svg>
+                      <span class={styles.groupTitle}>{entry.title}</span>
                     </a>
 
                     {isGroupActive(entry) && (
                       <div
                         data-drawer-group-content
-                        class="overflow-hidden opacity-100"
+                        class={styles.groupContent}
                       >
-                        <ul class="m-0 list-none space-y-1 pl-0">
+                        <ul>
                           {entry.links.map((link) => (
                             <li>
                               <a
                                 href={withBase(link.href)}
-                                class={linkClass(isPathActive(currentPath, link.href))}
+                                class={navLinkClass(isPathActive(currentPath, link.href))}
                               >
                                 {link.label}
                               </a>
@@ -296,14 +292,18 @@ const isContentActive = isPrefaceActive || stageGroups.some((entry) => isGroupAc
         )}
 
         {(editorEntry || aboutEntry) && (
-          <section class="docs-nav-section flex min-w-0 flex-col">
-            <div class="docs-nav-heading">Дополнительно</div>
+          <section class={styles.navSection}>
+            <div class={styles.navHeading}>Дополнительно</div>
 
-            <div class="docs-nav-section-items">
+            <div class={styles.navContent}>
               {editorEntry && (
                 <a
                   href={withBase(editorEntry.href)}
-                  class={`${linkClass(isPathActive(currentPath, editorEntry.href))} docs-nav-link-root docs-nav-link-with-icon`}
+                  class={navLinkClass(
+                    isPathActive(currentPath, editorEntry.href),
+                    styles.navLinkRoot,
+                    styles.navLinkIcon,
+                  )}
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -327,7 +327,11 @@ const isContentActive = isPrefaceActive || stageGroups.some((entry) => isGroupAc
               {aboutEntry && (
                 <a
                   href={withBase(aboutEntry.href)}
-                  class={`${linkClass(isPathActive(currentPath, aboutEntry.href))} docs-nav-link-root docs-nav-link-with-icon`}
+                  class={navLinkClass(
+                    isPathActive(currentPath, aboutEntry.href),
+                    styles.navLinkRoot,
+                    styles.navLinkIcon,
+                  )}
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -356,7 +360,7 @@ const isContentActive = isPrefaceActive || stageGroups.some((entry) => isGroupAc
   </aside>
 </div>
 
-<script>
+<script define:vars={{ drawerClasses }}>
   const drawer = document.querySelector('[data-drawer]');
   const panel = document.querySelector('[data-drawer-panel]');
   const openButtons = document.querySelectorAll('[data-drawer-open]');
@@ -365,24 +369,13 @@ const isContentActive = isPrefaceActive || stageGroups.some((entry) => isGroupAc
   const setDrawerOpen = (isOpen: boolean) => {
     if (!drawer || !panel) return;
 
-    drawer.classList.toggle('pointer-events-auto', isOpen);
-    drawer.classList.toggle('pointer-events-none', !isOpen);
-    drawer.querySelector('[data-drawer-close]')?.classList.toggle('opacity-50', isOpen);
-    drawer.querySelector('[data-drawer-close]')?.classList.toggle('opacity-0', !isOpen);
-    panel.classList.toggle('translate-x-0', isOpen);
-    panel.classList.toggle('-translate-x-full', !isOpen);
+    drawer.classList.toggle(drawerClasses.drawerOpen, isOpen);
+    drawer.classList.toggle(drawerClasses.drawerClosed, !isOpen);
+    drawer
+      .querySelector('[data-drawer-close]')
+      ?.classList.toggle(drawerClasses.drawerBackdropVisible, isOpen);
+    panel.classList.toggle(drawerClasses.drawerPanelOpen, isOpen);
     document.body.style.overflow = isOpen ? 'hidden' : '';
-  };
-
-  const syncGroup = (button: Element) => {
-    const isExpanded = button.getAttribute('data-expanded') === 'true';
-    const content = button.nextElementSibling;
-    const icon = button.querySelector('svg');
-
-    content?.classList.toggle('opacity-100', isExpanded);
-    content?.classList.toggle('opacity-0', !isExpanded);
-    content?.classList.toggle('max-h-0', !isExpanded);
-    icon?.classList.toggle('rotate-180', isExpanded);
   };
 
   openButtons.forEach((button) => {
@@ -402,7 +395,4 @@ const isContentActive = isPrefaceActive || stageGroups.some((entry) => isGroupAc
     }
   });
 
-  document.querySelectorAll('[data-drawer-group]').forEach((button) => {
-    syncGroup(button);
-  });
 </script>

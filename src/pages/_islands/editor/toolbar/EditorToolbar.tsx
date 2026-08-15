@@ -1,3 +1,4 @@
+import editorStyles from '@app/styles/editor.module.css';
 import type { Component } from 'solid-js';
 
 import LinedefToolbarGroup from './LinedefToolbarGroup';
@@ -14,7 +15,7 @@ type EditorToolbarProps = {
 };
 
 const EditorToolbar: Component<EditorToolbarProps> = (props) => (
-  <div class="flex flex-wrap items-end gap-3">
+  <div class={editorStyles.toolbarRow}>
     <LinedefToolbarGroup
       isAddingLinedef={props.isAddingLinedef}
       onAddToggle={props.onAddLinedefToggle}

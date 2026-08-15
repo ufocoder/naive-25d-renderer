@@ -1,3 +1,5 @@
+import content from '@app/styles/content.module.css';
+import stageStyles from '@app/styles/stage.module.css';
 import Canvas from "@app/components/Canvas/CanvasBase";
 import { useCameraControls } from "@app/hooks/useCameraControls";
 import render2dStage0 from '@app/stages/Stage0b/render2d';
@@ -25,12 +27,12 @@ const Stage: Component<StageProps> = (props) => {
       case 0:
         return (
           <>
-            <div class="my-10 flex flex-col justify-center gap-6 md:grid md:grid-cols-2 md:gap-4 md:items-start justify-items">
-              <div class="flex flex-col gap-2">
-                <h2 class="flex justify-center text-2xl">
+            <div class={stageStyles.demoGridWithSpacing}>
+              <div class={stageStyles.demoColumn}>
+                <h2 class={stageStyles.demoTitle}>
                   2.5D Renderer
                 </h2>
-                <div class="flex justify-center">
+                <div class={stageStyles.centered}>
                   <Canvas
                     settings={settings1}
                     width={settings1().camera.screen.width}
@@ -39,11 +41,11 @@ const Stage: Component<StageProps> = (props) => {
                   />
                 </div>
               </div>
-              <div class="flex flex-col gap-2">
-                <h2 class="flex justify-center text-2xl">
+              <div class={stageStyles.demoColumn}>
+                <h2 class={stageStyles.demoTitle}>
                   2D Renderer
                 </h2>
-                <div class="flex justify-center">
+                <div class={stageStyles.centered}>
                   <Map2d
                     initialZoom={0.6}
                     initialOffsetX={75}
@@ -62,12 +64,12 @@ const Stage: Component<StageProps> = (props) => {
       case 1:
         return (
           <>
-            <div class="my-10 flex flex-col justify-center gap-6 md:grid md:grid-cols-2 md:gap-4 md:items-start justify-items">
-              <div class="flex flex-col gap-2">
-                <h2 class="flex justify-center text-2xl">
+            <div class={stageStyles.demoGridWithSpacing}>
+              <div class={stageStyles.demoColumn}>
+                <h2 class={stageStyles.demoTitle}>
                   2.5D Renderer
                 </h2>
-                <div class="flex justify-center">
+                <div class={stageStyles.centered}>
                   <Canvas
                     settings={settings2}
                     width={settings2().camera.screen.width}
@@ -76,11 +78,11 @@ const Stage: Component<StageProps> = (props) => {
                   />
                 </div>
               </div>
-              <div class="flex flex-col gap-2">
-                <h2 class="flex justify-center text-2xl">
+              <div class={stageStyles.demoColumn}>
+                <h2 class={stageStyles.demoTitle}>
                   2D Renderer
                 </h2>
-                <div class="flex justify-center">
+                <div class={stageStyles.centered}>
                   <Map2d
                     initialZoom={0.6}
                     initialOffsetX={75}
@@ -102,7 +104,7 @@ const Stage: Component<StageProps> = (props) => {
   };
 
   return (
-    <div class="flex flex-col gap-4">
+    <div class={content.contentSection}>
       {renderPart(props.part ?? 0)}
     </div>
   );

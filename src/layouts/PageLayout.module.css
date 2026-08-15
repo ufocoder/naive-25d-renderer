@@ -1,0 +1,251 @@
+.siteShell {
+  display: grid;
+  width: min(100%, calc(var(--sidebar-width) + var(--page-width) + 6rem));
+  min-height: 100vh;
+  grid-template-columns: minmax(0, 1fr);
+  margin-inline: auto;
+}
+
+.contentWrap {
+  width: 100%;
+  max-width: calc(var(--page-width) + 4rem);
+  margin-inline: auto;
+  padding: 1.5rem 1rem;
+}
+
+.topbar {
+  display: flex;
+  min-height: var(--docs-topbar-height);
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.topbarBrand {
+  display: block;
+  min-width: 0;
+  padding-left: 0.75rem;
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.topbarBrand > span,
+.topbarBrand > small {
+  display: block;
+}
+
+.topbarBrand > span {
+  font-size: 1.5rem;
+  font-weight: 400;
+  line-height: 1.2;
+}
+
+.topbarBrand > small {
+  color: var(--muted);
+  font-size: 0.9rem;
+  line-height: 1.25;
+}
+
+.topbarActions {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+  margin-left: auto;
+}
+
+.button {
+  display: inline-flex;
+  min-width: 2.25rem;
+  height: 2.25rem;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 0.5rem;
+  padding-inline: 0.7rem;
+  background: var(--surface);
+  color: var(--ink);
+  font-family: var(--font-ui);
+  font-size: 0.9rem;
+  font-weight: 600;
+  line-height: 1;
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    background-color 0.15s var(--ease),
+    color 0.15s var(--ease);
+}
+
+.button:hover {
+  background: var(--accent-soft);
+  color: var(--accent-ink);
+}
+
+.sidebarToggle {
+  padding-inline: 0.65rem;
+  font-weight: 500;
+}
+
+.contentCard {
+  display: flex;
+  width: 100%;
+  min-height: calc(100vh - 3rem);
+  flex-direction: column;
+  border: 1px solid var(--hairline);
+  border-radius: 0.5rem;
+  background: var(--surface);
+  padding: 1.25rem;
+}
+
+.contentCard :global(main) {
+  color: var(--ink);
+  font-family: var(--font-ui);
+  font-size: 0.95rem;
+  line-height: 1.7;
+}
+
+.contentCard :global(p),
+.contentCard :global(li) {
+  color: #273142;
+  line-height: 1.7;
+}
+
+.contentCard :global(:is(h1, h2, h3, h4)) {
+  color: var(--ink);
+  font-family: var(--font-ui);
+  font-weight: 550;
+  line-height: 1.2;
+  letter-spacing: 0;
+}
+
+.contentCard :global(h1) {
+  font-size: clamp(1.9rem, 4vw, 2.45rem);
+}
+
+.contentCard :global(h2) {
+  font-size: clamp(1.45rem, 3vw, 1.85rem);
+}
+
+.contentCard :global(h3) {
+  font-size: clamp(1.18rem, 2.2vw, 1.35rem);
+}
+
+.contentCard :global(a) {
+  color: var(--accent-ink);
+  text-decoration-color: color-mix(in oklab, currentColor 42%, transparent);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.18em;
+  transition:
+    color 0.15s var(--ease),
+    text-decoration-color 0.15s var(--ease);
+}
+
+.contentCard :global(a:hover) {
+  color: var(--accent);
+  text-decoration-color: currentColor;
+}
+
+.contentCard :global(a[href*="github.com/ufocoder/25d-renderer/blob/main/src/stages/"]::after) {
+  content: "";
+  display: inline-block;
+  width: 0.42em;
+  height: 0.42em;
+  margin-left: 0.32em;
+  border-top: 1.5px solid currentColor;
+  border-right: 1.5px solid currentColor;
+  transform: translateY(0.04em) rotate(45deg);
+}
+
+.contentCard :global(code:not(pre code)) {
+  border: 1px solid var(--hairline);
+  border-radius: 0;
+  background: var(--surface-soft) !important;
+  color: #1f3a5f !important;
+  font-family: var(--font-mono);
+  font-size: 0.84em;
+}
+
+.contentCard :global(canvas) {
+  border: 1px solid var(--hairline);
+  border-radius: 0;
+  background: #ffffff;
+}
+
+.contentCard :global(pre.shiki),
+.contentCard :global(.code-block pre) {
+  max-width: 100%;
+  overflow-x: auto;
+  padding: 0.7rem 0.85rem;
+  border: 1px solid var(--hairline);
+  border-radius: 0;
+  background: var(--code-bg) !important;
+  box-shadow: none;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  line-height: 1.55;
+}
+
+.contentCard :global(pre.shiki code),
+.contentCard :global(.code-block pre code) {
+  display: inline-block;
+  min-width: max-content;
+}
+
+.contentCard :global(pre.shiki code > .line:first-child:empty),
+.contentCard :global(.code-block pre code > .line:first-child:empty),
+.contentCard :global(pre.shiki code > .line:last-child:empty),
+.contentCard :global(.code-block pre code > .line:last-child:empty) {
+  display: none;
+}
+
+@media (max-width: 767px) {
+  .button {
+    width: 2.25rem;
+    padding-inline: 0;
+  }
+
+  .button span {
+    display: none;
+  }
+}
+
+@media (min-width: 768px) {
+  .contentCard {
+    padding: 2rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .siteShell {
+    grid-template-columns: var(--sidebar-width) minmax(0, 1fr);
+    gap: 2rem;
+    padding-inline: 2rem;
+  }
+
+  .contentWrap {
+    padding: 3rem 2rem;
+  }
+
+  .topbarBrand {
+    display: none;
+  }
+}
+
+:global(.docs-sidebar-collapsed) .topbarBrand {
+  display: block;
+}
+
+:global(.docs-sidebar-collapsed) .siteShell {
+  width: min(100%, calc(var(--page-width) + 16rem));
+  grid-template-columns: minmax(0, 1fr);
+}
+
+:global(.docs-sidebar-collapsed) .contentWrap {
+  max-width: calc(var(--page-width) + 12rem);
+}
+
+:global(.docs-sidebar-collapsed) .sidebarToggle svg {
+  transform: scaleX(-1);
+}

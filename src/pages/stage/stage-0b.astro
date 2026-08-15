@@ -1,4 +1,5 @@
 ---
+import content from '@app/styles/content.module.css';
 import PageLayout from '@app/layouts/PageLayout.astro';
 import Stage from '@app/pages/stage/_islands/Stage0b';
 import type { PageMetadata } from '@app/config/pages';
@@ -10,7 +11,7 @@ export const metadata: PageMetadata = {
   groupTitle: 'Stage 0: Введение',
 };
 
-const labelClass = 'px-2 py-1 bg-gray-100 text-gray-800 text-xs font-semibold rounded';
+const labelClass = content.inlineCode;
 
 const code1 = `  interface Vertex {
     x: number;
@@ -73,35 +74,35 @@ const [code1Html, code2Html, code3Html, code4Html] = await Promise.all([
 ---
 
 <PageLayout>
-  <section class="flex flex-col gap-4">
-    <p class="py-2 text">
-      Если вы вдруг не знали или забыли, то ранние шутеры <a class="link underline" href="https://en.wikipedia.org/wiki/Wolfenstein_3D">Wolfenstein 3D</a> и <a class="link underline" href="https://en.wikipedia.org/wiki/Doom_(1993_video_game)">DOOM</a> от компании <a class="link underline" href="https://en.wikipedia.org/wiki/Id_Software">id Software</a> были псевдотрёхмерными. Разработчики особым образом достраивали ещё одно измерение на основе двумерной карты и делали проекцию на воображаемый экран камеры. Поэтому вполне очевидно, что разработку отрисовщика необходимо начать с реализации двумерной карты. Для этого нам потребуется ввести некоторые абстракции.
+  <section class={content.contentSection}>
+    <p class={content.paragraph}>
+      Если вы вдруг не знали или забыли, то ранние шутеры <a class={content.articleLink} href="https://en.wikipedia.org/wiki/Wolfenstein_3D">Wolfenstein 3D</a> и <a class={content.articleLink} href="https://en.wikipedia.org/wiki/Doom_(1993_video_game)">DOOM</a> от компании <a class={content.articleLink} href="https://en.wikipedia.org/wiki/Id_Software">id Software</a> были псевдотрёхмерными. Разработчики особым образом достраивали ещё одно измерение на основе двумерной карты и делали проекцию на воображаемый экран камеры. Поэтому вполне очевидно, что разработку отрисовщика необходимо начать с реализации двумерной карты. Для этого нам потребуется ввести некоторые абстракции.
     </p>
-    <p class="py-2 text">
+    <p class={content.paragraph}>
       Введём такие сущности, как <code class={labelClass}>Vertex</code> (вершина) и <code class={labelClass}>Linedef</code> (отрезок):
     </p>
     <div set:html={code1Html} />
-    <p class="py-2 text">
+    <p class={content.paragraph}>
       Для работы с углами опишем класс <code class={labelClass}>Angle</code> со вспомогательными методами:
     </p>
     <div set:html={code2Html} />
-    <p class="py-2 text">
+    <p class={content.paragraph}>
       Опишем камеру, которую планируем перемещать по карте и на которую будет проецироваться будущее изображение:
     </p>
     <div set:html={code3Html} />
-    <p class="py-2 text">
+    <p class={content.paragraph}>
       Для каждого отрисовщика, а на странице их может быть несколько, добавим его настройки:
     </p>
     <div set:html={code4Html} />
-    <p class="py-2 text">
+    <p class={content.paragraph}>
       Теперь добавим вспомогательный виджет, который будет показывать для карты сверху камеру, ее угол обзора и уровень как множество линий. Если рядом с картой будут присутствовать элементы управления, значит на этой странице можно управлять картой, например, перемещать камеру, приближать объекты на карте и прочее. Этот виджет будет сопровождать большинство заметок.
     </p>
     <Stage client:load />
-    <p class="py-2">
+    <p class={content.paragraph}>
       Кстати, если вы читаете эти заметки с мобильного устройства, то можете смело нажимать на все кнопки рядом с картой. Если они есть рядом с картой, значит они точно должны работать.
     </p>
-    <p class="py-2">
-      <a href={`${PROJECT_REPO_URL}/stages/Stage0b/render25d.ts`} target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 text-blue-600 hover:text-blue-800 hover:underline transition-colors" >Реализация шага на github</a>
+    <p class={content.paragraph}>
+      <a href={`${PROJECT_REPO_URL}/stages/Stage0b/render25d.ts`} target="_blank" rel="noopener noreferrer" class={content.referenceLink} >Реализация шага на github</a>
     </p>
   </section>
 </PageLayout>

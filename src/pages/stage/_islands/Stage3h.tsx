@@ -1,3 +1,5 @@
+import content from '@app/styles/content.module.css';
+import stageStyles from '@app/styles/stage.module.css';
 import Canvas from "@app/components/Canvas/CanvasBase";
 import Map2d from '@app/components/Map2d';
 import { useCameraControls } from '@app/hooks/useCameraControls';
@@ -21,8 +23,8 @@ const Stage: Component<StageProps> = (props) => {
       case 0:
         return (
           <>
-            <div class="grid grid-cols-2 gap-4">
-              <div class="grid gap-4">
+            <div class={stageStyles.compactGrid}>
+              <div class={stageStyles.simpleGrid}>
                 <Canvas
                   settings={settings}
                   width={settings().camera.screen.width}
@@ -49,7 +51,7 @@ const Stage: Component<StageProps> = (props) => {
   };
 
   return (
-    <div class="flex flex-col gap-4">
+    <div class={content.contentSection}>
       {renderPart(props.part ?? 0)}
     </div>
   );

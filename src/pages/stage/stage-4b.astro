@@ -1,4 +1,5 @@
 ---
+import content from '@app/styles/content.module.css';
 import PageLayout from '@app/layouts/PageLayout.astro';
 import InDevelopmentGate from '@app/pages/_components/InDevelopmentGate.astro';
 import Stage from '@app/pages/stage/_islands/Stage4b';
@@ -92,57 +93,57 @@ const [code1Html, code2Html, code3Html, code4Html, code5Html] = await Promise.al
 
 <PageLayout>
   <InDevelopmentGate />
-  <section class="flex flex-col gap-4">
+  <section class={content.contentSection}>
     <Stage client:load />
-    <p class="py-2 text">
+    <p class={content.paragraph}>
       В прошлом шаге камера уже учитывала высоту сектора, но всё ещё могла проходить сквозь стены. Для движения это
       выглядит странно: рендерер честно рисует стену, а позиция камеры при этом оказывается по другую сторону от нее.
       В этом шаге добавим простую 2D-коллизию.
     </p>
-    <p class="py-2 text">
+    <p class={content.paragraph}>
       Игрока будем считать не точкой, а кругом с небольшим радиусом. Так камера не сможет подойти вплотную к стене и
       пересечь ее центром. Проверяем только твердые стены: односторонние стены и закрытые seg блокируют движение, а
       проходы между секторами остаются проходимыми.
     </p>
     <div set:html={code1Html} />
-    <p class="py-2 text">
+    <p class={content.paragraph}>
       Чтобы понять, пересекся ли круг игрока со стеной, сначала ищем ближайшую точку на отрезке стены. Проекция точки
-      на отрезок дает параметр <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">t</code>,
-      а затем мы ограничиваем его диапазоном <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">0..1</code>,
+      на отрезок дает параметр <code class={content.inlineCode}>t</code>,
+      а затем мы ограничиваем его диапазоном <code class={content.inlineCode}>0..1</code>,
       чтобы ближайшая точка не ушла за концы стены.
     </p>
     <div set:html={code2Html} />
-    <p class="py-2 text">
+    <p class={content.paragraph}>
       Дальше сравниваем расстояние от центра игрока до этой ближайшей точки с радиусом игрока. Если расстояние меньше
       радиуса, круг заехал внутрь стены. В этом случае считаем глубину пересечения
-      <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">overlap</code> и получаем вектор,
+      <code class={content.inlineCode}>overlap</code> и получаем вектор,
       который вытолкнет камеру обратно наружу.
     </p>
     <div set:html={code3Html} />
-    <p class="py-2 text">
+    <p class={content.paragraph}>
       В движении мы больше не записываем желаемые координаты напрямую. Сначала считаем, куда камера хочет попасть, затем
-      передаем старую и новую позицию в <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">checkCollisionOptimized</code>.
+      передаем старую и новую позицию в <code class={content.inlineCode}>checkCollisionOptimized</code>.
       Функция возвращает уже исправленную позицию: если столкновения нет, это почти те же координаты; если есть, камера
       будет слегка сдвинута от стены.
     </p>
     <div set:html={code4Html} />
-    <p class="py-2 text">
+    <p class={content.paragraph}>
       Здесь же появляется проверка высоты ступеньки. Портал между секторами может быть проходом, но пол за ним может
       оказаться слишком высоким. Поэтому сравниваем старую высоту пола с высотой пола нового сектора. Если подъем меньше
-      допустимого <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">stepHeight</code>, камера
+      допустимого <code class={content.inlineCode}>stepHeight</code>, камера
       поднимается на ступеньку. Если выше - движение отменяется.
     </p>
     <div set:html={code5Html} />
-    <p class="py-2 text">
+    <p class={content.paragraph}>
       Оптимизированная проверка не перебирает все стены уровня вслепую. Сначала строится небольшой прямоугольник вокруг
       перемещения камеры с учетом радиуса игрока, и в подробную проверку попадают только seg, чьи bounding box пересекают
       этот прямоугольник. Для учебного уровня это не критично, но такая привычка быстро окупается на больших картах.
     </p>
-    <p class="my-2">
-      <a href={`${PROJECT_REPO_URL}/stages/Stage4b/collision.ts`} target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 text-blue-600 hover:text-blue-800 hover:underline transition-colors" >Реализация коллизий на github</a>
+    <p class={content.mutedSpacing}>
+      <a href={`${PROJECT_REPO_URL}/stages/Stage4b/collision.ts`} target="_blank" rel="noopener noreferrer" class={content.referenceLink} >Реализация коллизий на github</a>
     </p>
-    <p class="my-2">
-      <a href={`${PROJECT_REPO_URL}/stages/Stage4b/hooks/useCameraControls.ts`} target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 text-blue-600 hover:text-blue-800 hover:underline transition-colors" >Использование в движении камеры</a>
+    <p class={content.mutedSpacing}>
+      <a href={`${PROJECT_REPO_URL}/stages/Stage4b/hooks/useCameraControls.ts`} target="_blank" rel="noopener noreferrer" class={content.referenceLink} >Использование в движении камеры</a>
     </p>
   </section>
 </PageLayout>

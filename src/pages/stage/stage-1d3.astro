@@ -1,4 +1,5 @@
 ---
+import content from '@app/styles/content.module.css';
 import PageLayout from '@app/layouts/PageLayout.astro';
 import Stage from '@app/pages/stage/_islands/Stage1d3';
 import type { PageMetadata } from '@app/config/pages';
@@ -10,8 +11,8 @@ export const metadata: PageMetadata = {
 ---
 
 <PageLayout>
-  <section class="flex flex-col gap-4">
-    <p class="py-text">
+  <section class={content.contentSection}>
+    <p class={content.paragraph}>
       На этом шаге убедимся, что все наши расчёты корректны при любом угле поворота камеры.
     </p>
     <Stage part={0} client:load />

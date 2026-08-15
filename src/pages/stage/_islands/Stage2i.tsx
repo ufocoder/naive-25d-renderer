@@ -1,3 +1,5 @@
+import content from '@app/styles/content.module.css';
+import stageStyles from '@app/styles/stage.module.css';
 import Canvas from "@app/components/Canvas/CanvasBase";
 import Map2d from '@app/components/Map2d';
 import { useCameraControls } from '@app/hooks/useCameraControls';
@@ -13,11 +15,11 @@ const Stage: Component = () => {
   useCameraControls<Settings>({ settings, setSettings });
 
   return (
-          <div class="flex flex-col gap-4">
-            <div class="my-10 flex flex-col justify-center gap-6 md:grid md:grid-cols-2 md:gap-4 md:items-start justify-items">
-              <div class="flex flex-col gap-2">
-                <h2 class="flex justify-center text-2xl">2.5D Renderer</h2>
-                <div class="flex justify-center">
+          <div class={content.contentSection}>
+            <div class={stageStyles.demoGridWithSpacing}>
+              <div class={stageStyles.demoColumn}>
+                <h2 class={stageStyles.demoTitle}>2.5D Renderer</h2>
+                <div class={stageStyles.centered}>
                   <Canvas
               settings={settings}
               width={settings().camera.screen.width}
@@ -26,9 +28,9 @@ const Stage: Component = () => {
                         />
                 </div>
               </div>
-              <div class="flex flex-col gap-2">
-                <h2 class="flex justify-center text-2xl">2D Renderer</h2>
-                <div class="flex justify-center">
+              <div class={stageStyles.demoColumn}>
+                <h2 class={stageStyles.demoTitle}>2D Renderer</h2>
+                <div class={stageStyles.centered}>
                   <Map2d
               initialZoom={0.8}
               initialOffsetX={0}

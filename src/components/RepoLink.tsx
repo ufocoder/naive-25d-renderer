@@ -1,3 +1,5 @@
+import content from '@app/styles/content.module.css';
+import mapStyles from '@app/styles/map.module.css';
 import { PROJECT_REPO_URL } from '../config/repo';
 
 interface RepoLinkProps {
@@ -14,12 +16,12 @@ export default function RepoLink(props: RepoLinkProps) {
       href={fullUrl()}
       target="_blank"
       rel="noopener noreferrer"
-      class={`inline-flex items-center gap-1 text-blue-600 hover:text-blue-800 hover:underline transition-colors ${props.class || ''}`}
+      class={`${content.referenceLink} ${props.class || ''}`}
     >
       {props.children || (
         <>
           <svg 
-            class="w-4 h-4" 
+            class={mapStyles.mapCheckbox} 
             fill="currentColor" 
             viewBox="0 0 24 24" 
             aria-hidden="true"

@@ -1,4 +1,5 @@
 ---
+import content from '@app/styles/content.module.css';
 import PageLayout from '@app/layouts/PageLayout.astro';
 import type { PageMetadata } from '@app/config/pages';
 import { codeToHtml } from 'shiki';
@@ -82,23 +83,23 @@ const [code1Html, code2Html, code3Html] = await Promise.all([
 ---
 
 <PageLayout>
-  <section class="flex flex-col gap-4">
-    <p class="py-2">
+  <section class={content.contentSection}>
+    <p class={content.paragraph}>
       В прошлом мы получили уровни, состоящие из однотонных стен, пола и потолков, однако в настоящих играх мы привыкли встречать разнообразные локации, например: лаборатории, пещеры, подземелье или что-то еще. А чтобы создать что-то подобное, необходимо реализовать текстурирование.
     </p>
-    <p class="py-2">
+    <p class={content.paragraph}>
       Все цвета будем описывать не в виде строк, а в виде набора трех цветов:
     </p>
     <div set:html={code1Html} />
-    <p class="py-2">
+    <p class={content.paragraph}>
       Теперь зададим описание самой текстуры:
     </p>
     <div set:html={code2Html} />
-    <p class="py-2">
+    <p class={content.paragraph}>
       Затем определим текстуры для будущего оформления стен, пола и потолка:
     </p>
     <div set:html={code3Html} />
-    <p class="py-2">
+    <p class={content.paragraph}>
       В будущем можно будет загружать необходимые изображения и с легкостью представлять их в виде таких же bitmap, как выше.
     </p>
   </section>

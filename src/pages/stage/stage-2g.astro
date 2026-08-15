@@ -1,4 +1,5 @@
 ---
+import content from '@app/styles/content.module.css';
 import PageLayout from '@app/layouts/PageLayout.astro';
 import Stage2e from '@app/pages/stage/_islands/Stage2e';
 import Stage2g1 from '@app/pages/stage/_islands/Stage2g1';
@@ -13,32 +14,32 @@ export const metadata: PageMetadata = {
 ---
 
 <PageLayout>
-  <section class="flex flex-col gap-4">
-    <p class="py-2 text">
+  <section class={content.contentSection}>
+    <p class={content.paragraph}>
       Чтобы реализовать идею о порталах, начнем с самого простого ограничения области видимости портала — одномерного интервала по оси X экрана. Когда отрисовщик встречает портал, он запоминает его левую и правую границы, переходит в соседний сектор и рисует его только внутри этого интервала.
     </p>
     <Stage2e part={0} client:load />
-    <p class="py-2 text">
+    <p class={content.paragraph}>
       Первая демонстрация показывает рекурсивный обход целиком по секторам: за один шаг подготавливаются и рисуются стены, пол и потолок очередного сектора.
     </p>
     <Stage2g1 part={0} client:load />
-    <p class="py-2 text">
+    <p class={content.paragraph}>
       Во второй демонстрации тот же алгоритм разбит на более мелкие шаги. 
     </p>
-    <p class="py-2 text">
+    <p class={content.paragraph}>
       Отдельно рисуется каждый фрагмент пола, потолка и стены, поэтому порядок заполнения экрана виден подробнее.
     </p>
     <Stage2g2 part={0} client:load />
-    <p class="py-2 text">
+    <p class={content.paragraph}>
       Такое отсечение уже не позволяет соседнему сектору выйти за боковые границы портала, но пока не учитывает его верхнюю и нижнюю границы. Поэтому геометрия за порталами с разной высотой все еще может перекрывать область портала.
     </p>
-    <p class="py-2">
+    <p class={content.paragraph}>
       Реализация шага на github: 
       <a
         href={`${PROJECT_REPO_URL}/stages/Stage2g2/render25d.ts`}
         target="_blank"
         rel="noopener noreferrer"
-        class="inline-flex items-center gap-1 text-blue-600 transition-colors hover:text-blue-800 hover:underline"
+        class={content.referenceLink}
       >
         Анимация 1
       </a>;
@@ -46,7 +47,7 @@ export const metadata: PageMetadata = {
         href={`${PROJECT_REPO_URL}/stages/Stage2g1/render25d.ts`}
         target="_blank"
         rel="noopener noreferrer"
-        class="inline-flex items-center gap-1 text-blue-600 transition-colors hover:text-blue-800 hover:underline"
+        class={content.referenceLink}
       >
         Анимация 2
       </a>

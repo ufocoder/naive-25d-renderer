@@ -1,3 +1,4 @@
+import jsonStyles from '@app/styles/json.module.css';
 import { codeToHtml } from 'shiki';
 import { createResource, createEffect, onCleanup, Suspense } from 'solid-js';
 
@@ -33,7 +34,7 @@ const CodeHighlight = (props: CodeBlockProps) => {
 
 export default function CodeBlock(props: CodeBlockProps) {
   return (
-    <Suspense fallback={<div class="text-gray-400 p-4">Loading code...</div>}>
+    <Suspense fallback={<div class={jsonStyles.jsonEmpty}>Loading code...</div>}>
       <CodeHighlight {...props} class={`code-block ${props.class ?? ''}`} />
     </Suspense>
   );

@@ -1,3 +1,5 @@
+import content from '@app/styles/content.module.css';
+import stageStyles from '@app/styles/stage.module.css';
 import Canvas from "@app/components/Canvas/CanvasBase";
 import Map2d from '@app/components/Map2d';
 import { useAnimationValue } from '@app/hooks/useAnimationValue';
@@ -27,11 +29,11 @@ const Stage: Component = () => {
   })
 
   return (
-    <div class="flex flex-col gap-4">
-      <div class="flex flex-col justify-center gap-6 md:grid md:grid-cols-2 md:gap-4 md:items-start justify-items">
-        <div class="flex flex-col gap-2">
-          <h2 class="flex justify-center text-2xl">2.5D Renderer</h2>
-          <div class="flex justify-center">
+    <div class={content.contentSection}>
+      <div class={stageStyles.demoGrid}>
+        <div class={stageStyles.demoColumn}>
+          <h2 class={stageStyles.demoTitle}>2.5D Renderer</h2>
+          <div class={stageStyles.centered}>
             <Canvas
         settings={settings}
         width={settings().camera.screen.width}
@@ -39,26 +41,26 @@ const Stage: Component = () => {
         render={render25d}
       />
           </div>
-          <div class="flex flex-wrap justify-center gap-2">
+          <div class={stageStyles.buttonRow}>
             <button
               type="button"
-              class="border border-[#9eb3da] bg-[#dce6fa] px-4 py-2 text-sm font-medium text-[#1f2a44] transition-colors hover:bg-[#c8d8f5]"
+              class={stageStyles.primaryActionButton}
               onClick={() => startAnimation()}
             >
               play camera Z axis animation
             </button>
             <button
               type="button"
-              class="border border-[#9eb3da] bg-[#dce6fa] px-4 py-2 text-sm font-medium text-[#1f2a44] transition-colors hover:bg-[#c8d8f5]"
+              class={stageStyles.primaryActionButton}
               onClick={() => stopAnimation()}
             >
               stop camera Z axis animation
             </button>
           </div>
         </div>
-        <div class="flex flex-col gap-2">
-          <h2 class="flex justify-center text-2xl">2D Renderer</h2>
-          <div class="flex justify-center">
+        <div class={stageStyles.demoColumn}>
+          <h2 class={stageStyles.demoTitle}>2D Renderer</h2>
+          <div class={stageStyles.centered}>
             <Map2d
         withControls
         width={400}

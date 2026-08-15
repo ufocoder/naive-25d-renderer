@@ -1,4 +1,5 @@
 ---
+import content from '@app/styles/content.module.css';
 import PageLayout from '@app/layouts/PageLayout.astro';
 import Stage from '@app/pages/stage/_islands/Stage1g';
 import type { PageMetadata } from '@app/config/pages';
@@ -11,22 +12,22 @@ export const metadata: PageMetadata = {
 ---
 
 <PageLayout>
-  <section class="flex flex-col gap-4">
-    <p class="py-2 text">
-      На первый взгляд, используя текущие наработки, кажется, что мы вполне успешно можем строить уровни с произвольной геометрией, если сравнивать их с лабиринтами из <a class="link underline" href="https://en.wikipedia.org/wiki/Wolfenstein_3D">Wolfenstein 3D</a>:
+  <section class={content.contentSection}>
+    <p class={content.paragraph}>
+      На первый взгляд, используя текущие наработки, кажется, что мы вполне успешно можем строить уровни с произвольной геометрией, если сравнивать их с лабиринтами из <a class={content.articleLink} href="https://en.wikipedia.org/wiki/Wolfenstein_3D">Wolfenstein 3D</a>:
     </p>
     <Stage part={0} client:load />
-    <p class="py-2 text">
+    <p class={content.paragraph}>
       Однако использование алгоритма художника не гарантирует корректной отрисовки стен: возможны пересечения. Также алгоритм художника ставит нас в тупик производительности — возможны лишние операции. В зависимости от геометрии уровня и расположения камеры стены могут залезать одна на другую.
     </p>
-    <p class="py-2 text">
-      И теперь поставим задачу по-другому: <span class="font-semibold">необходимо отрисовывать стены так, чтобы не происходило наложений</span>.
+    <p class={content.paragraph}>
+      И теперь поставим задачу по-другому: <span class={content.strongText}>необходимо отрисовывать стены так, чтобы не происходило наложений</span>.
     </p>
-    <p class="py-2 text">
+    <p class={content.paragraph}>
       Зафиксируем эту проблему, но вернемся к ней несколько позже.
     </p>
-    <p class="py-2">
-      <a href={`${PROJECT_REPO_URL}/stages/Stage1g/render25d.ts`} target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 text-blue-600 hover:text-blue-800 hover:underline transition-colors" >Реализация шага на github</a>
+    <p class={content.paragraph}>
+      <a href={`${PROJECT_REPO_URL}/stages/Stage1g/render25d.ts`} target="_blank" rel="noopener noreferrer" class={content.referenceLink} >Реализация шага на github</a>
     </p>
   </section>
 </PageLayout>

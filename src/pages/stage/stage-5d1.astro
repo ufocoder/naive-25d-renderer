@@ -1,4 +1,5 @@
 ---
+import content from '@app/styles/content.module.css';
 import PageLayout from '@app/layouts/PageLayout.astro';
 import Stage from '@app/pages/stage/_islands/Stage5d1';
 import type { PageMetadata } from '@app/config/pages';
@@ -47,41 +48,41 @@ const [code1Html, code2Html, code3Html] = await Promise.all([
 ---
 
 <PageLayout>
-  <section class="flex flex-col gap-4">
+  <section class={content.contentSection}>
     <Stage client:load />
-    <p class="py-2 text">
+    <p class={content.paragraph}>
       Этот шаг берет рендер из предыдущего этапа
-      <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">stage-5d</code>: обычные стены, пол и потолок уже
+      <code class={content.inlineCode}>stage-5d</code>: обычные стены, пол и потолок уже
       текстурируются. Но карту используем из следующего этапа про освещение, потому что там есть цепочка секторов с
       разной высотой пола. На такой карте хорошо видно, что портал тоже может содержать вертикальную стенку.
     </p>
-    <p class="py-2 text">
+    <p class={content.paragraph}>
       У каждого сектора есть высота пола, высота потолка и имя wall-текстуры. Из-за разных
-      <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">floorHeight</code> между соседними секторами появляются
+      <code class={content.inlineCode}>floorHeight</code> между соседними секторами появляются
       нижние портальные стенки, которые тоже нужно рисовать как стены, а не как одноцветную заливку.
     </p>
     <div set:html={code1Html} />
-    <p class="py-2 text">
+    <p class={content.paragraph}>
       Важно разделять настоящие границы стенки и видимые границы. Настоящие
-      <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">wallTop</code>/<code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">wallBottom</code>
+      <code class={content.inlineCode}>wallTop</code>/<code class={content.inlineCode}>wallBottom</code>
       считаются из высот двух секторов. Экран, потолок, пол и уже нарисованные ближние поверхности только обрезают
-      <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">visibleTop</code>/<code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">visibleBottom</code>.
+      <code class={content.inlineCode}>visibleTop</code>/<code class={content.inlineCode}>visibleBottom</code>.
       Поэтому текстура не растягивается при clipping.
     </p>
     <div set:html={code2Html} />
-    <p class="py-2 text">
+    <p class={content.paragraph}>
       Горизонтальную координату текстуры берем не из экранной доли стены, а из точки пересечения луча со стеной в мире.
-      Так bitmap закреплен на самом <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">seg</code> и не плывет при движении камеры.
+      Так bitmap закреплен на самом <code class={content.inlineCode}>seg</code> и не плывет при движении камеры.
       Вертикальная координата считается относительно полных границ портальной стенки.
     </p>
     <div set:html={code3Html} />
-    <p class="py-2 text">
+    <p class={content.paragraph}>
       Пол и потолок остаются такими же, как в прошлом шаге: они уже текстурируются по мировой точке на горизонтальной
       плоскости. Новая часть здесь только одна: верхняя и нижняя стенки портала теперь используют такой же устойчивый
-      подход к текстуре, как в <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">stage-6a</code>.
+      подход к текстуре, как в <code class={content.inlineCode}>stage-6a</code>.
     </p>
-    <p class="py-2 text">
-      <a href={`${PROJECT_REPO_URL}/stages/Stage5d1/render25d.ts`} target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 text-blue-600 hover:text-blue-800 hover:underline transition-colors" >Реализация шага на github</a>
+    <p class={content.paragraph}>
+      <a href={`${PROJECT_REPO_URL}/stages/Stage5d1/render25d.ts`} target="_blank" rel="noopener noreferrer" class={content.referenceLink} >Реализация шага на github</a>
     </p>
   </section>
 </PageLayout>

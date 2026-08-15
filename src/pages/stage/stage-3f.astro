@@ -1,4 +1,6 @@
 ---
+import content from '@app/styles/content.module.css';
+import stageStyles from '@app/styles/stage.module.css';
 import PageLayout from '@app/layouts/PageLayout.astro';
 import Stage from '@app/pages/stage/_islands/Stage3f';
 import type { PageMetadata } from '@app/config/pages';
@@ -85,45 +87,45 @@ const [code1Html, code2Html] = await Promise.all([
 ---
 
 <PageLayout>
-  <section class="flex flex-col gap-4">
-    <p class="py-2 text">
+  <section class={content.contentSection}>
+    <p class={content.paragraph}>
       На прошлом шаге порталы работали только в простом случае: соседние секторы имели одинаковую высоту пола и потолка, поэтому общий сегмент можно было просто не рисовать. Теперь усложним задачу. Пусть портал может вести в сектор с отличающейся высотой и вокруг проема должны появиться видимые части пола, потолка или нижней/верхней стенки.
     </p>
-    <p class="py-2 text">
-      Одного диапазона по X для этого уже недостаточно. Диапазон говорит только “эта колонка закрыта полностью”, но портал закрывает колонку не целиком: часть колонки может быть занята потолком текущего сектора, часть — полом, а середина остается открытой для дальнего сектора. Поэтому добавим два массива размером с ширину экрана: <code class="px-2 py-1 bg-gray-100 text-gray-800 text-xs font-semibold rounded">upperClip</code> и <code class="px-2 py-1 bg-gray-100 text-gray-800 text-xs font-semibold rounded">lowerClip</code>.
+    <p class={content.paragraph}>
+      Одного диапазона по X для этого уже недостаточно. Диапазон говорит только “эта колонка закрыта полностью”, но портал закрывает колонку не целиком: часть колонки может быть занята потолком текущего сектора, часть — полом, а середина остается открытой для дальнего сектора. Поэтому добавим два массива размером с ширину экрана: <code class={content.inlineCode}>upperClip</code> и <code class={content.inlineCode}>lowerClip</code>.
     </p>
-    <p class="py-2 text">
+    <p class={content.paragraph}>
       Для каждой экранной колонки эти массивы хранят верхнюю и нижнюю границы еще видимой области. Непрозрачная стена заполняет весь доступный интервал и сдвигает обе границы навстречу друг другу. Портал работает мягче: он рисует только закрытые части вокруг проема и сужает окно, через которое следующая геометрия сможет быть видна.
     </p>
     <Stage part={0} client:load />
-    <p class="py-2 text">
-      В результате BSP по-прежнему отвечает за порядок от ближнего к дальнему, <code class="px-2 py-1 bg-gray-100 text-gray-800 text-xs font-semibold rounded">wallRanges</code> отбрасывает полностью закрытые колонки, а <code class="px-2 py-1 bg-gray-100 text-gray-800 text-xs font-semibold rounded">upperClip</code> и <code class="px-2 py-1 bg-gray-100 text-gray-800 text-xs font-semibold rounded">lowerClip</code> ограничивают видимую высоту внутри каждой колонки. Эти три механизма вместе позволяют корректно рисовать цепочку секторов через порталы.
+    <p class={content.paragraph}>
+      В результате BSP по-прежнему отвечает за порядок от ближнего к дальнему, <code class={content.inlineCode}>wallRanges</code> отбрасывает полностью закрытые колонки, а <code class={content.inlineCode}>upperClip</code> и <code class={content.inlineCode}>lowerClip</code> ограничивают видимую высоту внутри каждой колонки. Эти три механизма вместе позволяют корректно рисовать цепочку секторов через порталы.
     </p>
-    <h2 class="text-2xl">
+    <h2 class={stageStyles.stageHeading}>
       Немного кода
     </h2>
-    <p class="py-2 text">
+    <p class={content.paragraph}>
       BSP-обход остается прежним, но обычные и портальные сегменты теперь обрабатываются разными функциями. Обычная стена закрывает доступный интервал колонки, а портал рисует только верхнюю и нижнюю закрытые части, оставляя середину для следующего сектора.
     </p>
     <div set:html={code1Html} />
-    <p class="py-2 text">
-      Теперь посмотрим на функцию <code class="px-2 py-1 bg-gray-100 text-gray-800 text-xs font-semibold rounded">drawPortalSegment</code>.
+    <p class={content.paragraph}>
+      Теперь посмотрим на функцию <code class={content.inlineCode}>drawPortalSegment</code>.
       Она получает тот же набор ограничителей, что и обычная стена, но не закрывает колонку полностью. Портал должен
       оставить “окно” для соседнего сектора, поэтому функция рисует только те части текущего сектора, которые находятся
       выше и ниже проема.
     </p>
     <div set:html={code2Html} />
-    <p class="py-2 text">
+    <p class={content.paragraph}>
       Сначала функция определяет, с какой стороны портала находится камера. Это нужно, чтобы выбрать текущий сектор:
       именно его потолок и пол должны закрывать верхнюю и нижнюю часть колонки вокруг проема. Затем для каждой экранной
-      колонки интерполируются <code class="px-2 py-1 bg-gray-100 text-gray-800 text-xs font-semibold rounded">top</code>
-      и <code class="px-2 py-1 bg-gray-100 text-gray-800 text-xs font-semibold rounded">bottom</code> — верхняя и нижняя
+      колонки интерполируются <code class={content.inlineCode}>top</code>
+      и <code class={content.inlineCode}>bottom</code> — верхняя и нижняя
       границы портального seg на экране.
     </p>
-    <p class="py-2 text">
-      Если между старым <code class="px-2 py-1 bg-gray-100 text-gray-800 text-xs font-semibold rounded">upperClip[x]</code>
+    <p class={content.paragraph}>
+      Если между старым <code class={content.inlineCode}>upperClip[x]</code>
       и новым верхом портала есть место, рисуем там потолок текущего сектора и сдвигаем верхнюю границу вниз. Если между
-      низом портала и <code class="px-2 py-1 bg-gray-100 text-gray-800 text-xs font-semibold rounded">lowerClip[x]</code>
+      низом портала и <code class={content.inlineCode}>lowerClip[x]</code>
       есть место, рисуем пол и сдвигаем нижнюю границу вверх.
     </p>
   </section>

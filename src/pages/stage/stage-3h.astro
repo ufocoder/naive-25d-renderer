@@ -1,4 +1,6 @@
 ---
+import content from '@app/styles/content.module.css';
+import stageStyles from '@app/styles/stage.module.css';
 import PageLayout from '@app/layouts/PageLayout.astro';
 import InDevelopmentGate from '@app/pages/_components/InDevelopmentGate.astro';
 import Stage from '@app/pages/stage/_islands/Stage3h';
@@ -12,21 +14,21 @@ export const metadata: PageMetadata = {
 
 <PageLayout>
   <InDevelopmentGate />
-  <section class="flex flex-col gap-4">
-    <p class="py-2 text">
-      Для портального сегмента построим две вертикальные проекции — со стороны <code class="px-2 py-1 bg-gray-100 text-gray-800 text-xs font-semibold rounded">frontSector</code> и <code class="px-2 py-1 bg-gray-100 text-gray-800 text-xs font-semibold rounded">backSector</code>. Их разница определяет, какие части границы действительно являются стеной.
+  <section class={content.contentSection}>
+    <p class={content.paragraph}>
+      Для портального сегмента построим две вертикальные проекции — со стороны <code class={content.inlineCode}>frontSector</code> и <code class={content.inlineCode}>backSector</code>. Их разница определяет, какие части границы действительно являются стеной.
     </p>
-    <p class="py-2 text">
+    <p class={content.paragraph}>
       Если различаются потолки, рисуется верхняя стенка; если полы — нижняя; если различаются оба уровня — обе части. Оставшийся промежуток считается открытым порталом и используется для обновления вертикальных границ видимости.
     </p>
-    <div class="grid grid-cols-2 gap-4">
-      <div class="mt-4 flex flex-col">
-        <h2 class="text-2xl">
+    <div class={stageStyles.compactGrid}>
+      <div class={content.contentSection}>
+        <h2 class={stageStyles.stageHeading}>
           2.5D Renderer
         </h2>
       </div>
-      <div class="mb-2 mt-4">
-        <h2 class="text-2xl">
+      <div class={content.sectionSpacing}>
+        <h2 class={stageStyles.stageHeading}>
           2D Renderer
         </h2>
       </div>

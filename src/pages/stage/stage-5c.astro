@@ -1,4 +1,5 @@
 ---
+import content from '@app/styles/content.module.css';
 import PageLayout from '@app/layouts/PageLayout.astro';
 import type { PageMetadata } from '@app/config/pages';
 import { PROJECT_REPO_URL } from '@app/config/repo';
@@ -71,21 +72,21 @@ const [code1Html, code2Html, code3Html] = await Promise.all([
 ---
 
 <PageLayout>
-  <section class="flex flex-col gap-4">
-    <p class="py-2 text">
-      При работе с <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">CanvasRenderingContext2D</code> и многократных вызовах <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">fillRect</code> накапливаются накладные расходы.
+  <section class={content.contentSection}>
+    <p class={content.paragraph}>
+      При работе с <code class={content.inlineCode}>CanvasRenderingContext2D</code> и многократных вызовах <code class={content.inlineCode}>fillRect</code> накапливаются накладные расходы.
     </p>
     <div set:html={code1Html} />
-    <p class="py-2 text">
-      Лучше сделать одну дорогую операцию <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">putImageData</code>, чем миллион дешевых <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">fillRect</code>. Для этого создадим буфер и будем его передавать сквозь все функции вплоть до вызова <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">drawPixel</code>, а после вызовем <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">putImageData</code>.
+    <p class={content.paragraph}>
+      Лучше сделать одну дорогую операцию <code class={content.inlineCode}>putImageData</code>, чем миллион дешевых <code class={content.inlineCode}>fillRect</code>. Для этого создадим буфер и будем его передавать сквозь все функции вплоть до вызова <code class={content.inlineCode}>drawPixel</code>, а после вызовем <code class={content.inlineCode}>putImageData</code>.
     </p>
     <div set:html={code2Html} />
-    <p class="py-2 text">
-      Внутри <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">drawPixel</code> заполняем буфер данными о необходимом пикселе.
+    <p class={content.paragraph}>
+      Внутри <code class={content.inlineCode}>drawPixel</code> заполняем буфер данными о необходимом пикселе.
     </p>
     <div set:html={code3Html} />
-    <p class="py-2 text">
-      <a href={`${PROJECT_REPO_URL}/stages/Stage5c/render25d.ts`} target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 text-blue-600 hover:text-blue-800 hover:underline transition-colors" >Реализация шага на github</a>
+    <p class={content.paragraph}>
+      <a href={`${PROJECT_REPO_URL}/stages/Stage5c/render25d.ts`} target="_blank" rel="noopener noreferrer" class={content.referenceLink} >Реализация шага на github</a>
     </p>
   </section>
 </PageLayout>

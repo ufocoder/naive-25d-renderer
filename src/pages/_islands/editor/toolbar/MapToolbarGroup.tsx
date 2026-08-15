@@ -1,3 +1,4 @@
+import editorStyles from '@app/styles/editor.module.css';
 import type { Component } from 'solid-js';
 
 import ToolbarGroup from './ToolbarGroup';
@@ -19,8 +20,8 @@ const MapToolbarGroup: Component<MapToolbarGroupProps> = (props) => (
       title={props.isNavigatingMap ? 'Завершить перемещение карты' : 'Перемещать карту'}
       class={
         props.isNavigatingMap
-          ? 'flex size-10 items-center justify-center rounded border border-[#8ea7d5] bg-[#eaf2ff] text-[#1f2a44] transition-colors hover:bg-[#dce9ff]'
-          : 'flex size-10 items-center justify-center rounded border border-[#c3d0ea] bg-transparent text-[#1f2a44] transition-colors hover:bg-[#f4f8ff]'
+          ? editorStyles.toolbarToggleButtonActive
+          : editorStyles.toolbarToggleButton
       }
     >
       <svg
@@ -43,11 +44,11 @@ const MapToolbarGroup: Component<MapToolbarGroupProps> = (props) => (
         <circle cx="12" cy="12" r="1" fill="currentColor" stroke="none" />
       </svg>
     </button>
-    <div class="inline-flex overflow-hidden rounded border border-[#c3d0ea] bg-transparent">
+    <div class={editorStyles.toolbarSegmented}>
       <button
         type="button"
         onClick={props.onZoomIn}
-        class="size-9 border-r border-[#c3d0ea] bg-transparent text-lg font-semibold text-[#1f2a44] transition-colors hover:bg-[#f4f8ff]"
+        class={editorStyles.toolbarIconButton}
         aria-label="Увеличить масштаб"
       >
         +
@@ -55,7 +56,7 @@ const MapToolbarGroup: Component<MapToolbarGroupProps> = (props) => (
       <button
         type="button"
         onClick={props.onZoomOut}
-        class="size-9 border-r border-[#c3d0ea] bg-transparent text-lg font-semibold text-[#1f2a44] transition-colors hover:bg-[#f4f8ff]"
+        class={editorStyles.toolbarIconButton}
         aria-label="Уменьшить масштаб"
       >
         -
@@ -63,7 +64,7 @@ const MapToolbarGroup: Component<MapToolbarGroupProps> = (props) => (
       <button
         type="button"
         onClick={props.onCenter}
-        class="bg-transparent px-3 py-2 text-sm font-semibold text-[#1f2a44] transition-colors hover:bg-[#f4f8ff]"
+        class={editorStyles.toolbarButton}
       >
         Сбросить
       </button>

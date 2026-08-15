@@ -1,4 +1,5 @@
 ---
+import content from '@app/styles/content.module.css';
 import PageLayout from '@app/layouts/PageLayout.astro';
 import Stage from '@app/pages/stage/_islands/Stage2c';
 import type { PageMetadata } from '@app/config/pages';
@@ -41,28 +42,28 @@ const code2Html = await codeToHtml(code2, { lang: 'ts', theme: 'github-light' })
 ---
 
 <PageLayout>
-  <section class="flex flex-col gap-4">
+  <section class={content.contentSection}>
 
-    <p class="py-2 text">
+    <p class={content.paragraph}>
       На прошлом шаге стена симметрично росла вверх и вниз относительно линии горизонта, что выглядят не совсем корректно для нашего восприятия. Отсюда очевидно, что добавления одной только высоты для сектора это недостаточно. 
     </p>
-    <p class="py-2 text">
+    <p class={content.paragraph}>
       Cекторам нужны разные уровни пола или потолка:
     </p>
     <div set:html={code1Html} />
-    <p class="py-2 text">
+    <p class={content.paragraph}>
       Теперь при расчете проекции будем учитывать эти уровни:
     </p>
     <Stage part={0} client:load />
-    <p class="py-2 text">
-      Слева показана исходная модель с одной высотой: стены центрируются по линии горизонта независимо от того, где должен находиться пол. Справа верхняя и нижняя экранные координаты вычисляются раздельно из <code class="px-2 py-1 bg-gray-100 text-gray-800 text-xs font-semibold rounded">ceilHeight</code> и <code class="px-2 py-1 bg-gray-100 text-gray-800 text-xs font-semibold rounded">floorHeight</code>.
+    <p class={content.paragraph}>
+      Слева показана исходная модель с одной высотой: стены центрируются по линии горизонта независимо от того, где должен находиться пол. Справа верхняя и нижняя экранные координаты вычисляются раздельно из <code class={content.inlineCode}>ceilHeight</code> и <code class={content.inlineCode}>floorHeight</code>.
     </p>
-    <p class="py-2 text">
+    <p class={content.paragraph}>
       И если до этого мы считали высоту сектора и только потом вычисляли Y-координаты четырехугольника, то сейчас будем считать Y-координаты для проекции сразу:
     </p>
     <div set:html={code2Html} />
-    <p class="py-2 text">
-      <a href={`${PROJECT_REPO_URL}/stages/Stage2c/render25d.ts`} target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 text-blue-600 hover:text-blue-800 hover:underline transition-colors" >Реализация шага на github</a>
+    <p class={content.paragraph}>
+      <a href={`${PROJECT_REPO_URL}/stages/Stage2c/render25d.ts`} target="_blank" rel="noopener noreferrer" class={content.referenceLink} >Реализация шага на github</a>
     </p>
   </section>
 </PageLayout>

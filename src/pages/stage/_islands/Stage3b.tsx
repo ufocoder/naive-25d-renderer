@@ -1,3 +1,5 @@
+import content from '@app/styles/content.module.css';
+import stageStyles from '@app/styles/stage.module.css';
 import Canvas from "@app/components/Canvas/CanvasBase";
 import { JsonViewer } from '@app/components/JsonViewer';
 import wait from '@app/lib/wait';
@@ -69,12 +71,12 @@ const Stage: Component<StageProps> = (props) => {
       case 0:
         return (
           <>
-            <div class="my-10 flex flex-col justify-center gap-6 md:grid md:grid-cols-2 md:gap-4 md:items-start justify-items">
-              <div class="flex flex-col gap-2">
-                <h2 class="flex justify-center text-2xl">
+            <div class={stageStyles.demoGridWithSpacing}>
+              <div class={stageStyles.demoColumn}>
+                <h2 class={stageStyles.demoTitle}>
                   Исходный уровень
                 </h2>
-                <div class="flex justify-center">
+                <div class={stageStyles.centered}>
                   <Canvas
                     width={400}
                     height={400}
@@ -83,11 +85,11 @@ const Stage: Component<StageProps> = (props) => {
                   />
                 </div>
               </div>
-              <div class="flex flex-col gap-2">
-                <h2 class="flex justify-center text-2xl">
+              <div class={stageStyles.demoColumn}>
+                <h2 class={stageStyles.demoTitle}>
                   Последовательное BSP-разбиение
                 </h2>
-                <div class="flex justify-center">
+                <div class={stageStyles.centered}>
                   <Canvas
                     width={400}
                     height={400}
@@ -102,10 +104,10 @@ const Stage: Component<StageProps> = (props) => {
                     }
                   />
                 </div>
-                <div class="flex min-h-5 justify-center text-sm text-gray-600">
+                <div class={stageStyles.statusMessage}>
                   Разделение {currentStep()} из {totalSteps()}
                 </div>
-                <div class="grid grid-cols-3 gap-2">
+                <div class={stageStyles.threeButtonGrid}>
                   <StepProgressButton
                     active={isAutoPlaying()}
                     duration={animationDelay}
@@ -116,14 +118,14 @@ const Stage: Component<StageProps> = (props) => {
                   </StepProgressButton>
                   <button
                     type="button"
-                    class="border border-[#9eb3da] bg-[#dce6fa] px-4 py-2 text-sm font-medium text-[#1f2a44] transition-colors hover:bg-[#c8d8f5]"
+                    class={stageStyles.primaryActionButton}
                     onClick={playNextStep}
                   >
                     Следующее разделение
                   </button>
                   <button
                     type="button"
-                    class="border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-100"
+                    class={stageStyles.secondaryActionButton}
                     onClick={resetAnimation}
                   >
                     Сбросить
@@ -136,7 +138,7 @@ const Stage: Component<StageProps> = (props) => {
       case 1:
         return (
           <>
-            <div class="flex flex-col">
+            <div class={stageStyles.singleColumn}>
               <JsonViewer data={simplifyBSP(bspTree())} />
             </div>
           </>
@@ -147,7 +149,7 @@ const Stage: Component<StageProps> = (props) => {
   };
 
   return (
-    <div class="flex flex-col gap-4">
+    <div class={content.contentSection}>
       {renderPart(props.part ?? 0)}
     </div>
   );

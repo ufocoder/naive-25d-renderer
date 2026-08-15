@@ -1,4 +1,6 @@
 ---
+import content from '@app/styles/content.module.css';
+import stageStyles from '@app/styles/stage.module.css';
 import PageLayout from '@app/layouts/PageLayout.astro';
 import Stage from '@app/pages/stage/_islands/Stage1d1';
 import type { PageMetadata } from '@app/config/pages';
@@ -86,33 +88,33 @@ const code3Html = await codeToHtml(code3, { lang: 'ts', theme: 'github-light' })
 ---
 
 <PageLayout>
-  <section class="flex flex-col gap-4">
-    <p class="py-2 text">
+  <section class={content.contentSection}>
+    <p class={content.paragraph}>
       Мы воспринимали мир как набор спроецированных вершин, и если хотя бы одна вершина не попадала в область видимости, то мы полностью исключали отрезок из отрисовки. Нам необходимо перейти к тому пониманию, что мир — это множество спроецированных отрезков.
     </p>
     <div set:html={code1Html} />
-    <p class="py-2 text">
-      Теперь поставим задачу по-другому: <span class="font-semibold">необходимо отрисовывать только то, что попадает в область видимости.</span>
+    <p class={content.paragraph}>
+      Теперь поставим задачу по-другому: <span class={content.strongText}>необходимо отрисовывать только то, что попадает в область видимости.</span>
     </p>
-    <p class="py-2 text">
+    <p class={content.paragraph}>
       Может быть несколько вариантов того, как отрезок связан с областью видимости.
     </p>
     <Stage part={0} client:load />
-    <div class="grid gap-2 py-2 text">
+    <div class={content.codeTextGrid}>
       <p>
         Обозначения на схемах:
       </p>
-      <div class="grid grid-cols-[2.5rem_1fr] items-center gap-3">
-        <div class="grid size-10 place-items-center border border-neutral-300 bg-white">
-          <span class="size-2 rounded-full bg-red-500"></span>
+      <div class={stageStyles.iconLegend}>
+        <div class={stageStyles.iconPreview}>
+          <span class={stageStyles.redStatusDot}></span>
         </div>
         <p>
           Красная точка — камера.
         </p>
       </div>
-      <div class="grid grid-cols-[2.5rem_1fr] items-center gap-3">
-        <div class="grid size-10 place-items-center border border-neutral-300 bg-white">
-          <svg class="size-7" viewBox="0 0 28 28" aria-hidden="true">
+      <div class={stageStyles.iconLegend}>
+        <div class={stageStyles.iconPreview}>
+          <svg class={stageStyles.directionIcon} viewBox="0 0 28 28" aria-hidden="true">
             <line x1="5" y1="7" x2="23" y2="21" stroke="#ef4444" stroke-width="2" stroke-dasharray="4 3"></line>
           </svg>
         </div>
@@ -120,9 +122,9 @@ const code3Html = await codeToHtml(code3, { lang: 'ts', theme: 'github-light' })
           Красные пунктирные линии — границы FOV.
         </p>
       </div>
-      <div class="grid grid-cols-[2.5rem_1fr] items-center gap-3">
-        <div class="grid size-10 place-items-center border border-neutral-300 bg-white">
-          <svg class="size-7" viewBox="0 0 28 28" aria-hidden="true">
+      <div class={stageStyles.iconLegend}>
+        <div class={stageStyles.iconPreview}>
+          <svg class={stageStyles.directionIcon} viewBox="0 0 28 28" aria-hidden="true">
             <path d="M 6 20 A 12 12 0 0 1 22 20" fill="none" stroke="#ef4444" stroke-width="2"></path>
           </svg>
         </div>
@@ -130,9 +132,9 @@ const code3Html = await codeToHtml(code3, { lang: 'ts', theme: 'github-light' })
           Красная дуга — весь угловой диапазон видимости.
         </p>
       </div>
-      <div class="grid grid-cols-[2.5rem_1fr] items-center gap-3">
-        <div class="grid size-10 place-items-center border border-neutral-300 bg-white">
-          <svg class="size-7" viewBox="0 0 28 28" aria-hidden="true">
+      <div class={stageStyles.iconLegend}>
+        <div class={stageStyles.iconPreview}>
+          <svg class={stageStyles.directionIcon} viewBox="0 0 28 28" aria-hidden="true">
             <line x1="5" y1="20" x2="23" y2="8" stroke="#000" stroke-width="2"></line>
           </svg>
         </div>
@@ -140,9 +142,9 @@ const code3Html = await codeToHtml(code3, { lang: 'ts', theme: 'github-light' })
           Чёрная линия — сам отрезок.
         </p>
       </div>
-      <div class="grid grid-cols-[2.5rem_1fr] items-center gap-3">
-        <div class="grid size-10 place-items-center border border-neutral-300 bg-white">
-          <svg class="size-7" viewBox="0 0 28 28" aria-hidden="true">
+      <div class={stageStyles.iconLegend}>
+        <div class={stageStyles.iconPreview}>
+          <svg class={stageStyles.directionIcon} viewBox="0 0 28 28" aria-hidden="true">
             <path d="M 6 19 A 11 11 0 0 1 22 10" fill="none" stroke="#f97316" stroke-width="2"></path>
           </svg>
         </div>
@@ -150,9 +152,9 @@ const code3Html = await codeToHtml(code3, { lang: 'ts', theme: 'github-light' })
           Оранжевая дуга — угловой диапазон отрезка относительно камеры.
         </p>
       </div>
-      <div class="grid grid-cols-[2.5rem_1fr] items-center gap-3">
-        <div class="grid size-10 place-items-center border border-neutral-300 bg-white">
-          <svg class="size-7" viewBox="0 0 28 28" aria-hidden="true">
+      <div class={stageStyles.iconLegend}>
+        <div class={stageStyles.iconPreview}>
+          <svg class={stageStyles.directionIcon} viewBox="0 0 28 28" aria-hidden="true">
             <path d="M 9 20 A 10 10 0 0 1 20 13" fill="none" stroke="#16a34a" stroke-width="2"></path>
           </svg>
         </div>
@@ -160,9 +162,9 @@ const code3Html = await codeToHtml(code3, { lang: 'ts', theme: 'github-light' })
           Зелёная дуга — часть углового диапазона отрезка, которая попадает в FOV.
         </p>
       </div>
-      <div class="grid grid-cols-[2.5rem_1fr] items-center gap-3">
-        <div class="grid size-10 place-items-center border border-neutral-300 bg-white">
-          <svg class="size-7" viewBox="0 0 28 28" aria-hidden="true">
+      <div class={stageStyles.iconLegend}>
+        <div class={stageStyles.iconPreview}>
+          <svg class={stageStyles.directionIcon} viewBox="0 0 28 28" aria-hidden="true">
             <path d="M 5 20 A 12 12 0 0 1 23 20" fill="none" stroke="#e5e7eb" stroke-width="2"></path>
           </svg>
         </div>
@@ -171,29 +173,29 @@ const code3Html = await codeToHtml(code3, { lang: 'ts', theme: 'github-light' })
         </p>
       </div>
     </div>
-    <p class="py-2 text">
+    <p class={content.paragraph}>
       Теперь перейдём к полярным координатам и будем рассматривать область видимости и отрезок как диапазоны значений в полярных координатах, то есть как диапазоны углов. Это позволит нам учесть все вышеописанные ситуации. Здесь мы можем определить функцию, которая возвращает те самые диапазоны углов, если отрезок попадает в область видимости.
     </p>
-    <p class="py-2 text">
-      К сожалению, у меня получилась большая реализация, поэтому для изучения функции обратитесь к <a class="link underline" href="https://github.com/ufocoder/25d-renderer/blob/main/src/stages/Stage1d1/render25d.ts#L42" target="_blank">её исходному коду</a>.
+    <p class={content.paragraph}>
+      К сожалению, у меня получилась большая реализация, поэтому для изучения функции обратитесь к <a class={content.articleLink} href="https://github.com/ufocoder/25d-renderer/blob/main/src/stages/Stage1d1/render25d.ts#L42" target="_blank">её исходному коду</a>.
     </p>
-    <p class="py-2 text">
+    <p class={content.paragraph}>
       Если отрезок пересекает край области видимости, то используем диапазоны углов и рассчитываем, какую часть диапазона углов для отрезка занимает точка пересечения с областью видимости. Получаем коэффициент от 0 до 1. Этот коэффициент мы будем использовать, чтобы домножать высоту отрезка. Как именно — смотрите в коде ниже или читайте исходный код шага.
     </p>
     <Stage part={1} client:load />
-    <h2 class="text-2xl">
+    <h2 class={stageStyles.stageHeading}>
       Немного кода
     </h2>
-    <p class="py-2 text">
+    <p class={content.paragraph}>
       Добавим несколько вспомогательных функций, основная из которых позволяет получить значения в полярных координатах, а именно нормализованное значение углов для области видимости и для спроецированного отрезка:
     </p>
     <div set:html={code2Html} />
-    <p class="py-2 text">
+    <p class={content.paragraph}>
       Рассчитаем процент видимой части диапазона углов для проекции относительно всего диапазона и используем этот процент для вычисления высоты в точке пересечения:
     </p>
     <div set:html={code3Html} />
-    <p class="py-2">
-      <a href={`${PROJECT_REPO_URL}/stages/Stage1d1/render25d.ts`} target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 text-blue-600 hover:text-blue-800 hover:underline transition-colors" >Реализация шага на github</a>
+    <p class={content.paragraph}>
+      <a href={`${PROJECT_REPO_URL}/stages/Stage1d1/render25d.ts`} target="_blank" rel="noopener noreferrer" class={content.referenceLink} >Реализация шага на github</a>
     </p>
   </section>
 </PageLayout>

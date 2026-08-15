@@ -1,0 +1,114 @@
+.jsonEmpty {
+  padding: 1rem;
+  color: var(--color-gray-400);
+}
+
+.jsonNode {
+  display: flex;
+  align-items: flex-start;
+  padding: 0.25rem 0.5rem;
+  cursor: pointer;
+}
+
+.jsonNode:hover {
+  background: var(--color-gray-50);
+}
+
+.jsonNodeInline {
+  display: flex;
+  align-items: center;
+}
+
+.jsonNodeText {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.jsonToggleButton {
+  display: flex;
+  width: 1.25rem;
+  height: 1.25rem;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  margin-right: 0.25rem;
+  color: var(--color-gray-500);
+  transition: color 0.15s var(--ease), background-color 0.15s var(--ease);
+}
+
+.jsonToggleButton:hover {
+  background: var(--color-gray-200);
+  color: var(--color-gray-700);
+}
+
+.jsonToggleIcon {
+  width: 0.75rem;
+  height: 0.75rem;
+}
+
+.jsonIndent {
+  width: 1.5rem;
+  flex-shrink: 0;
+}
+
+.jsonMeta {
+  margin-left: 0.25rem;
+  color: var(--color-gray-400);
+  font-size: 0.875rem;
+}
+
+.jsonChildren {
+  margin-top: 0.25rem;
+  margin-left: 0.5rem;
+  border-left: 2px solid var(--color-gray-200);
+}
+
+.jsonChildrenNested {
+  margin-top: 0.25rem;
+  margin-left: 1.25rem;
+  border-left: 2px solid var(--color-gray-200);
+  padding-left: 0.5rem;
+}
+
+.jsonViewer {
+  overflow: hidden;
+  border: 1px solid var(--color-gray-200);
+  background: var(--surface);
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+}
+
+.jsonScroll {
+  max-height: calc(var(--spacing) * 96);
+  overflow: auto;
+  padding: 1rem;
+}
+
+.jsonError {
+  color: var(--color-red-500);
+}
+
+.jsonValueNull {
+  color: var(--color-gray-400);
+  font-style: italic;
+}
+
+.jsonValueString {
+  color: #16a34a;
+}
+
+.jsonValueNumber {
+  color: var(--color-blue-600);
+}
+
+.jsonValueBoolean {
+  color: #9333ea;
+}
+
+.jsonRow {
+  display: flex;
+  align-items: center;
+  padding-block: 0.125rem;
+}

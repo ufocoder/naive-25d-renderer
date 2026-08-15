@@ -1,3 +1,5 @@
+import content from '@app/styles/content.module.css';
+import jsonStyles from '@app/styles/json.module.css';
 import { type Component, createSignal, createMemo, Show, For } from 'solid-js';
 
 interface JsonViewerProps {
@@ -44,10 +46,10 @@ const TreeNode: Component<TreeNodeProps> = (props) => {
   };
 
   const getValueClass = () => {
-    if (props.value === null) return 'text-gray-400 italic';
-    if (typeof props.value === 'string') return 'text-green-600';
-    if (typeof props.value === 'number') return 'text-blue-600';
-    if (typeof props.value === 'boolean') return 'text-purple-600';
+    if (props.value === null) return jsonStyles.jsonValueNull;
+    if (typeof props.value === 'string') return jsonStyles.jsonValueString;
+    if (typeof props.value === 'number') return jsonStyles.jsonValueNumber;
+    if (typeof props.value === 'boolean') return jsonStyles.jsonValueBoolean;
     return '';
   };
 
@@ -75,33 +77,33 @@ const TreeNode: Component<TreeNodeProps> = (props) => {
   return (
     <div>
       <div 
-        class="flex items-start group hover:bg-gray-50 px-2 py-1 cursor-pointer"
+        class={jsonStyles.jsonNode}
         onClick={handleToggle}
       >
-        <div class="flex items-center">
+        <div class={jsonStyles.jsonNodeInline}>
           {hasChildren() && (
             <button
               onClick={handleToggle}
-              class="mr-1 w-5 h-5 flex items-center justify-center text-gray-500 hover:text-gray-700 hover:bg-gray-200 transition-colors focus:outline-none flex-shrink-0"
+              class={jsonStyles.jsonToggleButton}
               aria-label={props.expanded ? 'Collapse' : 'Expand'}
             >
               {props.expanded ? (
-                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg class={jsonStyles.jsonToggleIcon} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                 </svg>
               ) : (
-                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg class={jsonStyles.jsonToggleIcon} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
                 </svg>
               )}
             </button>
           )}
           
-          {!hasChildren() && <div class="w-6 flex-shrink-0"></div>}
+          {!hasChildren() && <div class={jsonStyles.jsonIndent}></div>}
           
-          <div class="flex flex-wrap items-center gap-1">
+          <div class={jsonStyles.jsonNodeText}>
             {props.keyName !== null && (
-              <span class="font-semibold" style={{ color: props.keyColor || '#9333ea' }}>
+              <span class={content.strongText} style={{ color: props.keyColor || '#9333ea' }}>
                 {props.keyName}:
               </span>
             )}
@@ -113,14 +115,14 @@ const TreeNode: Component<TreeNodeProps> = (props) => {
             )}
             
             {hasChildren() && !props.expanded && (
-              <span class="text-gray-400 text-sm ml-1">{getValuePreview()}</span>
+              <span class={jsonStyles.jsonMeta}>{getValuePreview()}</span>
             )}
           </div>
         </div>
       </div>
       
       <Show when={hasChildren() && props.expanded}>
-        <div class="border-l-2 border-gray-200 ml-2 mt-1">
+        <div class={jsonStyles.jsonChildren}>
           <For each={getChildren()}>
             {(item) => (
               <JsonTreeNode
@@ -224,19 +226,19 @@ export const JsonViewer: Component<JsonViewerProps> = (props) => {
     
     const getValueClass = () => {
       const val = treeProps.data;
-      if (val === null) return 'text-gray-400 italic';
-      if (typeof val === 'string') return 'text-green-600';
-      if (typeof val === 'number') return 'text-blue-600';
-      if (typeof val === 'boolean') return 'text-purple-600';
+      if (val === null) return jsonStyles.jsonValueNull;
+      if (typeof val === 'string') return jsonStyles.jsonValueString;
+      if (typeof val === 'number') return jsonStyles.jsonValueNumber;
+      if (typeof val === 'boolean') return jsonStyles.jsonValueBoolean;
       return '';
     };
     
     if (!hasChildren()) {
       return (
-        <div class="flex items-center py-0.5">
-          <div class="w-6 flex-shrink-0"></div>
+        <div class={jsonStyles.jsonRow}>
+          <div class={jsonStyles.jsonIndent}></div>
           {treeProps.keyName !== null && treeProps.keyName !== undefined && (
-            <span class="font-semibold" style={{ color: props.keyColor || '#9333ea' }}>
+            <span class={content.strongText} style={{ color: props.keyColor || '#9333ea' }}>
               {treeProps.keyName}:
             </span>
           )}
@@ -258,37 +260,37 @@ export const JsonViewer: Component<JsonViewerProps> = (props) => {
     return (
       <div>
         <div 
-          class="flex items-center group hover:bg-gray-50 px-2 py-1 cursor-pointer"
+          class={jsonStyles.jsonNode}
           onClick={handleToggle}
         >
           <button
             onClick={handleToggle}
-            class="mr-1 w-5 h-5 flex items-center justify-center text-gray-500 hover:text-gray-700 hover:bg-gray-200 transition-colors focus:outline-none flex-shrink-0"
+            class={jsonStyles.jsonToggleButton}
           >
             {expanded() ? (
-              <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg class={jsonStyles.jsonToggleIcon} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
               </svg>
             ) : (
-              <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg class={jsonStyles.jsonToggleIcon} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
               </svg>
             )}
           </button>
           
           {treeProps.keyName !== null && treeProps.keyName !== undefined && (
-            <span class="font-semibold" style={{ color: props.keyColor || '#9333ea' }}>
+            <span class={content.strongText} style={{ color: props.keyColor || '#9333ea' }}>
               {treeProps.keyName}:
             </span>
           )}
           
           {!expanded() && (
-            <span class="text-gray-400 text-sm ml-1">{getPreview()}</span>
+            <span class={jsonStyles.jsonMeta}>{getPreview()}</span>
           )}
         </div>
         
         <Show when={expanded()}>
-          <div class="border-l-2 border-gray-200 ml-5 pl-2 mt-1">
+          <div class={jsonStyles.jsonChildrenNested}>
             <For each={getChildren()}>
               {(item) => (
                 <RecursiveTree 
@@ -305,12 +307,12 @@ export const JsonViewer: Component<JsonViewerProps> = (props) => {
   };
 
   return (
-    <div class="font-mono text-sm bg-white border border-gray-200 overflow-hidden">
-      <div class="p-4 overflow-auto max-h-96">
+    <div class={jsonStyles.jsonViewer}>
+      <div class={jsonStyles.jsonScroll}>
         <Show
           when={isValidJson()}
           fallback={
-            <div class="text-red-500">
+            <div class={jsonStyles.jsonError}>
               ❌ Invalid JSON data
             </div>
           }

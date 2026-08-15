@@ -1,4 +1,6 @@
 ---
+import content from '@app/styles/content.module.css';
+import stageStyles from '@app/styles/stage.module.css';
 import PageLayout from '@app/layouts/PageLayout.astro';
 import Stage from '@app/pages/stage/_islands/Stage5b';
 import type { PageMetadata } from '@app/config/pages';
@@ -71,8 +73,8 @@ const code3Html = await codeToHtml(code3, { lang: 'ts', theme: 'github-light' })
 ---
 
 <PageLayout>
-  <section class="flex flex-col gap-4">
-    <p class="py-2 text">
+  <section class={content.contentSection}>
+    <p class={content.paragraph}>
       В прошлых шагах стены были однотонными, теперь будем брать цвет из текстуры, которая хранится как bitmap:
       двумерный массив индексов и палитра цветов. 
       Сектору достаточно будет знать ID текстуры, и если он не задан, тогда оставляем старое поведение и рисуем стену обычной
@@ -80,34 +82,34 @@ const code3Html = await codeToHtml(code3, { lang: 'ts', theme: 'github-light' })
     </p>
     <div set:html={code1Html} />
     <Stage part={0} client:load />
-    <h2 class="text-2xl">
+    <h2 class={stageStyles.stageHeading}>
       Немного кода
     </h2>
-    <p class="py-2 text">
-      Улучшим <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">drawSolidSegment</code> для рассчета координаты текстуры для текущей экранной координаты.
-      Горизонтальная координата <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">tx</code> показывает, в какой части отрезка стены находится текущий экранный
-      столбец: ближе к началу стены это значение около <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">0</code>, ближе к концу — около <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">1</code>. Из него
-      получаем <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">texX</code>, то есть столбец внутри текстуры.
+    <p class={content.paragraph}>
+      Улучшим <code class={content.inlineCode}>drawSolidSegment</code> для рассчета координаты текстуры для текущей экранной координаты.
+      Горизонтальная координата <code class={content.inlineCode}>tx</code> показывает, в какой части отрезка стены находится текущий экранный
+      столбец: ближе к началу стены это значение около <code class={content.inlineCode}>0</code>, ближе к концу — около <code class={content.inlineCode}>1</code>. Из него
+      получаем <code class={content.inlineCode}>texX</code>, то есть столбец внутри текстуры.
     </p>
-    <p class="py-2 text">
+    <p class={content.paragraph}>
       Вертикальная координата считается отдельно. Для каждого пикселя между верхом и низом стены берём долю
-      <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">v</code>: наверху она близка к <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">0</code>, внизу близка к <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">1</code>. Так получаем <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">texY</code>.
-      После этого <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">getTextureColor</code> превращает пару <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">texX</code>/<code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">texY</code> в настоящий цвет,
+      <code class={content.inlineCode}>v</code>: наверху она близка к <code class={content.inlineCode}>0</code>, внизу близка к <code class={content.inlineCode}>1</code>. Так получаем <code class={content.inlineCode}>texY</code>.
+      После этого <code class={content.inlineCode}>getTextureColor</code> превращает пару <code class={content.inlineCode}>texX</code>/<code class={content.inlineCode}>texY</code> в настоящий цвет,
       который и попадает на canvas.
     </p>
     <div set:html={code2Html} />
-    <p class="py-2 text">
-      Где <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">getInterpolationFactor</code> связывает экранный столбец с положением на реальной стене:
+    <p class={content.paragraph}>
+      Где <code class={content.inlineCode}>getInterpolationFactor</code> связывает экранный столбец с положением на реальной стене:
     </p>
     <div set:html={code3Html} />
-    <p class="py-2 text">
+    <p class={content.paragraph}>
       Важно, что текстура не рисуется отдельной картинкой поверх стены. Мы по-прежнему строим стену тем же способом:
       проецируем seg на экран, находим верх и низ вертикальной полосы, а затем меняем только способ заполнения пикселей
       внутри этой полосы. Благодаря этому текстурирование естественно работает вместе с уже существующими отсечениями,
       порталами и BSP-порядком.
     </p>
-    <p class="my-2">
-      <a href={`${PROJECT_REPO_URL}/stages/Stage5b/render25d.ts`} target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 text-blue-600 hover:text-blue-800 hover:underline transition-colors" >Реализация шага на github</a>
+    <p class={content.mutedSpacing}>
+      <a href={`${PROJECT_REPO_URL}/stages/Stage5b/render25d.ts`} target="_blank" rel="noopener noreferrer" class={content.referenceLink} >Реализация шага на github</a>
     </p>
   </section>
 </PageLayout>

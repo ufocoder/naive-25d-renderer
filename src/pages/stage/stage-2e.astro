@@ -1,4 +1,5 @@
 ---
+import content from '@app/styles/content.module.css';
 import PageLayout from '@app/layouts/PageLayout.astro';
 import Stage from '@app/pages/stage/_islands/Stage2e';
 import type { PageMetadata } from '@app/config/pages';
@@ -10,15 +11,15 @@ export const metadata: PageMetadata = {
 ---
 
 <PageLayout>
-  <section class="flex flex-col gap-4">
-    <p class="py-2 text">
+  <section class={content.contentSection}>
+    <p class={content.paragraph}>
       Добавим к уровню второй сектор, соприкасающийся с первым. На карте при виде сверху это две соседние комнаты, но текущий отрисовщик обрабатывает каждый сектор отдельно и все сегменты сектора — это непрозрачные стены.
     </p>
-    <p class="py-2 text">
+    <p class={content.paragraph}>
       Поэкспериментируйте с положением камеры: общая граница секторов закрывает пространство за ней:
     </p>
     <Stage part={0} client:load />
-    <p class="py-2 text">
+    <p class={content.paragraph}>
       Очевидно, мы должны что-то сделать с общей стеной и не рисовать его как сплошную поверхность.
     </p>
   </section>

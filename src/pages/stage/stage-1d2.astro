@@ -1,4 +1,6 @@
 ---
+import content from '@app/styles/content.module.css';
+import stageStyles from '@app/styles/stage.module.css';
 import PageLayout from '@app/layouts/PageLayout.astro';
 import Stage from '@app/pages/stage/_islands/Stage1d2';
 import type { PageMetadata } from '@app/config/pages';
@@ -69,27 +71,27 @@ const code2Html = await codeToHtml(code2, { lang: 'ts', theme: 'github-light' })
 ---
 
 <PageLayout>
-  <section class="flex flex-col gap-4">
-    <p class="py-text">
+  <section class={content.contentSection}>
+    <p class={content.paragraph}>
       В прошлом примере стены были расположены так, что всегда были повернуты лицом к камере. Если расположить стены по-другому, например, как на демо ниже и слева, то можно заметить, что ранее реализованная линейная интерполяция не работает.
     </p>
-    <p class="py-text">
-      Здесь необходимо учитывать угол между стеной и направлением взгляда, чтобы создать правильное перспективное искажение. Поэтому мы введем специальный коэффициент, <code class="px-2 py-1 bg-gray-100 text-gray-800 text-xs font-semibold rounded">scale factor</code>, учитывающий ориентацию стены относительно луча зрения.
+    <p class={content.paragraph}>
+      Здесь необходимо учитывать угол между стеной и направлением взгляда, чтобы создать правильное перспективное искажение. Поэтому мы введем специальный коэффициент, <code class={content.inlineCode}>scale factor</code>, учитывающий ориентацию стены относительно луча зрения.
     </p>
     <Stage part={0} client:load />
-    <h2 class="text-2xl">
+    <h2 class={stageStyles.stageHeading}>
       Как это рассчитать
     </h2>
-    <p class="py-2 text">
+    <p class={content.paragraph}>
       Коэффициент, во сколько раз нужно изменить базовую высоту из-за угла обзора стены:
     </p>
     <div set:html={code1Html} />
-    <p class="py-2 text">
+    <p class={content.paragraph}>
       Обновим функцию расчета проекции:
     </p>
     <div set:html={code2Html} />
-    <p class="py-2">
-      <a href={`${PROJECT_REPO_URL}/stages/Stage1d2/render25d.ts`} target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 text-blue-600 hover:text-blue-800 hover:underline transition-colors" >Реализация шага на github</a>
+    <p class={content.paragraph}>
+      <a href={`${PROJECT_REPO_URL}/stages/Stage1d2/render25d.ts`} target="_blank" rel="noopener noreferrer" class={content.referenceLink} >Реализация шага на github</a>
     </p>
   </section>
 </PageLayout>

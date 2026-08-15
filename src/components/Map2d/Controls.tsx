@@ -1,3 +1,4 @@
+import mapStyles from '@app/styles/map.module.css';
 export interface KeyboardControlsProps {
   withVertical?: boolean;
 }
@@ -26,10 +27,10 @@ export default function KeyboardControls({ withVertical }: KeyboardControlsProps
   };
 
   return (
-    <p class="my-2 flex flex-wrap items-center justify-center gap-1 font-normal text-gray-500 select-none">
+    <p class={mapStyles.mapControls}>
       <span>Управление камерой </span>
       <kbd 
-        class="px-2 py-1 text-sm font-semibold text-gray-800 bg-gray-100 border border-gray-400 rounded cursor-pointer hover:bg-gray-200 transition-colors select-none"
+        class={mapStyles.mapControlButton}
         onPointerDown={() => handleMouseDown('w')}
         onPointerUp={() => handleMouseUp('w')}
         onContextMenu={(e) => e.preventDefault()}
@@ -37,7 +38,7 @@ export default function KeyboardControls({ withVertical }: KeyboardControlsProps
         W
       </kbd>
       <kbd 
-        class="px-2 py-1 text-sm font-semibold text-gray-800 bg-gray-100 border border-gray-400 rounded cursor-pointer hover:bg-gray-200 transition-colors select-none"
+        class={mapStyles.mapControlButton}
         onPointerDown={() => handleMouseDown('a')}
         onPointerUp={() => handleMouseUp('a')}
         onContextMenu={(e) => e.preventDefault()}
@@ -45,7 +46,7 @@ export default function KeyboardControls({ withVertical }: KeyboardControlsProps
         A
       </kbd>
       <kbd 
-        class="px-2 py-1 text-sm font-semibold text-gray-800 bg-gray-100 border border-gray-400 rounded cursor-pointer hover:bg-gray-200 transition-colors select-none"
+        class={mapStyles.mapControlButton}
         onPointerDown={() => handleMouseDown('s')}
         onPointerUp={() => handleMouseUp('s')}
         onContextMenu={(e) => e.preventDefault()}
@@ -53,7 +54,7 @@ export default function KeyboardControls({ withVertical }: KeyboardControlsProps
         S
       </kbd>
       <kbd 
-        class="px-2 py-1 text-sm font-semibold text-gray-800 bg-gray-100 border border-gray-400 rounded cursor-pointer hover:bg-gray-200 transition-colors select-none"
+        class={mapStyles.mapControlButton}
         onPointerDown={() => handleMouseDown('d')}
         onPointerUp={() => handleMouseUp('d')}
         onContextMenu={(e) => e.preventDefault()}
@@ -64,7 +65,7 @@ export default function KeyboardControls({ withVertical }: KeyboardControlsProps
         <>
           <span> и </span>
           <kbd 
-            class="px-2 py-1 text-sm font-semibold text-gray-800 bg-gray-100 border border-gray-400 rounded cursor-pointer hover:bg-gray-200 transition-colors select-none"
+            class={mapStyles.mapControlButton}
             onPointerDown={() => handleMouseDown('z')}
             onPointerUp={() => handleMouseUp('z')}
             onContextMenu={(e) => e.preventDefault()}
@@ -72,7 +73,7 @@ export default function KeyboardControls({ withVertical }: KeyboardControlsProps
             Z
           </kbd>
           <kbd 
-            class="px-2 py-1 text-sm font-semibold text-gray-800 bg-gray-100 border border-gray-400 rounded cursor-pointer hover:bg-gray-200 transition-colors select-none"
+            class={mapStyles.mapControlButton}
             onPointerDown={() => handleMouseDown('x')}
             onPointerUp={() => handleMouseUp('x')}
             onContextMenu={(e) => e.preventDefault()}

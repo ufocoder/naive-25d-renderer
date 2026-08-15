@@ -1,3 +1,4 @@
+import mapStyles from '@app/styles/map.module.css';
 import Canvas, { type RendererProps } from "@app/components/Canvas/CanvasExtended";
 import { createSignal, onCleanup } from "solid-js";
 import KeyboardControls, { type KeyboardControlsProps } from "./Controls";
@@ -139,8 +140,8 @@ export default function Map2d({
   });
 
   return (
-    <div class="flex w-full min-w-0 flex-col">
-      <div class="flex w-full min-w-0 justify-center">
+    <div class={mapStyles.mapShell}>
+      <div class={mapStyles.mapCanvasWrap}>
         <div
           ref={(ref) => {
             containerRef = ref;
@@ -148,7 +149,7 @@ export default function Map2d({
               ref.addEventListener('wheel', handleWheel, { passive: false });
             }
           }}
-          class="relative max-w-full"
+          class={mapStyles.mapCanvasFrame}
           onPointerDown={handlePointerDown}
           onPointerMove={handlePointerMove}
           onPointerUp={handlePointerUp}
@@ -161,7 +162,7 @@ export default function Map2d({
           }}
         >
           <Canvas
-            className={`block h-auto max-w-full ${canvasClassName ?? ''}`}
+            className={`${mapStyles.mapCanvasImage} ${canvasClassName ?? ''}`}
             width={width || settings().camera.screen.width}
             height={height || settings().camera.screen.height}
             scale={scale}
@@ -173,7 +174,7 @@ export default function Map2d({
           />
           {withZoom && (
             <div
-              class="absolute right-2 top-2 z-10 flex flex-col gap-2"
+              class={mapStyles.mapOverlayActions}
               onPointerDown={(e) => e.stopPropagation()}
               onPointerMove={(e) => e.stopPropagation()}
               onPointerUp={(e) => e.stopPropagation()}
@@ -182,14 +183,14 @@ export default function Map2d({
               <button
                 type="button"
                 onClick={handleZoomIn}
-                class="h-8 w-8 cursor-pointer rounded border border-gray-400 bg-gray-100 text-sm font-semibold text-gray-800 shadow-sm transition-colors select-none hover:bg-gray-200"
+                class={mapStyles.mapIconButton}
               >
                 +
               </button>
               <button
                 type="button"
                 onClick={handleZoomOut}
-                class="h-8 w-8 cursor-pointer rounded border border-gray-400 bg-gray-100 text-sm font-semibold text-gray-800 shadow-sm transition-colors select-none hover:bg-gray-200"
+                class={mapStyles.mapIconButton}
               >
                 -
               </button>
@@ -198,12 +199,12 @@ export default function Map2d({
         </div>
       </div>
       {withControls &&(
-        <div class="mt-1 flex min-w-0 justify-center">
+        <div class={mapStyles.mapStatus}>
           <KeyboardControls withVertical={withVertical} />
         </div>
       )}
       {withDebug && (
-        <div class="flex justify-center text-xs text-gray-500 mt-1">
+        <div class={mapStyles.mapStatusText}>
           Координаты {settings().camera.x.toFixed(2)} x {settings().camera.y.toFixed(2)}, угол {settings().camera.angle.degrees} <br />
         </div>
       )}

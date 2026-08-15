@@ -1,4 +1,6 @@
 ---
+import content from '@app/styles/content.module.css';
+import stageStyles from '@app/styles/stage.module.css';
 import PageLayout from '@app/layouts/PageLayout.astro';
 import Stage from '@app/pages/stage/_islands/Stage1a';
 import type { PageMetadata } from '@app/config/pages';
@@ -55,52 +57,52 @@ const renderFormula = (latex: string) => katex.renderToString(latex, {
 ---
 
 <PageLayout>
-  <section class="flex flex-col gap-4">
-    <p class="py-2 text">
-      Самое тяжелое в проектировании — это определить базовый набор идей и абстракций. И честно говоря, в свое время мне было тяжело понять, какой шаг нужно было сделать первым, пока не познакомился с заметками <a class="link underline" href="https://github.com/amroibrahim/DIYDoom/tree/master/DIYDOOM/Notes011/notes" target="_blank">DIYDoom</a>, а в частности с тем, как необходимо сделать <a class="link underline" href="https://github.com/amroibrahim/DIYDoom/tree/master/DIYDOOM/Notes011/notes" target="_blank">горизонтальную проекцию</a>.
+  <section class={content.contentSection}>
+    <p class={content.paragraph}>
+      Самое тяжелое в проектировании — это определить базовый набор идей и абстракций. И честно говоря, в свое время мне было тяжело понять, какой шаг нужно было сделать первым, пока не познакомился с заметками <a class={content.articleLink} href="https://github.com/amroibrahim/DIYDoom/tree/master/DIYDOOM/Notes011/notes" target="_blank">DIYDoom</a>, а в частности с тем, как необходимо сделать <a class={content.articleLink} href="https://github.com/amroibrahim/DIYDoom/tree/master/DIYDOOM/Notes011/notes" target="_blank">горизонтальную проекцию</a>.
     </p>
-    <p class="py-2 text">
+    <p class={content.paragraph}>
       На этом шаге необходимо сделать проекцию вершины на камеру в виде вертикальной линии.
     </p>
     <Stage part={0} client:load />
-    <h2 class="text-2xl">
+    <h2 class={stageStyles.stageHeading}>
       Как это рассчитать
     </h2>
-    <p class="py-2 text">
+    <p class={content.paragraph}>
       Введем условные обозначения:
     </p>
-    <div class="bg-gray-100 border border-gray-200 p-4 text my-2">
+    <div class={content.noteBlockWithSpacing}>
       <div set:html={renderFormula("\\Delta x = x_{\\text{vertex}} - x_{\\text{camera}}")} />
       <div set:html={renderFormula("\\Delta y = y_{\\text{vertex}} - y_{\\text{camera}}")} />
       <div set:html={renderFormula("\\theta_{\\text{fov}} \\text{ — угол поля обзора камеры (FOV)}")} />
       <div set:html={renderFormula("W \\text{ — ширина экрана в пикселях}")} />
     </div>
-    <p class="py-2 text">
+    <p class={content.paragraph}>
       Вычисляем угол между направлением камеры и вершиной на карте:
     </p>
-    <div class="bg-gray-100 border border-gray-200 p-4 text my-2">
+    <div class={content.noteBlockWithSpacing}>
       <div set:html={renderFormula("\\theta_v = \\operatorname{arctan2}(\\Delta y, \\Delta x) \\cdot \\frac{180}{\\pi}")} />
     </div>
-    <p class="py-2 text">
+    <p class={content.paragraph}>
       Если угол входит в поле обзора камеры, мы линейно преобразуем его относительное положение внутри области видимости в координату X на экране:
     </p>
-    <div class="bg-gray-100 border border-gray-200 p-4 text my-2">
+    <div class={content.noteBlockWithSpacing}>
       <div set:html={renderFormula("\\theta_{\\min} = \\theta_{\\text{cam}} - \\frac{\\theta_{\\text{fov}}}{2}")} />
       <div set:html={renderFormula("\\text{screenX} = \\frac{\\theta_v - \\theta_{\\text{min}}}{\\theta_{\\text{fov}}} \\cdot W")} />
     </div>
-    <h2 class="text-2xl">
+    <h2 class={stageStyles.stageHeading}>
       Немного кода
     </h2>
-    <p class="py-2 text">
+    <p class={content.paragraph}>
       Получившийся мир для нас — это множество спроецированных точек в виде вертикальных линий:
     </p>
     <div set:html={code1Html} />
-    <p class="py-2 text">
+    <p class={content.paragraph}>
       Проекция вершины на экран:
     </p>
     <div set:html={code2Html} />
-    <p class="py-2 text">
-      <a href={`${PROJECT_REPO_URL}/stages/Stage1a/render25d.ts`} target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 text-blue-600 hover:text-blue-800 hover:underline transition-colors" >Реализация шага на github</a>
+    <p class={content.paragraph}>
+      <a href={`${PROJECT_REPO_URL}/stages/Stage1a/render25d.ts`} target="_blank" rel="noopener noreferrer" class={content.referenceLink} >Реализация шага на github</a>
     </p>
   </section>
 </PageLayout>

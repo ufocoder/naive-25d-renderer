@@ -1,3 +1,4 @@
+import editorStyles from '@app/styles/editor.module.css';
 import type { Component } from 'solid-js';
 
 import ToolbarGroup from './ToolbarGroup';
@@ -16,8 +17,8 @@ const LinedefToolbarGroup: Component<LinedefToolbarGroupProps> = (props) => (
       title={props.isAddingLinedef ? 'Отменить добавление linedef' : 'Добавить linedef'}
       class={
         props.isAddingLinedef
-          ? 'flex size-10 items-center justify-center rounded border border-[#8ea7d5] bg-[#eaf2ff] text-[#1f2a44] transition-colors hover:bg-[#dce9ff]'
-          : 'flex size-10 items-center justify-center rounded border border-[#c3d0ea] bg-transparent text-[#1f2a44] transition-colors hover:bg-[#f4f8ff]'
+          ? editorStyles.toolbarToggleButtonActive
+          : editorStyles.toolbarToggleButton
       }
     >
       <svg

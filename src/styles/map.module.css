@@ -1,0 +1,102 @@
+.mapControls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+  margin-block: 0.5rem;
+  color: var(--color-gray-500);
+  font-weight: 400;
+  user-select: none;
+}
+
+.mapControlButton {
+  border: 1px solid var(--color-gray-400);
+  border-radius: 0.25rem;
+  background: var(--color-gray-100);
+  padding: 0.25rem 0.5rem;
+  color: var(--color-gray-800);
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.15s var(--ease);
+  user-select: none;
+}
+
+.mapControlButton:hover {
+  background: var(--color-gray-200);
+}
+
+.mapIconButton {
+  width: 2rem;
+  height: 2rem;
+  border: 1px solid var(--color-gray-400);
+  border-radius: 0.25rem;
+  background: var(--color-gray-100);
+  color: var(--color-gray-800);
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+  transition: background-color 0.15s var(--ease);
+  user-select: none;
+}
+
+.mapIconButton:hover {
+  background: var(--color-gray-200);
+}
+
+.mapShell {
+  display: flex;
+  width: 100%;
+  min-width: 0;
+  flex-direction: column;
+}
+
+.mapCanvasWrap {
+  display: flex;
+  width: 100%;
+  min-width: 0;
+  justify-content: center;
+}
+
+.mapCanvasFrame {
+  position: relative;
+  max-width: 100%;
+}
+
+.mapCanvasImage {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+.mapOverlayActions {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.mapStatus {
+  display: flex;
+  min-width: 0;
+  justify-content: center;
+  margin-top: 0.25rem;
+}
+
+.mapStatusText {
+  display: flex;
+  justify-content: center;
+  margin-top: 0.25rem;
+  color: var(--color-gray-500);
+  font-size: 0.75rem;
+}
+
+.mapCheckbox {
+  width: 1rem;
+  height: 1rem;
+}

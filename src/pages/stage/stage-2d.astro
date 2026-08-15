@@ -1,4 +1,5 @@
 ---
+import content from '@app/styles/content.module.css';
 import PageLayout from '@app/layouts/PageLayout.astro';
 import Stage from '@app/pages/stage/_islands/Stage2d';
 import type { PageMetadata } from '@app/config/pages';
@@ -11,17 +12,17 @@ export const metadata: PageMetadata = {
 ---
 
 <PageLayout>
-  <section class="flex flex-col gap-4">
-    <p class="py-2 text">
+  <section class={content.contentSection}>
+    <p class={content.paragraph}>
       Возьмем простой сектор — прямоугольник при виде сверху. 
     </p>
-    <p class="py-2 text">
+    <p class={content.paragraph}>
       Зная координаты вершин для конкретной стены, достроим вертикальные линии и получим пол и потолок. Все просто:
       нижняя граница стены продолжается до нижнего края экрана и образует фрагмент пола, а верхняя — до верхнего края и образует фрагмент потолка.
     </p>
     <Stage part={0} client:load />
-    <p class="py-2">
-      <a href={`${PROJECT_REPO_URL}/stages/Stage2d/render25d.ts`} target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 text-blue-600 hover:text-blue-800 hover:underline transition-colors" >Реализация шага на github</a>
+    <p class={content.paragraph}>
+      <a href={`${PROJECT_REPO_URL}/stages/Stage2d/render25d.ts`} target="_blank" rel="noopener noreferrer" class={content.referenceLink} >Реализация шага на github</a>
     </p>
   </section>
 </PageLayout>

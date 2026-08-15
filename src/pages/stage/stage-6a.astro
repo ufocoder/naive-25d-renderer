@@ -1,4 +1,5 @@
 ---
+import content from '@app/styles/content.module.css';
 import PageLayout from '@app/layouts/PageLayout.astro';
 import InDevelopmentGate from '@app/pages/_components/InDevelopmentGate.astro';
 import Stage from '@app/stages/Stage6a';
@@ -82,60 +83,60 @@ const [code1Html, code2Html, code3Html, code4Html, code5Html] = await Promise.al
 
 <PageLayout>
   <InDevelopmentGate />
-  <section class="flex flex-col gap-4">
+  <section class={content.contentSection}>
     <Stage client:load />
-    <p class="py-2 text">
+    <p class={content.paragraph}>
       На этом шаге добавим к сектору простые предметы. Пока это не полноценные спрайты с прозрачностью и текстурой, а
       отладочные прямоугольные области: они показывают, где на 2.5D-экране будет рисоваться предмет. Важно, что предмет
       принадлежит конкретному сектору, поэтому его вертикальные границы рассчитываются с учетом высоты пола и потолка
       этого сектора.
     </p>
-    <p class="py-2 text">
-      В описание сектора добавляем массив <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">items</code>.
-      Каждый <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">Item</code> хранит позицию в плоскости карты,
-      необязательное смещение по высоте, радиус и тип. Поле <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">sprite</code>
+    <p class={content.paragraph}>
+      В описание сектора добавляем массив <code class={content.inlineCode}>items</code>.
+      Каждый <code class={content.inlineCode}>Item</code> хранит позицию в плоскости карты,
+      необязательное смещение по высоте, радиус и тип. Поле <code class={content.inlineCode}>sprite</code>
       оставлено для следующего шага: позже вместо одноцветного прямоугольника можно будет читать пиксели из bitmap.
     </p>
     <div set:html={code1Html} />
-    <p class="py-2 text">
+    <p class={content.paragraph}>
       Предметы задаются внутри того сектора, на полу которого они стоят. Например, аптечка лежит во втором секторе:
     </p>
     <div set:html={code2Html} />
-    <p class="py-2 text">
+    <p class={content.paragraph}>
       Во время отрисовки кадра рендерер обходит BSP-дерево и встречает сегменты разных секторов. Для каждого сектора,
-      у которого есть <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">items</code>, мы один раз вычисляем экранные границы всех его предметов.
+      у которого есть <code class={content.inlineCode}>items</code>, мы один раз вычисляем экранные границы всех его предметов.
       Сектор запоминается в наборе уже обработанных, чтобы один и тот же предмет не попал в список несколько раз через
       разные стены этого сектора.
     </p>
-    <p class="py-2 text">
+    <p class={content.paragraph}>
       Сначала предмет переводится в координаты относительно камеры. Скалярное произведение с направлением взгляда дает
-      расстояние вперед, а угол до предмета превращается в координату <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">screenX</code>.
+      расстояние вперед, а угол до предмета превращается в координату <code class={content.inlineCode}>screenX</code>.
       Если предмет находится за камерой или его угловая область не пересекает FOV, он не рисуется.
     </p>
     <div set:html={code3Html} />
-    <p class="py-2 text">
+    <p class={content.paragraph}>
       Горизонтальная ширина берется из углового радиуса предмета. Чем ближе предмет, тем больше
-      <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">Math.atan2(radius, distance)</code>, а значит шире его область на экране.
+      <code class={content.inlineCode}>Math.atan2(radius, distance)</code>, а значит шире его область на экране.
       Вертикальные границы считаются отдельно: низ прямоугольника привязан к полу сектора плюс
-      <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">item.z</code>, верх - к потолку сектора.
+      <code class={content.inlineCode}>item.z</code>, верх - к потолку сектора.
     </p>
     <div set:html={code4Html} />
-    <p class="py-2 text">
+    <p class={content.paragraph}>
       В итоге у предмета получается прямоугольник в экранных координатах:
-      <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">x1</code>,
-      <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">x2</code>,
-      <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">y1</code> и
-      <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">y2</code>.
+      <code class={content.inlineCode}>x1</code>,
+      <code class={content.inlineCode}>x2</code>,
+      <code class={content.inlineCode}>y1</code> и
+      <code class={content.inlineCode}>y2</code>.
       Эти границы обрезаются по размеру canvas, а пустые прямоугольники отбрасываются.
     </p>
     <div set:html={code5Html} />
-    <p class="py-2 text">
+    <p class={content.paragraph}>
       После обхода BSP все найденные предметные области сортируются по расстоянию от дальних к ближним и рисуются поверх
-      геометрии. Сейчас цвет выбирается по <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">type</code> предмета и затемняется яркостью сектора.
+      геометрии. Сейчас цвет выбирается по <code class={content.inlineCode}>type</code> предмета и затемняется яркостью сектора.
       На следующем шаге этот прямоугольник станет рамкой, внутри которой можно будет выбирать пиксели настоящего спрайта.
     </p>
-    <p class="py-2 text">
-      <a href={`${PROJECT_REPO_URL}/stages/Stage6a/render25d.ts`} target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 text-blue-600 hover:text-blue-800 hover:underline transition-colors" >Реализация шага на github</a>
+    <p class={content.paragraph}>
+      <a href={`${PROJECT_REPO_URL}/stages/Stage6a/render25d.ts`} target="_blank" rel="noopener noreferrer" class={content.referenceLink} >Реализация шага на github</a>
     </p>
   </section>
 </PageLayout>

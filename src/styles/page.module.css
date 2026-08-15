@@ -1,0 +1,29 @@
+.contentMain {
+  flex: 1;
+}
+
+.pageHeader {
+  position: relative;
+  margin-bottom: 1.5rem;
+}
+
+.pageEyebrow {
+  color: var(--muted);
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.pageTitle {
+  color: var(--ink);
+  font-size: 1.5rem;
+  font-weight: 600;
+  line-height: calc(2 / 1.5);
+}
+
+@media (min-width: 1024px) {
+
+  .pageTitle {
+    font-size: 1.875rem;
+    line-height: calc(2.25 / 1.875);
+  }
+}

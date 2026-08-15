@@ -1,0 +1,342 @@
+.editorLayout {
+  display: grid;
+  gap: 1rem;
+}
+
+.editorMainColumn,
+.editorSidebar,
+.editorJsonSection {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.editorJsonSection {
+  gap: 0.5rem;
+}
+
+.editorHint,
+.editorPanel,
+.editorSectorPanel {
+  border: 1px solid #d8deea;
+  background: var(--surface);
+  padding: 0.75rem;
+}
+
+.editorHint {
+  background: #f8faff;
+}
+
+.editorHintText {
+  color: #4a5a75;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.editorPanelTitle,
+.editorJsonTitle {
+  margin-bottom: 0.75rem;
+  color: #1f2a44;
+  font-size: 1.125rem;
+  font-weight: 600;
+}
+
+.editorSectorPanel {
+  border-color: #b8ded8;
+  background: #f1fcfa;
+}
+
+.editorSectorTitle {
+  margin-bottom: 0.75rem;
+  color: #174c45;
+  font-size: 1.125rem;
+  font-weight: 600;
+}
+
+.editorFormGrid,
+.editorSectorGrid {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.editorField,
+.editorSectorField {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  color: #4a5a75;
+  font-size: 0.875rem;
+}
+
+.editorSectorField {
+  color: #245c55;
+}
+
+.editorInput,
+.editorSectorInput,
+.editorSelect {
+  border: 1px solid #c3d0ea;
+  padding: 0.25rem 0.5rem;
+  color: #1f2a44;
+}
+
+.editorSelect {
+  height: 2.25rem;
+  background: var(--surface);
+}
+
+.editorSectorInput,
+.editorSectorSelect {
+  border-color: #b8ded8;
+}
+
+.editorSectorSelect {
+  height: 2.25rem;
+  border: 1px solid #b8ded8;
+  background: var(--surface);
+  padding: 0.25rem 0.5rem;
+}
+
+.editorDangerButton {
+  width: 100%;
+  border: 1px solid #e2b4b4;
+  background: #fff7f7;
+  padding: 0.5rem 0.75rem;
+  color: #8a2a2a;
+  font-size: 0.875rem;
+  font-weight: 600;
+  transition: background-color 0.15s var(--ease);
+}
+
+.editorDangerButton:hover {
+  background: #ffeaea;
+}
+
+.editorActionCell {
+  display: flex;
+  align-items: flex-end;
+}
+
+.editorHelpText {
+  color: #6b7a8f;
+  font-size: 0.875rem;
+}
+
+.editorOption {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  border: 1px solid #d8deea;
+  background: #f8faff;
+  padding: 0.5rem;
+  color: #4a5a75;
+  font-size: 0.875rem;
+}
+
+.editorOptionText {
+  color: #6b7a8f;
+  font-size: 0.75rem;
+  line-height: 1.625;
+}
+
+.editorHeaderRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.editorHeaderTitleGroup {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.editorGhostButton,
+.toolbarButton {
+  border: 1px solid #c3d0ea;
+  background: transparent;
+  padding: 0.5rem 0.75rem;
+  color: #1f2a44;
+  font-size: 0.875rem;
+  font-weight: 600;
+  transition: background-color 0.15s var(--ease);
+}
+
+.editorCanvas,
+.editorCanvasGrab,
+.editorCanvasGrabbing,
+.editorCanvasMove {
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  border: 1px solid #c3d0ea;
+  border-radius: 0.25rem;
+  background: var(--surface);
+}
+
+.editorCanvasGrab {
+  cursor: grab;
+}
+
+.editorCanvasGrabbing {
+  cursor: grabbing;
+}
+
+.editorCanvasMove {
+  cursor: move;
+}
+
+.editorPortalOption,
+.editorPortalOptionDisabled {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 600;
+}
+
+.editorPortalOption {
+  color: #1f2a44;
+}
+
+.editorPortalOptionDisabled {
+  color: #8a94a8;
+}
+
+.editorCopySuccess,
+.editorCopyError {
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.editorCopySuccess {
+  color: #047857;
+}
+
+.editorCopyError {
+  color: #be123c;
+}
+
+.toolbarToggleButton,
+.toolbarToggleButtonActive {
+  display: flex;
+  width: 2.5rem;
+  height: 2.5rem;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #c3d0ea;
+  border-radius: 0.25rem;
+  background: transparent;
+  color: #1f2a44;
+  transition: background-color 0.15s var(--ease);
+}
+
+.toolbarToggleButton:hover {
+  background: #f4f8ff;
+}
+
+.toolbarToggleButtonActive {
+  border-color: #8ea7d5;
+  background: #eaf2ff;
+}
+
+.toolbarToggleButtonActive:hover {
+  background: #dce9ff;
+}
+
+.editorGhostButton:hover,
+.toolbarButton:hover,
+.toolbarIconButton:hover {
+  background: #f4f8ff;
+}
+
+.toolbarRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 0.75rem;
+}
+
+.toolbarGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.toolbarTitle {
+  color: #6b7a8f;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.toolbarItems {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.toolbarSegmented {
+  display: inline-flex;
+  overflow: hidden;
+  border: 1px solid #c3d0ea;
+  background: transparent;
+}
+
+.toolbarIconButton {
+  width: 2.25rem;
+  height: 2.25rem;
+  border-right: 1px solid #c3d0ea;
+  background: transparent;
+  color: #1f2a44;
+  font-size: 1.125rem;
+  font-weight: 600;
+  transition: background-color 0.15s var(--ease);
+}
+
+.toolbarProgressButton {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid #9eb3da;
+  background: #dce6fa;
+  padding: 0.5rem 1rem;
+  color: #1f2a44;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: background-color 0.15s var(--ease);
+}
+
+.toolbarProgressButton:hover {
+  background: #c8d8f5;
+}
+
+.toolbarProgressFill {
+  position: absolute;
+  inset-block: 0;
+  left: 0;
+  background: #9eb3da;
+}
+
+.relativeLayer {
+  position: relative;
+}
+
+@media (min-width: 768px) {
+
+  .editorFormGrid,
+  .editorSectorGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .editorWideField {
+    grid-column: span 2 / span 2;
+  }
+}
+
+@media (min-width: 1024px) {
+  .editorLayout {
+    grid-template-columns: minmax(0, 1fr) 24rem;
+  }
+}

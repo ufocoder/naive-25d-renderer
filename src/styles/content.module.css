@@ -1,0 +1,108 @@
+.contentSection {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.paragraph {
+  padding-block: 0.5rem;
+  color: var(--ink);
+}
+
+.articleLink {
+  color: var(--accent-ink);
+  text-decoration-line: underline;
+}
+
+.referenceLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  color: var(--accent-ink);
+  text-decoration: none;
+  transition: color 0.15s var(--ease);
+}
+
+.referenceLink:hover {
+  color: var(--color-blue-800);
+  text-decoration-line: underline;
+}
+
+.inlineCode {
+  border-radius: 0.25rem;
+  background: var(--color-gray-100);
+  padding: 0.25rem 0.5rem;
+  color: var(--color-gray-800);
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.noteBlock {
+  border: 1px solid var(--color-gray-200);
+  background: var(--color-gray-100);
+  padding: 1rem;
+  color: var(--ink);
+}
+
+.noteBlockWithSpacing {
+  margin-block: 0.5rem;
+  border: 1px solid var(--color-gray-200);
+  background: var(--color-gray-100);
+  padding: 1rem;
+  color: var(--ink);
+}
+
+.unorderedList {
+  list-style-position: inside;
+  list-style-type: disc;
+  padding-block: 0.5rem;
+  color: var(--ink);
+}
+
+.spacedList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  list-style-type: disc;
+  padding-left: 1.5rem;
+  color: var(--ink);
+}
+
+.boldText {
+  font-weight: 700;
+}
+
+.strongText {
+  font-weight: 600;
+}
+
+.mutedSpacing {
+  margin-block: 0.5rem;
+}
+
+.contentBox {
+  border: 1px solid var(--color-gray-200);
+  background: var(--color-gray-100);
+  padding: 1rem;
+  color: var(--ink);
+}
+
+.wideFigure {
+  max-width: calc(var(--spacing) * 150);
+}
+
+.contentText {
+  color: var(--ink);
+}
+
+.codeTextGrid {
+  display: grid;
+  gap: 0.5rem;
+  padding-block: 0.5rem;
+  color: var(--ink);
+}
+
+.sectionSpacing {
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+}

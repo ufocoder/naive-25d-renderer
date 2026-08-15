@@ -1,3 +1,4 @@
+import stageStyles from '@app/styles/stage.module.css';
 import Canvas from "@app/components/Canvas/CanvasBase";
 import render2dStage0 from '@app/stages/Stage0b/render2d';
 
@@ -29,25 +30,25 @@ const Row: Component<RowProps> = ({ settings: defaultSettings }) => {
   const bspTree = useBspTree({ settings });
 
   return (
-    <div class="grid grid-cols-1 gap-6 md:grid-cols-2 md:gap-4">
-      <div class="flex min-w-0 flex-col items-center gap-2">
-        <h2 class="text-xl md:hidden">2.5D Renderer</h2>
+    <div class={stageStyles.wideResponsiveGrid}>
+      <div class={stageStyles.demoItem}>
+        <h2 class={stageStyles.hiddenMobileTitle}>2.5D Renderer</h2>
         <Canvas
           width={400}
           height={400}
           settings={settings}
           render={render2dStage0}
-          className="h-auto w-full max-w-[400px]"
+          className={stageStyles.previewImage}
         />
       </div>
-      <div class="flex min-w-0 flex-col items-center gap-2">
-        <h2 class="text-xl md:hidden">2D Renderer</h2>
+      <div class={stageStyles.demoItem}>
+        <h2 class={stageStyles.hiddenMobileTitle}>2D Renderer</h2>
         <Canvas
           width={400}
           height={400}
           settings={settings}
           render={createRender2d(bspTree())}
-          className="h-auto w-full max-w-[400px]"
+          className={stageStyles.previewImage}
         />
       </div>
     </div>
@@ -56,10 +57,10 @@ const Row: Component<RowProps> = ({ settings: defaultSettings }) => {
 
 const Stage: Component = () => {
   return (
-    <div class="flex flex-col gap-6 md:gap-4">
-      <div class="hidden grid-cols-2 gap-4 md:grid">
-        <h2 class="text-center text-2xl">2.5D Renderer</h2>
-        <h2 class="text-center text-2xl">2D Renderer</h2>
+    <div class={stageStyles.responsiveStack}>
+      <div class={stageStyles.desktopOnlyGrid}>
+        <h2 class={stageStyles.centeredTitle}>2.5D Renderer</h2>
+        <h2 class={stageStyles.centeredTitle}>2D Renderer</h2>
       </div>
       {settingsSet.map((settings) => (
         <Row settings={settings} />

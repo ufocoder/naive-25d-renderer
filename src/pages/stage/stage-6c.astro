@@ -1,4 +1,5 @@
 ---
+import content from '@app/styles/content.module.css';
 import PageLayout from '@app/layouts/PageLayout.astro';
 import InDevelopmentGate from '@app/pages/_components/InDevelopmentGate.astro';
 import Stage from '@app/stages/Stage6c';
@@ -54,59 +55,59 @@ const [code1Html, code2Html, code3Html] = await Promise.all([
 
 <PageLayout>
   <InDevelopmentGate />
-  <section class="flex flex-col gap-4">
+  <section class={content.contentSection}>
     <Stage client:load />
-    <p class="py-2 text">
-      До этого предмет был статичным: мы положили его в <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">sector.items</code>
+    <p class={content.paragraph}>
+      До этого предмет был статичным: мы положили его в <code class={content.inlineCode}>sector.items</code>
       и при отрисовке сектора доставали его оттуда. Для аптечки на полу этого достаточно. Но враг, ракета или подвижный
       бонус могут перейти через портал в соседний сектор, и тогда хранить его только в исходном секторе уже нельзя.
     </p>
-    <p class="py-2 text">
+    <p class={content.paragraph}>
       Для движущихся сущностей удобнее думать не о “предмете сектора”, а об actor с текущей мировой позицией. Сектор
       становится вычисляемым состоянием: после движения мы снова определяем, в каком секторе находится точка
-      <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">x/y</code>, и берем оттуда
-      <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">floorHeight</code>,
-      <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">ceilHeight</code> и яркость.
+      <code class={content.inlineCode}>x/y</code>, и берем оттуда
+      <code class={content.inlineCode}>floorHeight</code>,
+      <code class={content.inlineCode}>ceilHeight</code> и яркость.
     </p>
     <div set:html={code1Html} />
-    <p class="py-2 text">
+    <p class={content.paragraph}>
       При движении actor сначала проверяет новую позицию: можно ли туда пройти, не пересекается ли радиус со стеной,
       хватает ли высоты между полом и потолком. Если позиция допустима, actor меняет координаты и перепривязывается
       к сектору, найденному под его центром.
     </p>
     <div set:html={code2Html} />
-    <p class="py-2 text">
+    <p class={content.paragraph}>
       Для рендера есть два рабочих варианта. Первый - каждый кадр собирать временную таблицу
-      <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">actorsBySector</code> из глобального списка actor-ов.
+      <code class={content.inlineCode}>actorsBySector</code> из глобального списка actor-ов.
       Второй - хранить двусвязные списки actor-ов прямо в секторах и обновлять эти списки только при переходе между секторами.
       В обоих случаях во время обхода BSP мы рисуем actor-ов того сектора, который сейчас стал видимым.
     </p>
     <div set:html={code3Html} />
-    <p class="py-2 text">
+    <p class={content.paragraph}>
       В DOOM использовалась очень похожая идея, только в более практичной форме. Подвижные объекты назывались
-      <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">mobj_t</code>: у них были
-      <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">x/y/z</code>, радиус, высота,
+      <code class={content.inlineCode}>mobj_t</code>: у них были
+      <code class={content.inlineCode}>x/y/z</code>, радиус, высота,
       текущий subsector и ссылки для списков. Сектор находился по текущим координатам через
-      <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">R_PointInSubsector(x, y)</code>, а уже из subsector брали sector.
+      <code class={content.inlineCode}>R_PointInSubsector(x, y)</code>, а уже из subsector брали sector.
     </p>
-    <p class="py-2 text">
+    <p class={content.paragraph}>
       Важное разделение: секторные списки DOOM были нужны рендеру, а не игровой симуляции. Для столкновений и поиска
       соседних объектов actor дополнительно связывался с blockmap - сеткой мира, где каждая ячейка знала о линиях и
       объектах внутри нее. Поэтому переход врага между секторами был не “перекладыванием между комнатами” вручную, а
       обновлением пространственных ссылок после изменения координат.
     </p>
-    <p class="py-2 text">
+    <p class={content.paragraph}>
       Для нашего рендера это означает: статичные предметы могут оставаться в
-      <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">sector.items</code>, но движущиеся сущности лучше хранить отдельно,
-      например в <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">level.actors</code>.
+      <code class={content.inlineCode}>sector.items</code>, но движущиеся сущности лучше хранить отдельно,
+      например в <code class={content.inlineCode}>level.actors</code>.
       Каждый тик обновляет их позицию и текущий сектор, а рендер использует этот сектор только как источник высоты,
       освещения и принадлежности к видимой области.
     </p>
-    <p class="py-2 text">
+    <p class={content.paragraph}>
       Источники по DOOM:
-      <a href="https://sources.debian.org/src/rbdoom3bfg/1.2.0%2Bdfsg~git20210105-1/doomclassic/doom/p_mobj.h/" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 text-blue-600 hover:text-blue-800 hover:underline transition-colors">комментарии к mobj_t</a>
+      <a href="https://sources.debian.org/src/rbdoom3bfg/1.2.0%2Bdfsg~git20210105-1/doomclassic/doom/p_mobj.h/" target="_blank" rel="noopener noreferrer" class={content.referenceLink}>комментарии к mobj_t</a>
       и
-      <a href="https://sources.debian.org/src/rbdoom3bfg/1.1.0~preview3%2Bdfsg%2Bgit20160807-2/doomclassic/doom/p_mobj.cpp/" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 text-blue-600 hover:text-blue-800 hover:underline transition-colors">создание mobj и P_SetThingPosition</a>.
+      <a href="https://sources.debian.org/src/rbdoom3bfg/1.1.0~preview3%2Bdfsg%2Bgit20160807-2/doomclassic/doom/p_mobj.cpp/" target="_blank" rel="noopener noreferrer" class={content.referenceLink}>создание mobj и P_SetThingPosition</a>.
     </p>
   </section>
 </PageLayout>

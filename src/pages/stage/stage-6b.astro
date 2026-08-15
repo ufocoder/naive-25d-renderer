@@ -1,4 +1,5 @@
 ---
+import content from '@app/styles/content.module.css';
 import PageLayout from '@app/layouts/PageLayout.astro';
 import InDevelopmentGate from '@app/pages/_components/InDevelopmentGate.astro';
 import Stage from '@app/stages/Stage6b';
@@ -94,51 +95,51 @@ const [code1Html, code2Html, code3Html] = await Promise.all([
 
 <PageLayout>
   <InDevelopmentGate />
-  <section class="flex flex-col gap-4">
+  <section class={content.contentSection}>
     <Stage client:load />
-    <p class="py-2 text">
+    <p class={content.paragraph}>
       На предыдущем шаге мы уже научились находить прямоугольную область, в которой должен появиться предмет:
       экранная X-координата берется из угла до предмета, а нижняя граница привязана к высоте пола сектора. Теперь вместо
       одноцветной заливки растянем внутри этой области простую bitmap-текстуру.
     </p>
-    <p class="py-2 text">
-      Для аптечки используем <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">textures.health_sprite</code>.
+    <p class={content.paragraph}>
+      Для аптечки используем <code class={content.inlineCode}>textures.health_sprite</code>.
       Это маленькая сетка 8 на 8. Нулевой цвет прозрачный, единичный цвет красный:
     </p>
     <div set:html={code1Html} />
-    <p class="py-2 text">
-      <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">item.radius</code> остается размером в мире, тем же радиусом,
+    <p class={content.paragraph}>
+      <code class={content.inlineCode}>item.radius</code> остается размером в мире, тем же радиусом,
       которым предмет отмечен на карте. Поэтому сначала переводим этот радиус в угловой размер через
-      <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">Math.atan2(radius, distance)</code>, а затем в экранные пиксели.
+      <code class={content.inlineCode}>Math.atan2(radius, distance)</code>, а затем в экранные пиксели.
       Если предмет занимает почти ширину коридора в мире, близко к камере он тоже будет занимать большую область на экране.
       Даже когда камера оказывается внутри радиуса предмета, дистанция для масштаба все равно считается до центра окружности:
       так спрайт не переключается в отдельный режим и плавно растет по мере приближения к центру.
       Высоту не берем из сектора: она должна сохранять пропорции самой текстуры. Для квадратной аптечки 8 на 8 высота будет равна ширине,
       а для вытянутого спрайта изменится по соотношению
-      <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">texture.height / texture.width</code>.
+      <code class={content.inlineCode}>texture.height / texture.width</code>.
     </p>
     <div set:html={code2Html} />
-    <p class="py-2 text">
+    <p class={content.paragraph}>
       При рисовании каждого пикселя внутри полученного прямоугольника переводим его локальную позицию в координаты текстуры.
       Если texel прозрачный, ничего не пишем в буфер. Если texel видимый, затемняем его яркостью сектора и рисуем.
       Голубая рамка показывает bounding этой текстуры: bitmap прижимается к левому и правому краю внутренней области,
-      а высота вычисляется из пропорции <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">texture.height / texture.width</code>.
+      а высота вычисляется из пропорции <code class={content.inlineCode}>texture.height / texture.width</code>.
       Поэтому спрайт не растягивается до верхней границы, если его собственные пропорции этого не требуют.
       Если raw-bounding спрайта оказывается шире или выше canvas, его размер не сжимается до экрана.
       Цикл рисования обрезается одновременно по экрану и по item bounding, но координаты текстуры продолжают считаться
-      от исходных <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">raw</code>-границ, поэтому видимая часть не растягивается.
+      от исходных <code class={content.inlineCode}>raw</code>-границ, поэтому видимая часть не растягивается.
       Верхняя граница дополнительно обрезается проекцией потолка текущего сектора только в видимой области рисования, так что
       полная высота спроецированного item не уменьшается, но спрайт не может залезть выше
-      <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">ceilHeight</code>.
+      <code class={content.inlineCode}>ceilHeight</code>.
     </p>
     <div set:html={code3Html} />
-    <p class="py-2 text">
+    <p class={content.paragraph}>
       Пока все предметы рисуются одной текстурой аптечки. Дальше можно будет выбирать текстуру по
-      <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">item.type</code> или хранить имя спрайта прямо в
-      <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">Item</code>.
+      <code class={content.inlineCode}>item.type</code> или хранить имя спрайта прямо в
+      <code class={content.inlineCode}>Item</code>.
     </p>
-    <p class="py-2 text">
-      <a href={`${PROJECT_REPO_URL}/stages/Stage6b/render25d.ts`} target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 text-blue-600 hover:text-blue-800 hover:underline transition-colors" >Реализация шага на github</a>
+    <p class={content.paragraph}>
+      <a href={`${PROJECT_REPO_URL}/stages/Stage6b/render25d.ts`} target="_blank" rel="noopener noreferrer" class={content.referenceLink} >Реализация шага на github</a>
     </p>
   </section>
 </PageLayout>

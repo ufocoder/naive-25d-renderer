@@ -1,3 +1,6 @@
+import content from '@app/styles/content.module.css';
+import editorStyles from '@app/styles/editor.module.css';
+import mapStyles from '@app/styles/map.module.css';
 import { Angle } from '@app/lib/Angle';
 import { JsonViewer } from '@app/components/JsonViewer';
 import {
@@ -715,9 +718,9 @@ const Editor: Component = () => {
     typeof value === 'string' ? value : fallback;
 
   return (
-    <section class="flex flex-col gap-4">
-      <div class="grid gap-4 lg:grid-cols-[minmax(0,1fr)_24rem]">
-        <div class="flex min-w-0 flex-col gap-3">
+    <section class={content.contentSection}>
+      <div class={editorStyles.editorLayout}>
+        <div class={editorStyles.editorMainColumn}>
           <EditorToolbar
             isAddingLinedef={isAddingLinedef()}
             isNavigatingMap={isNavigatingMap()}
@@ -749,48 +752,48 @@ const Editor: Component = () => {
             class={
               isNavigatingMap()
                 ? isDraggingMap()
-                  ? 'h-auto w-full max-w-full cursor-grabbing rounded border border-[#c3d0ea] bg-white'
-                  : 'h-auto w-full max-w-full cursor-grab rounded border border-[#c3d0ea] bg-white'
+                  ? editorStyles.editorCanvasGrabbing
+                  : editorStyles.editorCanvasGrab
                 : isEditingVertex() || isEditingCamera()
-                  ? 'h-auto w-full max-w-full cursor-move rounded border border-[#c3d0ea] bg-white'
-                  : 'h-auto w-full max-w-full rounded border border-[#c3d0ea] bg-white'
+                  ? editorStyles.editorCanvasMove
+                  : editorStyles.editorCanvas
             }
           />
         </div>
 
-        <aside class="flex min-w-0 flex-col gap-3">
-          <div class="rounded border border-[#d8deea] bg-[#f8faff] p-3">
-            <p class="text-sm font-medium text-[#4a5a75]">{sidebarHint()}</p>
+        <aside class={editorStyles.editorMainColumn}>
+          <div class={editorStyles.editorHint}>
+            <p class={editorStyles.editorHintText}>{sidebarHint()}</p>
           </div>
 
           <Show when={selectedVertex()}>
             {(vertex) => (
-              <div class="rounded border border-[#d8deea] bg-white p-3">
-                <h2 class="mb-3 text-lg font-semibold text-[#1f2a44]">Vertex</h2>
-                <div class="grid gap-3 sm:grid-cols-2">
-                  <label class="flex flex-col gap-1 text-sm text-[#4a5a75]">
+              <div class={editorStyles.editorPanel}>
+                <h2 class={editorStyles.editorPanelTitle}>Vertex</h2>
+                <div class={editorStyles.editorFormGrid}>
+                  <label class={editorStyles.editorField}>
                     X
                     <input
                       type="number"
                       value={vertex().x}
                       onInput={(event) => updateSelectedVertex('x', numberValue(event))}
-                      class="rounded border border-[#c3d0ea] px-2 py-1 text-[#1f2a44]"
+                      class={editorStyles.editorInput}
                     />
                   </label>
-                  <label class="flex flex-col gap-1 text-sm text-[#4a5a75]">
+                  <label class={editorStyles.editorField}>
                     Y
                     <input
                       type="number"
                       value={vertex().y}
                       onInput={(event) => updateSelectedVertex('y', numberValue(event))}
-                      class="rounded border border-[#c3d0ea] px-2 py-1 text-[#1f2a44]"
+                      class={editorStyles.editorInput}
                     />
                   </label>
-                  <div class="flex items-end sm:col-span-2">
+                  <div class={editorStyles.editorActionCell}>
                     <button
                       type="button"
                       onClick={deleteSelectedVertex}
-                      class="w-full rounded border border-[#e2b4b4] bg-[#fff7f7] px-3 py-2 text-sm font-semibold text-[#8a2a2a] transition-colors hover:bg-[#ffeaea]"
+                      class={editorStyles.editorDangerButton}
                     >
                       Удалить vertex
                     </button>
@@ -801,54 +804,54 @@ const Editor: Component = () => {
           </Show>
 
           <Show when={!selectedVertex()}>
-            <div class="rounded border border-[#d8deea] bg-white p-3">
+            <div class={editorStyles.editorPanel}>
               <Show
                 when={selectedLinedef()}
                 fallback={
-                  <p class="text-sm text-[#6b7a8f]">
+                  <p class={editorStyles.editorHelpText}>
                     Нажмите на linedef на карте, чтобы открыть редактирование.
                   </p>
                 }
               >
                 {(selected) => (
-                  <div class="grid gap-3 sm:grid-cols-2">
-                    <label class="flex flex-col gap-1 text-sm text-[#4a5a75]">
+                  <div class={editorStyles.editorFormGrid}>
+                    <label class={editorStyles.editorField}>
                       Start X
                       <input
                         type="number"
                         value={selected().start.x}
                         onInput={(event) => updateSelectedLinedef('start', 'x', numberValue(event))}
-                        class="rounded border border-[#c3d0ea] px-2 py-1 text-[#1f2a44]"
+                        class={editorStyles.editorInput}
                       />
                     </label>
-                    <label class="flex flex-col gap-1 text-sm text-[#4a5a75]">
+                    <label class={editorStyles.editorField}>
                       Start Y
                       <input
                         type="number"
                         value={selected().start.y}
                         onInput={(event) => updateSelectedLinedef('start', 'y', numberValue(event))}
-                        class="rounded border border-[#c3d0ea] px-2 py-1 text-[#1f2a44]"
+                        class={editorStyles.editorInput}
                       />
                     </label>
-                    <label class="flex flex-col gap-1 text-sm text-[#4a5a75]">
+                    <label class={editorStyles.editorField}>
                       End X
                       <input
                         type="number"
                         value={selected().end.x}
                         onInput={(event) => updateSelectedLinedef('end', 'x', numberValue(event))}
-                        class="rounded border border-[#c3d0ea] px-2 py-1 text-[#1f2a44]"
+                        class={editorStyles.editorInput}
                       />
                     </label>
-                    <label class="flex flex-col gap-1 text-sm text-[#4a5a75]">
+                    <label class={editorStyles.editorField}>
                       End Y
                       <input
                         type="number"
                         value={selected().end.y}
                         onInput={(event) => updateSelectedLinedef('end', 'y', numberValue(event))}
-                        class="rounded border border-[#c3d0ea] px-2 py-1 text-[#1f2a44]"
+                        class={editorStyles.editorInput}
                       />
                     </label>
-                    <label class="flex flex-col gap-1 text-sm text-[#4a5a75]">
+                    <label class={editorStyles.editorField}>
                       Цвет
                       <input
                         type="color"
@@ -856,15 +859,15 @@ const Editor: Component = () => {
                         onInput={(event) =>
                           updateSelectedColor((event.currentTarget as HTMLInputElement).value)
                         }
-                        class="h-9 rounded border border-[#c3d0ea] bg-white px-2 py-1"
+                        class={editorStyles.editorSelect}
                       />
                     </label>
-                    <div class="flex flex-col gap-2 rounded border border-[#d8deea] bg-[#f8faff] p-2 text-sm text-[#4a5a75] sm:col-span-2">
+                    <div class={editorStyles.editorOption}>
                       <label
                         class={
                           canSelectedLinedefBePortal()
-                            ? 'flex items-center gap-2 font-semibold text-[#1f2a44]'
-                            : 'flex items-center gap-2 font-semibold text-[#8a94a8]'
+                            ? editorStyles.editorPortalOption
+                            : editorStyles.editorPortalOptionDisabled
                         }
                       >
                         <input
@@ -874,23 +877,23 @@ const Editor: Component = () => {
                           onInput={(event) =>
                             updateSelectedPortal((event.currentTarget as HTMLInputElement).checked)
                           }
-                          class="h-4 w-4"
+                          class={mapStyles.mapCheckbox}
                         />
                         Портал между секторами
                       </label>
                       <Show when={isSelectedLinedefPortalCandidate()}>
-                        <p class="text-xs leading-relaxed text-[#6b7a8f]">
+                        <p class={editorStyles.editorOptionText}>
                           {canSelectedLinedefBePortal()
                             ? `Связанные sectors: ${selectedLinedefSharedSectorIds().join(', ')}.`
                             : 'Портал можно включить только для linedef, который входит минимум в два sector.'}
                         </p>
                       </Show>
                     </div>
-                    <div class="flex items-end">
+                    <div class={editorStyles.editorActionCell}>
                       <button
                         type="button"
                         onClick={deleteSelectedLinedef}
-                        class="w-full rounded border border-[#e2b4b4] bg-[#fff7f7] px-3 py-2 text-sm font-semibold text-[#8a2a2a] transition-colors hover:bg-[#ffeaea]"
+                        class={editorStyles.editorDangerButton}
                       >
                         Удалить linedef
                       </button>
@@ -903,12 +906,12 @@ const Editor: Component = () => {
 
           <Show when={selectedSector()}>
             {(sector) => (
-              <div class="rounded border border-[#b8ded8] bg-[#f1fcfa] p-3">
-                <h2 class="mb-3 text-lg font-semibold text-[#174c45]">
+              <div class={editorStyles.editorSectorPanel}>
+                <h2 class={editorStyles.editorSectorTitle}>
                   Sector #{sector().id}
                 </h2>
-                <div class="grid gap-3 sm:grid-cols-2">
-                  <label class="flex flex-col gap-1 text-sm text-[#245c55]">
+                <div class={editorStyles.editorFormGrid}>
+                  <label class={editorStyles.editorSectorField}>
                     Floor height
                     <input
                       type="number"
@@ -916,10 +919,10 @@ const Editor: Component = () => {
                       onInput={(event) =>
                         updateSelectedSectorNumber('floorHeight', numberValue(event))
                       }
-                      class="rounded border border-[#b8ded8] px-2 py-1 text-[#1f2a44]"
+                      class={editorStyles.editorSectorInput}
                     />
                   </label>
-                  <label class="flex flex-col gap-1 text-sm text-[#245c55]">
+                  <label class={editorStyles.editorSectorField}>
                     Ceil height
                     <input
                       type="number"
@@ -927,10 +930,10 @@ const Editor: Component = () => {
                       onInput={(event) =>
                         updateSelectedSectorNumber('ceilHeight', numberValue(event))
                       }
-                      class="rounded border border-[#b8ded8] px-2 py-1 text-[#1f2a44]"
+                      class={editorStyles.editorSectorInput}
                     />
                   </label>
-                  <label class="flex flex-col gap-1 text-sm text-[#245c55]">
+                  <label class={editorStyles.editorSectorField}>
                     Brightness
                     <input
                       type="number"
@@ -940,10 +943,10 @@ const Editor: Component = () => {
                       onInput={(event) =>
                         updateSelectedSectorNumber('brightness', numberValue(event))
                       }
-                      class="rounded border border-[#b8ded8] px-2 py-1 text-[#1f2a44]"
+                      class={editorStyles.editorSectorInput}
                     />
                   </label>
-                  <label class="flex flex-col gap-1 text-sm text-[#245c55]">
+                  <label class={editorStyles.editorSectorField}>
                     Floor color
                     <input
                       type="color"
@@ -954,10 +957,10 @@ const Editor: Component = () => {
                           (event.currentTarget as HTMLInputElement).value,
                         )
                       }
-                      class="h-9 rounded border border-[#b8ded8] bg-white px-2 py-1"
+                      class={editorStyles.editorSectorSelect}
                     />
                   </label>
-                  <label class="flex flex-col gap-1 text-sm text-[#245c55]">
+                  <label class={editorStyles.editorSectorField}>
                     Ceil color
                     <input
                       type="color"
@@ -968,10 +971,10 @@ const Editor: Component = () => {
                           (event.currentTarget as HTMLInputElement).value,
                         )
                       }
-                      class="h-9 rounded border border-[#b8ded8] bg-white px-2 py-1"
+                      class={editorStyles.editorSectorSelect}
                     />
                   </label>
-                  <label class="flex flex-col gap-1 text-sm text-[#245c55]">
+                  <label class={editorStyles.editorSectorField}>
                     Wall color
                     <input
                       type="color"
@@ -982,7 +985,7 @@ const Editor: Component = () => {
                           (event.currentTarget as HTMLInputElement).value,
                         )
                       }
-                      class="h-9 rounded border border-[#b8ded8] bg-white px-2 py-1"
+                      class={editorStyles.editorSectorSelect}
                     />
                   </label>
                 </div>
@@ -991,37 +994,37 @@ const Editor: Component = () => {
           </Show>
 
           <Show when={isEditingCamera()}>
-            <div class="rounded border border-[#d8deea] bg-white p-3">
-              <h2 class="mb-3 text-lg font-semibold text-[#1f2a44]">Камера</h2>
-              <div class="grid gap-3 sm:grid-cols-2">
-                <label class="flex flex-col gap-1 text-sm text-[#4a5a75]">
+            <div class={editorStyles.editorPanel}>
+              <h2 class={editorStyles.editorPanelTitle}>Камера</h2>
+              <div class={editorStyles.editorFormGrid}>
+                <label class={editorStyles.editorField}>
                   X
                   <input
                     type="number"
                     value={settings().camera.x}
                     onInput={(event) => updateCamera('x', numberValue(event))}
-                    class="rounded border border-[#c3d0ea] px-2 py-1 text-[#1f2a44]"
+                    class={editorStyles.editorInput}
                   />
                 </label>
-                <label class="flex flex-col gap-1 text-sm text-[#4a5a75]">
+                <label class={editorStyles.editorField}>
                   Y
                   <input
                     type="number"
                     value={settings().camera.y}
                     onInput={(event) => updateCamera('y', numberValue(event))}
-                    class="rounded border border-[#c3d0ea] px-2 py-1 text-[#1f2a44]"
+                    class={editorStyles.editorInput}
                   />
                 </label>
-                <label class="flex flex-col gap-1 text-sm text-[#4a5a75]">
+                <label class={editorStyles.editorField}>
                   Angle
                   <input
                     type="number"
                     value={settings().camera.angle.degrees}
                     onInput={(event) => updateCamera('angle', numberValue(event))}
-                    class="rounded border border-[#c3d0ea] px-2 py-1 text-[#1f2a44]"
+                    class={editorStyles.editorInput}
                   />
                 </label>
-                <label class="flex flex-col gap-1 text-sm text-[#4a5a75]">
+                <label class={editorStyles.editorField}>
                   FOV
                   <input
                     type="number"
@@ -1029,10 +1032,10 @@ const Editor: Component = () => {
                     max="179"
                     value={settings().camera.fov.degrees}
                     onInput={(event) => updateCamera('fov', numberValue(event))}
-                    class="rounded border border-[#c3d0ea] px-2 py-1 text-[#1f2a44]"
+                    class={editorStyles.editorInput}
                   />
                 </label>
-                <label class="flex flex-col gap-1 text-sm text-[#4a5a75]">
+                <label class={editorStyles.editorField}>
                   Move speed
                   <input
                     type="number"
@@ -1040,10 +1043,10 @@ const Editor: Component = () => {
                     step="0.1"
                     value={settings().camera.moveSpeed}
                     onInput={(event) => updateCamera('moveSpeed', numberValue(event))}
-                    class="rounded border border-[#c3d0ea] px-2 py-1 text-[#1f2a44]"
+                    class={editorStyles.editorInput}
                   />
                 </label>
-                <label class="flex flex-col gap-1 text-sm text-[#4a5a75]">
+                <label class={editorStyles.editorField}>
                   Rotation speed
                   <input
                     type="number"
@@ -1051,7 +1054,7 @@ const Editor: Component = () => {
                     step="0.1"
                     value={settings().camera.rotationSpeed}
                     onInput={(event) => updateCamera('rotationSpeed', numberValue(event))}
-                    class="rounded border border-[#c3d0ea] px-2 py-1 text-[#1f2a44]"
+                    class={editorStyles.editorInput}
                   />
                 </label>
               </div>
@@ -1060,16 +1063,16 @@ const Editor: Component = () => {
         </aside>
       </div>
 
-      <section class="flex min-w-0 flex-col gap-2">
-        <div class="flex flex-wrap items-center justify-between gap-2">
-          <div class="flex items-center gap-3">
-            <h2 class="text-lg font-semibold text-[#1f2a44]">JSON Settings</h2>
+      <section class={editorStyles.editorJsonSection}>
+        <div class={editorStyles.editorHeaderRow}>
+          <div class={editorStyles.editorHeaderTitleGroup}>
+            <h2 class={editorStyles.editorJsonTitle}>JSON Settings</h2>
             <Show when={copyStatus() !== 'idle'}>
               <span
                 class={
                   copyStatus() === 'copied'
-                    ? 'text-sm font-medium text-[#047857]'
-                    : 'text-sm font-medium text-[#be123c]'
+                    ? editorStyles.editorCopySuccess
+                    : editorStyles.editorCopyError
                 }
               >
                 {copyStatus() === 'copied' ? 'Скопировано' : 'Не удалось скопировать'}
@@ -1079,7 +1082,7 @@ const Editor: Component = () => {
           <button
             type="button"
             onClick={copyJsonToClipboard}
-            class="rounded border border-[#c3d0ea] bg-transparent px-3 py-2 text-sm font-semibold text-[#1f2a44] transition-colors hover:bg-[#f4f8ff]"
+            class={editorStyles.editorGhostButton}
           >
             Скопировать
           </button>

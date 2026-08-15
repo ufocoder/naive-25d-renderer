@@ -1,4 +1,5 @@
 ---
+import content from '@app/styles/content.module.css';
 import PageLayout from '@app/layouts/PageLayout.astro';
 import Stage2e from '@app/pages/stage/_islands/Stage2e';
 import Stage2h1 from '@app/pages/stage/_islands/Stage2h1';
@@ -13,29 +14,29 @@ export const metadata: PageMetadata = {
 ---
 
 <PageLayout>
-  <section class="flex flex-col gap-4">
-    <p class="py-2 text">
+  <section class={content.contentSection}>
+    <p class={content.paragraph}>
       Теперь необходимо добавить ограничение по оси Y. Пусть портал ограничивает отрисовку не только слева и справа, но также сверху и снизу. В текущем уровне мы видим портал в виде прямоугольного окна. Реализуем такой тип портала. А при переходе через несколько порталов их прямоугольники будут пересекаться, и каждый следующий сектор получит все меньшую область отрисовки.
     </p>
     <Stage2e part={0} client:load />
-    <p class="py-2 text">
+    <p class={content.paragraph}>
       В первой демонстрации анимация продвигается по секторам и позволяет увидеть рекурсивный обход уровня через порталы.
     </p>
     <Stage2h1 part={0} client:load />
-    <p class="py-2 text">
+    <p class={content.paragraph}>
       Во второй демонстрации отрисовка разбита на отдельные поверхности. 
     </p>
-    <p class="py-2 text">
+    <p class={content.paragraph}>
       Пошаговый режим показывает, какие фрагменты потолка, стен и пола проходят прямоугольное отсечение.
     </p>
     <Stage2h2 part={0} client:load />
-    <p class="py-2">
+    <p class={content.paragraph}>
       Реализация шага на github
       <a
         href={`${PROJECT_REPO_URL}/stages/Stage2h1/render25d.ts`}
         target="_blank"
         rel="noopener noreferrer"
-        class="inline-flex items-center gap-1 text-blue-600 transition-colors hover:text-blue-800 hover:underline"
+        class={content.referenceLink}
       >
         Анимация 1
       </a>;
@@ -43,7 +44,7 @@ export const metadata: PageMetadata = {
         href={`${PROJECT_REPO_URL}/stages/Stage2h2/render25d.ts`}
         target="_blank"
         rel="noopener noreferrer"
-        class="inline-flex items-center gap-1 text-blue-600 transition-colors hover:text-blue-800 hover:underline"
+        class={content.referenceLink}
       >
         Анимация 2
       </a>

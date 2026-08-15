@@ -1,4 +1,5 @@
 ---
+import content from '@app/styles/content.module.css';
 import PageLayout from '@app/layouts/PageLayout.astro';
 import type { PageMetadata } from '@app/config/pages';
 import { codeToHtml } from 'shiki';
@@ -23,15 +24,15 @@ const code1Html = await codeToHtml(code1, { lang: 'ts', theme: 'github-light' })
 ---
 
 <PageLayout>
-  <section class="flex flex-col gap-4">
-    <p class="py-2 text">
+  <section class={content.contentSection}>
+    <p class={content.paragraph}>
       Интуиция подсказываем нам, что с общими стенами между секторами необходимо что-то сделать. Расширим понимание сегмента. Пусть теперь будут встречаться такие, которые мы не будем закрашивать, но через которые будет рисоваться оставшийся уровень. Назовем такие сегменты — порталами.
     </p>
-    <p class="py-2 text">
+    <p class={content.paragraph}>
       Сегменты, образующие порталы, будем помечать флагом и хранить в нем информацию о том, какие сектора они соединяют:
     </p>
     <div set:html={code1Html} />
-    <p class="py-2 text">
+    <p class={content.paragraph}>
       Теперь отрисовка будет начинаться с сектора, в котором находится камера. Затем отрисовщик будет рекурсивно обрабатывать сектора, в которых будет перебирать сегменты и по итогу сформирует всю проекцию с учетом знаний о порталах.
     </p>
   </section>

@@ -1,4 +1,5 @@
 ---
+import content from '@app/styles/content.module.css';
 import PageLayout from '@app/layouts/PageLayout.astro';
 import Stage from '@app/pages/stage/_islands/Stage2i';
 import type { PageMetadata } from '@app/config/pages';
@@ -11,20 +12,20 @@ export const metadata: PageMetadata = {
 ---
 
 <PageLayout>
-  <section class="flex flex-col gap-4">
-    <p class="py-2 text">
+  <section class={content.contentSection}>
+    <p class={content.paragraph}>
       Если мы продвинемся немного вперед по уровню, то заметим, что портал это не прямоугольная область — а трапеция. Ее верхняя и нижняя стороны повторяют перспективный наклон стены. Теперь при рекурсивном обходе стены, пол и потолок соседнего сектора обрезаются по границам этой трапеции. 
     </p>
-    <p class="py-2 text">
+    <p class={content.paragraph}>
       Пурпурный контур в демонстрации показывает окно портала, через которое продолжается отрисовка уровня.
     </p>
     <Stage client:load />
-    <p class="py-2">
+    <p class={content.paragraph}>
       <a
         href={`${PROJECT_REPO_URL}/stages/Stage2i/render25d.ts`}
         target="_blank"
         rel="noopener noreferrer"
-        class="inline-flex items-center gap-1 text-blue-600 transition-colors hover:text-blue-800 hover:underline"
+        class={content.referenceLink}
       >
         Реализация шага на github
       </a>

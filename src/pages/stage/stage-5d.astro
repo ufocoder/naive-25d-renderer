@@ -1,4 +1,5 @@
 ---
+import content from '@app/styles/content.module.css';
 import PageLayout from '@app/layouts/PageLayout.astro';
 import Stage from '@app/pages/stage/_islands/Stage5d';
 import type { PageMetadata } from '@app/config/pages';
@@ -85,82 +86,82 @@ const [code1Html, code2Html, code3Html, code4Html] = await Promise.all([
 ---
 
 <PageLayout>
-  <section class="flex flex-col gap-4">
+  <section class={content.contentSection}>
     <Stage client:load />
-    <p class="py-2 text">
+    <p class={content.paragraph}>
       Со стенами все было относительно просто: мы уже знали экранную вертикальную полосу стены и могли растянуть по ней
       текстуру сверху вниз. Пол и потолок устроены иначе. Это горизонтальные плоскости, которые уходят в глубину, поэтому
-      для них недостаточно взять одну вертикальную координату на экране и линейно растянуть <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">bitmap</code>.
+      для них недостаточно взять одну вертикальную координату на экране и линейно растянуть <code class={content.inlineCode}>bitmap</code>.
     </p>
-    <p class="py-2 text">
-      Для пола и потолка сектору нужно хранить отдельные ID текстур. Высоты <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">floorHeight</code> и <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">ceilHeight</code>
-      уже использовались при проекции стен, а теперь они еще говорят, на какой горизонтальной плоскости <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">bitmap</code> нужно искать
+    <p class={content.paragraph}>
+      Для пола и потолка сектору нужно хранить отдельные ID текстур. Высоты <code class={content.inlineCode}>floorHeight</code> и <code class={content.inlineCode}>ceilHeight</code>
+      уже использовались при проекции стен, а теперь они еще говорят, на какой горизонтальной плоскости <code class={content.inlineCode}>bitmap</code> нужно искать
       точку пересечения луча.
     </p>
     <div set:html={code1Html} />
-    <p class="py-2 text">
+    <p class={content.paragraph}>
       Текстуры пола и потолка рисуются только там, где они действительно видны в текущем столбце. Если верх стены ниже
       текущего верхнего отсечения, между ними виден потолок. Если низ стены выше нижнего отсечения, между ними виден пол.
-      Поэтому вызов текстурирования остается встроенным в уже существующую работу с <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">upperClip</code> и
-      <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">lowerClip</code>.
+      Поэтому вызов текстурирования остается встроенным в уже существующую работу с <code class={content.inlineCode}>upperClip</code> и
+      <code class={content.inlineCode}>lowerClip</code>.
     </p>
     <div set:html={code2Html} />
-    <p class="py-2 text">
-      Вся отдельная логика собрана в <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">drawTexturedFloorCeil</code>. Один и тот же код подходит и для пола, и для
-      потолка: флаг <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">isFloor</code> выбирает текстуру и сторону экрана. Для пола нужны пиксели ниже центра экрана,
+    <p class={content.paragraph}>
+      Вся отдельная логика собрана в <code class={content.inlineCode}>drawTexturedFloorCeil</code>. Один и тот же код подходит и для пола, и для
+      потолка: флаг <code class={content.inlineCode}>isFloor</code> выбирает текстуру и сторону экрана. Для пола нужны пиксели ниже центра экрана,
       для потолка - выше центра.
     </p>
     <div set:html={code3Html} />
-    <p class="py-2 text">
-      <span class="font-bold">Основная идея</span>: для каждого пикселя пола или потолка мы восстанавливаем, какой точке мира он соответствует.
+    <p class={content.paragraph}>
+      <span class={content.boldText}>Основная идея</span>: для каждого пикселя пола или потолка мы восстанавливаем, какой точке мира он соответствует.
     </p>
     <div set:html={code4Html} />
-    <p class="py-2 text">
-      Значение <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">distToPlane</code> - это расстояние от камеры до горизонтальной плоскости по вертикали.
-      Для пола камера находится выше плоскости, поэтому берем <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">camera.z - floorHeight</code>.
-      Для потолка камера находится ниже плоскости, поэтому берем <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">ceilHeight - camera.z</code>.
+    <p class={content.paragraph}>
+      Значение <code class={content.inlineCode}>distToPlane</code> - это расстояние от камеры до горизонтальной плоскости по вертикали.
+      Для пола камера находится выше плоскости, поэтому берем <code class={content.inlineCode}>camera.z - floorHeight</code>.
+      Для потолка камера находится ниже плоскости, поэтому берем <code class={content.inlineCode}>ceilHeight - camera.z</code>.
       Это не расстояние вперед по взгляду, а именно высотная разница: насколько нужно опуститься до пола или подняться до потолка.
     </p>
-    <p class="py-2 text">
-      Затем берем расстояние <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">p</code> от пикселя до центра экрана по вертикали. Чем ближе пиксель к центру, тем
-      дальше находится точка на плоскости. Поэтому <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">rowDistance</code> считается через вертикальное расстояние
-      <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">distToPlane</code> и наклон луча, который в этой упрощенной формуле выражен через
-      <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">Math.abs(p)</code>.
+    <p class={content.paragraph}>
+      Затем берем расстояние <code class={content.inlineCode}>p</code> от пикселя до центра экрана по вертикали. Чем ближе пиксель к центру, тем
+      дальше находится точка на плоскости. Поэтому <code class={content.inlineCode}>rowDistance</code> считается через вертикальное расстояние
+      <code class={content.inlineCode}>distToPlane</code> и наклон луча, который в этой упрощенной формуле выражен через
+      <code class={content.inlineCode}>Math.abs(p)</code>.
     </p>
-    <p class="py-2 text">
-      Значение <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">planeX</code> и <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">planeY</code>
+    <p class={content.paragraph}>
+      Значение <code class={content.inlineCode}>planeX</code> и <code class={content.inlineCode}>planeY</code>
       нужны, чтобы получить не только центральный луч камеры, но и луч для любого столбца экрана. Направление камеры
-      задается вектором <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">camera.angle.cos</code>/<code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">camera.angle.sin</code>.
+      задается вектором <code class={content.inlineCode}>camera.angle.cos</code>/<code class={content.inlineCode}>camera.angle.sin</code>.
       А экранная плоскость идет поперек взгляда, поэтому берем перпендикуляр к этому направлению:
-      <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">(-sin, cos)</code>. Длина этого
-      бокового вектора равна <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">tan(FOV / 2)</code>:
+      <code class={content.inlineCode}>(-sin, cos)</code>. Длина этого
+      бокового вектора равна <code class={content.inlineCode}>tan(FOV / 2)</code>:
       так левый и правый края плоскости совпадают с границами угла обзора.
     </p>
-    <p class="py-2 text">
-      Затем по экранной координате <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">x</code> строим направление луча: слева луч чуть повернут к левому краю <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">FOV</code>,
-      справа - к правому. Умножаем это направление на <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">rowDistance</code> и получаем мировые координаты
-      <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">worldX</code>/<code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">worldY</code>. Эти координаты уже можно превратить в координаты текстуры.
+    <p class={content.paragraph}>
+      Затем по экранной координате <code class={content.inlineCode}>x</code> строим направление луча: слева луч чуть повернут к левому краю <code class={content.inlineCode}>FOV</code>,
+      справа - к правому. Умножаем это направление на <code class={content.inlineCode}>rowDistance</code> и получаем мировые координаты
+      <code class={content.inlineCode}>worldX</code>/<code class={content.inlineCode}>worldY</code>. Эти координаты уже можно превратить в координаты текстуры.
     </p>
-    <p class="py-2 text">
-      Двойка в выражении <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">2 * t - 1</code>
-      появляется из-за перевода координаты столбца из диапазона <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">0..1</code>
-      в диапазон <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">-1..1</code>.
-      При <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">t = 0</code> получаем левый край экранной плоскости,
-      при <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">t = 0.5</code> - центр, а при
-      <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">t = 1</code> - правый край.
-      Поэтому <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">planeX/planeY</code> добавляется с отрицательным,
+    <p class={content.paragraph}>
+      Двойка в выражении <code class={content.inlineCode}>2 * t - 1</code>
+      появляется из-за перевода координаты столбца из диапазона <code class={content.inlineCode}>0..1</code>
+      в диапазон <code class={content.inlineCode}>-1..1</code>.
+      При <code class={content.inlineCode}>t = 0</code> получаем левый край экранной плоскости,
+      при <code class={content.inlineCode}>t = 0.5</code> - центр, а при
+      <code class={content.inlineCode}>t = 1</code> - правый край.
+      Поэтому <code class={content.inlineCode}>planeX/planeY</code> добавляется с отрицательным,
       нулевым или положительным весом.
     </p>
-    <p class="py-2 text">
-      Значение <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">texture.scale</code> задает размер повторения текстуры в мире. После деления на scale берется дробная часть:
+    <p class={content.paragraph}>
+      Значение <code class={content.inlineCode}>texture.scale</code> задает размер повторения текстуры в мире. После деления на scale берется дробная часть:
       так один и тот же bitmap повторяется по всей плоскости. Отрицательные координаты дополнительно приводятся к
-      диапазону от <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">0</code> до <code class="rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-800">1</code>.
+      диапазону от <code class={content.inlineCode}>0</code> до <code class={content.inlineCode}>1</code>.
     </p>
-    <p class="py-2 text">
+    <p class={content.paragraph}>
       В итоге получается, что стены и горизонтальные поверхности используют одни и те же текстуры, но семплируются по-разному.
     </p>
-    <p class="my-2">
-      <a href={`${PROJECT_REPO_URL}/stages/Stage5d/render25d.ts`} target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 text-blue-600 hover:text-blue-800 hover:underline transition-colors" >Реализация шага на github</a>
+    <p class={content.mutedSpacing}>
+      <a href={`${PROJECT_REPO_URL}/stages/Stage5d/render25d.ts`} target="_blank" rel="noopener noreferrer" class={content.referenceLink} >Реализация шага на github</a>
     </p>
   </section>
 </PageLayout>

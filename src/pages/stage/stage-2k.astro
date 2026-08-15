@@ -1,4 +1,5 @@
 ---
+import content from '@app/styles/content.module.css';
 import { codeToHtml } from 'shiki';
 import PageLayout from '@app/layouts/PageLayout.astro';
 import Stage from '@app/pages/stage/_islands/Stage2k';
@@ -20,21 +21,21 @@ export const metadata: PageMetadata = {
 ---
 
 <PageLayout>
-  <section class="flex flex-col gap-4">
-    <p class="py-2 text">
-      Когда мы добавляли в отрисовщик поддержку уровня пола и уровня высоты для сектора, то предполагали фиксированное положение наблюдателя. Добавим координату <code class="px-2 py-1 bg-gray-100 text-gray-800 text-xs font-semibold rounded">camera.z</code> и будем вычислять высоту пола и потолка относительно нее.
+  <section class={content.contentSection}>
+    <p class={content.paragraph}>
+      Когда мы добавляли в отрисовщик поддержку уровня пола и уровня высоты для сектора, то предполагали фиксированное положение наблюдателя. Добавим координату <code class={content.inlineCode}>camera.z</code> и будем вычислять высоту пола и потолка относительно нее.
     </p>
     <div set:html={codeCameraHtml} />
-    <p class="py-2 text">
+    <p class={content.paragraph}>
       Кнопки под 2.5D-отрисовщиком запускают и останавливают циклическое изменение высоты камеры от пола до потолка. Вид сверху при этом не меняется, поскольку координата Z влияет только на вертикальную проекцию:
     </p>
     <Stage client:load />
-    <p class="py-2">
+    <p class={content.paragraph}>
       <a
         href={`${PROJECT_REPO_URL}/pages/stage/_islands/Stage2k.tsx`}
         target="_blank"
         rel="noopener noreferrer"
-        class="inline-flex items-center gap-1 text-blue-600 transition-colors hover:text-blue-800 hover:underline"
+        class={content.referenceLink}
       >
         Реализация шага на github
       </a>

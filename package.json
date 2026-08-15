@@ -18,12 +18,10 @@
   },
   "dependencies": {
     "@astrojs/solid-js": "^7.0.2",
-    "@tailwindcss/vite": "^4.3.3",
     "astro": "^7.2.0",
     "astro-yandex-metrika": "^1.0.1",
     "katex": "^0.18.1",
     "shiki": "^4.3.1",
-    "solid-js": "^1.9.14",
-    "tailwindcss": "^4.3.3"
+    "solid-js": "^1.9.14"
   }
 }

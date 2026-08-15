@@ -1,4 +1,6 @@
 ---
+import content from '@app/styles/content.module.css';
+import stageStyles from '@app/styles/stage.module.css';
 import PageLayout from '@app/layouts/PageLayout.astro';
 import Stage from '@app/pages/stage/_islands/Stage1b';
 import type { PageMetadata } from '@app/config/pages';
@@ -69,45 +71,45 @@ const renderFormula = (latex: string) => katex.renderToString(latex, {
 ---
 
 <PageLayout>
-  <section class="flex flex-col gap-4">
-    <p class="text">
+  <section class={content.contentSection}>
+    <p class={content.contentText}>
       На этом шаге мы можем воспользоваться следующей идеей: зная высоту предмета на конкретном расстоянии, мы можем найти его высоту на любом другом расстоянии, используя пропорцию. А зная высоту, мы можем получить координату Y для нижней и верхней части этого предмета.
     </p>
-    <p class="text">
+    <p class={content.contentText}>
       Таким образом, для каждой вершины из отрезка мы вычисляем расстояние, затем получаем два значения Y для его верхней и нижней части. Теперь, если соединить эти точки, то мы получим четырехугольник.
     </p>
     <Stage part={0} client:load />
-    <h2 class="text-2xl">
+    <h2 class={stageStyles.stageHeading}>
       Как это рассчитать
     </h2>
-    <p class="py-2 text">
+    <p class={content.paragraph}>
       Определим расстояние от позиции камеры до точки:
     </p>
-    <div class="bg-gray-100 border border-gray-200 p-4 text">
+    <div class={content.noteBlock}>
       <div set:html={renderFormula("d = \\sqrt{\\Delta x^2 + \\Delta y^2}")} />
     </div>
-    <p class="py-2 text">
-      Пусть на расстоянии 1 высота стены будет равна константе <code class="px-2 py-1 bg-gray-100 text-gray-800 text-xs font-semibold rounded">H wall</code>, тогда на расстоянии <code class="px-2 py-1 bg-gray-100 text-gray-800 text-xs font-semibold rounded">d</code> высота:
+    <p class={content.paragraph}>
+      Пусть на расстоянии 1 высота стены будет равна константе <code class={content.inlineCode}>H wall</code>, тогда на расстоянии <code class={content.inlineCode}>d</code> высота:
     </p>
-    <div class="bg-gray-100 border border-gray-200 p-4 text">
+    <div class={content.noteBlock}>
       <div set:html={renderFormula("h = \\frac{H_{\\text{wall}}}{d}")} />
     </div>
-    <p class="py-2 text">
-      На основе проекции <code class="px-2 py-1 bg-gray-100 text-gray-800 text-xs font-semibold rounded">screenX</code> на экран и найденной высоты стены <code class="px-2 py-1 bg-gray-100 text-gray-800 text-xs font-semibold rounded">h</code> формируем координаты четырёхугольника.
+    <p class={content.paragraph}>
+      На основе проекции <code class={content.inlineCode}>screenX</code> на экран и найденной высоты стены <code class={content.inlineCode}>h</code> формируем координаты четырёхугольника.
     </p>
-    <h2 class="text-2xl">
+    <h2 class={stageStyles.stageHeading}>
       Немного кода
     </h2>
-    <p class="py-2 text">
+    <p class={content.paragraph}>
       Ранее спроецированные точки достраиваем до четырёхугольника:
     </p>
     <div set:html={code1Html} />
-    <p class="py-2 text">
+    <p class={content.paragraph}>
       И теперь на их основе рисуем многоугольник на экране:
     </p>
     <div set:html={code2Html} />
-    <p class="py-2">
-      <a href={`${PROJECT_REPO_URL}/stages/Stage1b/render25d.ts`} target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 text-blue-600 hover:text-blue-800 hover:underline transition-colors" >Реализация шага на github</a>
+    <p class={content.paragraph}>
+      <a href={`${PROJECT_REPO_URL}/stages/Stage1b/render25d.ts`} target="_blank" rel="noopener noreferrer" class={content.referenceLink} >Реализация шага на github</a>
     </p>
   </section>
 </PageLayout>

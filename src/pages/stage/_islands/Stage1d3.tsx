@@ -1,3 +1,5 @@
+import content from '@app/styles/content.module.css';
+import stageStyles from '@app/styles/stage.module.css';
 import Canvas from "@app/components/Canvas/CanvasBase";
 import Map2d from '@app/components/Map2d';
 import { useCameraControls } from '@app/hooks/useCameraControls';
@@ -22,13 +24,13 @@ const Stage: Component<StageProps> = (props) => {
       case 0:
         return (
           <>
-            <div class="my-10 grid grid-cols-1 gap-4 md:grid md:grid-cols-3 md:gap-6 md:items-start ">
+            <div class={stageStyles.threeColumnDemo}>
               <div>
-                <h4 class="flex justify-center text-xl mb-2">
+                <h4 class={stageStyles.demoTitleSmall}>
                   Пропуск стен
                 </h4>
                 <Canvas
-                  className='w-full'
+                  className={stageStyles.fullWidth}
                   settings={settings}
                   width={settings().camera.screen.width}
                   height={settings().camera.screen.height}
@@ -36,12 +38,12 @@ const Stage: Component<StageProps> = (props) => {
                 />
               </div>
               <div>
-                <h4 class="flex justify-center text-xl mb-2">
+                <h4 class={stageStyles.demoTitleSmall}>
                   Вид сверху
                 </h4>
                 <Map2d
                   withControls
-                  canvasClassName='w-full'
+                  canvasClassName={stageStyles.fullWidth}
                   width={settings().camera.screen.width}
                   height={settings().camera.screen.height}
                   settings={settings}
@@ -49,11 +51,11 @@ const Stage: Component<StageProps> = (props) => {
                 />
               </div>
               <div>
-                <h4 class="flex justify-center text-xl mb-2">
+                <h4 class={stageStyles.demoTitleSmall}>
                   Отсечение стен
                 </h4>
                 <Canvas
-                  className='w-full'
+                  className={stageStyles.fullWidth}
                   settings={settings}
                   width={settings().camera.screen.width}
                   height={settings().camera.screen.height}
@@ -69,7 +71,7 @@ const Stage: Component<StageProps> = (props) => {
   };
 
   return (
-    <div class="flex flex-col gap-4">
+    <div class={content.contentSection}>
       {renderPart(props.part ?? 0)}
     </div>
   );

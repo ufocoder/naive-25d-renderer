@@ -1,0 +1,278 @@
+.demoGrid {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1.5rem;
+}
+
+.demoGridWithSpacing {
+  composes: demoGrid;
+  margin-block: 2.5rem;
+}
+
+.demoColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.demoTitle {
+  display: flex;
+  justify-content: center;
+  font-size: 1.5rem;
+  line-height: calc(2 / 1.5);
+}
+
+.demoTitleSmall {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 0.5rem;
+  font-size: 1.25rem;
+  line-height: calc(1.75 / 1.25);
+}
+
+.centered {
+  display: flex;
+  justify-content: center;
+}
+
+.threeColumnDemo {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1rem;
+  margin-block: 2.5rem;
+}
+
+.stageHeading {
+  font-size: 1.5rem;
+  line-height: calc(2 / 1.5);
+}
+
+.stageSubheading {
+  font-size: 1.25rem;
+  line-height: calc(1.75 / 1.25);
+}
+
+.directionIcon {
+  width: calc(var(--spacing) * 7);
+  height: calc(var(--spacing) * 7);
+}
+
+.iconLegend {
+  display: grid;
+  grid-template-columns: 2.5rem 1fr;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.iconPreview {
+  display: grid;
+  width: calc(var(--spacing) * 10);
+  height: calc(var(--spacing) * 10);
+  place-items: center;
+  border: 1px solid var(--color-neutral-300);
+  background: var(--surface);
+}
+
+.buttonRow {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.hiddenMobileTitle {
+  font-size: 1.25rem;
+  line-height: calc(1.75 / 1.25);
+}
+
+.centeredTitle {
+  text-align: center;
+  font-size: 1.5rem;
+  line-height: calc(2 / 1.5);
+}
+
+.compactGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.previewImage {
+  display: block;
+  width: 100%;
+  max-width: 400px;
+  height: auto;
+}
+
+.fluidImage {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+.fullWidth {
+  width: 100%;
+}
+
+.primaryActionButton {
+  border: 1px solid #9eb3da;
+  background: #dce6fa;
+  padding: 0.5rem 1rem;
+  color: #1f2a44;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: background-color 0.15s var(--ease);
+}
+
+.primaryActionButton:hover {
+  background: #c8d8f5;
+}
+
+.secondaryActionButton {
+  border: 1px solid var(--color-gray-300);
+  background: var(--surface);
+  padding: 0.5rem 1rem;
+  color: var(--color-gray-700);
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: background-color 0.15s var(--ease);
+}
+
+.secondaryActionButton:hover {
+  background: var(--color-gray-100);
+}
+
+.demoItem {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.demoGridWithCenteredItems {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1.5rem;
+}
+
+.demoStackWithSpacing {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-block: 2.5rem;
+}
+
+.simpleResponsiveGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1rem;
+}
+
+.demoCaption {
+  color: var(--color-gray-700);
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-align: center;
+}
+
+.demoStackLarge {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-block: 2.5rem;
+}
+
+.statusMessage {
+  display: flex;
+  min-height: 1.25rem;
+  justify-content: center;
+  color: var(--color-gray-600);
+  font-size: 0.875rem;
+}
+
+.threeButtonGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.5rem;
+}
+
+.singleColumn {
+  display: flex;
+  flex-direction: column;
+}
+
+.wideResponsiveGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.5rem;
+}
+
+.responsiveStack {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.desktopOnlyGrid {
+  display: none;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.simpleGrid {
+  display: grid;
+  gap: 1rem;
+}
+
+.redStatusDot {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 999px;
+  background: var(--color-red-500);
+}
+
+@media (min-width: 768px) {
+  .demoGrid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .threeColumnDemo {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    align-items: flex-start;
+    gap: 1.5rem;
+  }
+
+  .hiddenMobileTitle {
+    display: none;
+  }
+
+  .demoGridWithCenteredItems {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .simpleResponsiveGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .wideResponsiveGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+  }
+
+  .responsiveStack {
+    gap: 1rem;
+  }
+
+  .desktopOnlyGrid {
+    display: grid;
+  }
+}

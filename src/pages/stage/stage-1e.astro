@@ -1,4 +1,5 @@
 ---
+import content from '@app/styles/content.module.css';
 import PageLayout from '@app/layouts/PageLayout.astro';
 import Stage from '@app/pages/stage/_islands/Stage1e';
 import type { PageMetadata } from '@app/config/pages';
@@ -11,23 +12,23 @@ export const metadata: PageMetadata = {
 ---
 
 <PageLayout>
-  <section class="flex flex-col gap-4">
-    <p class="py-2 text">
+  <section class={content.contentSection}>
+    <p class={content.paragraph}>
       Сейчас стены отрисовываются в том порядке, в каком были описаны для уровня, и может получиться так, что фактически самая дальняя от камеры стена нарисуется ближе всех или наоборот. Чтобы вам было визуально проще обнаружить проблему, на демо ниже я разукрасил стены различными цветами.
     </p>
     <Stage part={0} client:load />
-    <p class="py-2 text">
-      Решение проблемы заключается в том, чтобы отсортировать стены по расстоянию от камеры перед их отрисовкой. Сначала рисуем дальние стены и только затем ближние. Кстати, такой алгоритм отрисовки называется <a href="https://ru.wikipedia.org/wiki/%D0%90%D0%BB%D0%B3%D0%BE%D1%80%D0%B8%D1%82%D0%BC_%D1%85%D1%83%D0%B4%D0%BE%D0%B6%D0%BD%D0%B8%D0%BA%D0%B0" class="link underline" target="_blank">Алгоритмом художника</a>:
+    <p class={content.paragraph}>
+      Решение проблемы заключается в том, чтобы отсортировать стены по расстоянию от камеры перед их отрисовкой. Сначала рисуем дальние стены и только затем ближние. Кстати, такой алгоритм отрисовки называется <a href="https://ru.wikipedia.org/wiki/%D0%90%D0%BB%D0%B3%D0%BE%D1%80%D0%B8%D1%82%D0%BC_%D1%85%D1%83%D0%B4%D0%BE%D0%B6%D0%BD%D0%B8%D0%BA%D0%B0" class={content.articleLink} target="_blank">Алгоритмом художника</a>:
     </p>
     <Stage part={1} client:load />
-    <p class="py-2 text">
+    <p class={content.paragraph}>
       Однако у алгоритма художника есть один большой недостаток — он может делать ненужные отрисовки.
     </p>
-    <p class="py-2 text">
+    <p class={content.paragraph}>
       Представьте: вы находитесь перед стеной, причём стена полностью попадает в область видимости камеры, и больше на экране, кроме этой стены, ничего в конечном счёте не должно быть отрисовано. Одновременно с этим за этой стеной находится бесконечное количество стен на различном удалении от камеры. Согласно алгоритму художника, нам придётся отрисовать все эти стены от дальней к ближней, хотя в действительности необходима только одна. Мы делаем лишние отрисовки. Другими словами, может получиться так, что мы покрасим некоторые пиксели на экране несколько раз.
     </p>
-    <p class="py-2">
-      <a href={`${PROJECT_REPO_URL}/stages/Stage1e/render25d.ts`} target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 text-blue-600 hover:text-blue-800 hover:underline transition-colors" >Реализация шага на github</a>
+    <p class={content.paragraph}>
+      <a href={`${PROJECT_REPO_URL}/stages/Stage1e/render25d.ts`} target="_blank" rel="noopener noreferrer" class={content.referenceLink} >Реализация шага на github</a>
     </p>
   </section>
 </PageLayout>

@@ -1,4 +1,5 @@
 ---
+import content from '@app/styles/content.module.css';
 import PageLayout from '@app/layouts/PageLayout.astro';
 import type { PageMetadata } from '@app/config/pages';
 import { codeToHtml } from 'shiki';
@@ -81,18 +82,18 @@ const codeHtml = await codeToHtml(code1, {
 ---
 
 <PageLayout>
-  <section class="flex flex-col gap-4">
-    <p class="py-2">
-      Уровни в оригинальном DOOM описываются с помощью <a class="link underline" href="https://doom.fandom.com/wiki/WAD" target="_blank">WAD-файлов</a>. В них хранится абсолютно всё: от графики и звуков до описания самих уровней. Название WAD расшифровывается как <span class="font-semibold">Where's All the Data?</span> — «А где все данные?».
+  <section class={content.contentSection}>
+    <p class={content.paragraph}>
+      Уровни в оригинальном DOOM описываются с помощью <a class={content.articleLink} href="https://doom.fandom.com/wiki/WAD" target="_blank">WAD-файлов</a>. В них хранится абсолютно всё: от графики и звуков до описания самих уровней. Название WAD расшифровывается как <span class={content.strongText}>Where's All the Data?</span> — «А где все данные?».
     </p>
-    <p class="py-2">
+    <p class={content.paragraph}>
       Если попытаться представить с помощью TypeScript часть сущностей из WAD-файла, которые описывают исключительно геометрию уровня, то можно выделить следующие интерфейсы (или типы):
     </p>
     <div set:html={codeHtml} />
-    <p class="py-2 text">
+    <p class={content.paragraph}>
       Зачем я выше привёл эти типы? Дело в том, что мы будем вводить свои абстракции, но при этом пытаться следовать духу исходного кода DOOM. Другими словами, вы обнаружите, что типы будут пересекаться в именовании и назначении, но одновременно с этим могут незначительно отличаться в составе полей — и это будет ожидаемый результат.
     </p>
-    <p class="py-2 text">
+    <p class={content.paragraph}>
       Повторюсь, что целью данного цикла заметок является не создание клона DOOM, а использование его идей. В любом случае ничто не мешает вам переписать получившийся код или, наоборот, написать маппер, преобразующий оригинальные WAD-файлы к описанному нами набору типов.
     </p>
   </section>
