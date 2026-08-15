@@ -91,23 +91,21 @@ const yandexMetrikaId = import.meta.env.PROD
           <main class="flex-1">
             {
               header && (
-                <div class="relative mb-8 pb-2">
-                  <div>
+                <div class="relative mb-6">
                     {header.isLink ? (
                       <>
-                        <p class="mb-2 text-sm font-medium text-[color:var(--muted)]">
+                        <p class="text-sm font-medium text-[color:var(--muted)]">
                           {header.title}
                         </p>
-                        <h1 class="text-3xl font-semibold text-[color:var(--ink)] lg:text-4xl">
+                        <h1 class="text-2xl font-semibold text-[color:var(--ink)] lg:text-3xl">
                           {header.label}
                         </h1>
                       </>
                     ) : (
-                      <h1 class="text-3xl font-semibold text-[color:var(--ink)] lg:text-4xl">
+                      <h1 class="text-2xl font-semibold text-[color:var(--ink)] lg:text-3xl">
                         {header.title}
                       </h1>
                     )}
-                  </div>
                 </div>
               )
             }

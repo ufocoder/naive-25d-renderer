@@ -165,6 +165,11 @@ body {
   background: #f3f4f6;
 }
 
+.docs-content-topbar .docs-sidebar-toggle,
+.docs-content-topbar .docs-icon-button {
+  background: var(--surface);
+}
+
 .docs-site-brand {
   display: inline-flex;
   min-width: 0;
