@@ -18,6 +18,7 @@ const enableServiceWorker = import.meta.env.PROD;
 const yandexMetrikaId = import.meta.env.PROD
   ? import.meta.env.YANDEX_METRIKA_ID ?? '110386071'
   : undefined;
+const translateUrl = `https://translate.google.com/translate?sl=ru&tl=en&u=${encodeURIComponent(Astro.url.href)}`;
 ---
 
 <!doctype html>
@@ -72,8 +73,21 @@ const yandexMetrikaId = import.meta.env.PROD
                 <path d="M9 4v16"></path>
                 <path d="M14 10l3 2-3 2"></path>
               </svg>
-              <span>Навигация</span>
+              <span class={styles.buttonLabel}>Навигация</span>
             </button>
+
+            <a
+              href={translateUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              class={styles.button}
+              data-translate-link
+              aria-label="Translate"
+              hidden
+            >
+              <span class={styles.buttonLabel}>Translate</span>
+              <span aria-hidden="true">🇬🇧</span>
+            </a>
 
             <a
               href="https://github.com/ufocoder/25d-renderer"
@@ -82,7 +96,7 @@ const yandexMetrikaId = import.meta.env.PROD
               class={styles.button}
               aria-label="GitHub"
             >
-              <span>GitHub</span>
+              <span class={styles.buttonLabel}>GitHub</span>
               <svg width="22" height="22" aria-hidden="true">
                 <use href={withBase('/icons.svg#github-icon')}></use>
               </svg>
@@ -129,7 +143,15 @@ const yandexMetrikaId = import.meta.env.PROD
     </script>
     <script>
       const sidebarToggle = document.querySelector('[data-sidebar-toggle]');
+      const translateLink = document.querySelector<HTMLAnchorElement>('[data-translate-link]');
       const isDesktopSidebar = () => window.matchMedia('(min-width: 1024px)').matches;
+      const isRussianLanguage = () => {
+        const languages = navigator.languages?.length ? navigator.languages : [navigator.language];
+
+        return languages.some((language) => language.toLowerCase().startsWith('ru'));
+      };
+      const getTranslateUrl = () =>
+        `https://translate.google.com/translate?sl=ru&tl=en&u=${encodeURIComponent(window.location.href)}`;
       const syncSidebarToggle = () => {
         const isCollapsed = document.documentElement.classList.contains('docs-sidebar-collapsed');
 
@@ -156,6 +178,10 @@ const yandexMetrikaId = import.meta.env.PROD
         syncSidebarToggle();
       });
 
+      if (translateLink) {
+        translateLink.href = getTranslateUrl();
+        translateLink.hidden = isRussianLanguage();
+      }
       syncSidebarToggle();
     </script>
   </body>
