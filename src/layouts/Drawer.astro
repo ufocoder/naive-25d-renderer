@@ -363,8 +363,6 @@ const drawerClasses = {
 <script define:vars={{ drawerClasses }}>
   const drawer = document.querySelector('[data-drawer]');
   const panel = document.querySelector('[data-drawer-panel]');
-  const openButtons = document.querySelectorAll('[data-drawer-open]');
-  const closeButtons = document.querySelectorAll('[data-drawer-close]');
   const isMobileDrawer = () => window.matchMedia('(max-width: 1023px)').matches;
   const setDrawerOpen = (isOpen) => {
     if (!drawer || !panel) return;
@@ -378,15 +376,21 @@ const drawerClasses = {
     document.body.style.overflow = isOpen ? 'hidden' : '';
   };
 
-  openButtons.forEach((button) => {
-    button.addEventListener('click', () => {
+  document.addEventListener('click', (event) => {
+    const target = event.target;
+
+    if (!(target instanceof Element)) return;
+
+    if (target.closest('[data-drawer-open]')) {
       if (isMobileDrawer()) {
         setDrawerOpen(true);
       }
-    });
-  });
-  closeButtons.forEach((button) => {
-    button.addEventListener('click', () => setDrawerOpen(false));
+      return;
+    }
+
+    if (target.closest('[data-drawer-close]')) {
+      setDrawerOpen(false);
+    }
   });
 
   document.addEventListener('keydown', (event) => {
