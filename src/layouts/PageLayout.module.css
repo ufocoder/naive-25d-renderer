@@ -177,13 +177,13 @@
 .contentCard :global(.code-block pre) {
   max-width: 100%;
   overflow-x: auto;
-  padding: 0.7rem 0.85rem;
+  padding: 0.7rem 0.85rem 0.7rem 0;
   border: 1px solid var(--hairline);
   border-radius: 0;
   background: var(--code-bg) !important;
   box-shadow: none;
   font-family: var(--font-mono);
-  font-size: 0.78rem;
+  font-size: 0.84rem;
   line-height: 1.55;
 }
 
