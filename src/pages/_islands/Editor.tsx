@@ -2,7 +2,11 @@ import content from '@app/styles/content.module.css';
 import editorStyles from '@app/styles/editor.module.css';
 import mapStyles from '@app/styles/map.module.css';
 import { Angle } from '@app/lib/Angle';
+import Canvas from '@app/components/Canvas/CanvasBase';
 import { JsonViewer } from '@app/components/JsonViewer';
+import { useBspTree } from '@app/stages/Stage3b/hooks/useBspTree';
+import { useCameraControlsV3 } from '@app/stages/Stage4b/hooks/useCameraControls';
+import { createRender25d } from '@app/stages/Stage5e/render25d';
 import {
   createEffect,
   createMemo,
@@ -57,6 +61,116 @@ import type {
   SectorNumberField,
 } from './editor/types';
 
+const PREVIEW_CANVAS_WIDTH = 400;
+const PREVIEW_CANVAS_HEIGHT = 320;
+const PREVIEW_COMPACT_HEIGHT_SCALE = 80;
+
+function isSameVertex(first: Vertex, second: Vertex) {
+  return first.x === second.x && first.y === second.y;
+}
+
+function isSameLinedef(first: Linedef, second: Linedef) {
+  return (
+    (isSameVertex(first.start, second.start) && isSameVertex(first.end, second.end)) ||
+    (isSameVertex(first.start, second.end) && isSameVertex(first.end, second.start))
+  );
+}
+
+function getPreviewHeightScale(sourceSectors: Sector[]) {
+  const maxCeilHeight = Math.max(
+    0,
+    ...sourceSectors.map((sector) => sector.ceilHeight ?? 120),
+  );
+
+  return maxCeilHeight <= 1_000 ? PREVIEW_COMPACT_HEIGHT_SCALE : 1;
+}
+
+function createPreviewSettings(source: Settings): Settings {
+  const sourceSectors = [
+    ...(source.level.sectors ?? []),
+    ...createMissingSectorsFromLinedefs(source.level.linedefs, source.level.sectors),
+  ];
+  const heightScale = getPreviewHeightScale(sourceSectors);
+  const cameraHeight = source.camera.height ?? source.camera.z ?? 60;
+  const previewSectors: Sector[] = sourceSectors.map((sector) => ({
+    ...sector,
+    floorHeight: (sector.floorHeight ?? 0) * heightScale,
+    floorColor: sector.floorColor ?? { r: 74, g: 222, b: 128 },
+    floorTexture: sector.floorTexture ?? 'floor',
+    ceilHeight: (sector.ceilHeight ?? 120) * heightScale,
+    ceilColor: sector.ceilColor ?? { r: 147, g: 197, b: 253 },
+    ceilTexture: sector.ceilTexture ?? 'ceil',
+    wallColor: sector.wallColor ?? { r: 37, g: 99, b: 235 },
+    wallTexture: sector.wallTexture ?? 'wall',
+    brightness: sector.brightness ?? 1,
+    items: sector.items?.map((item) => ({ ...item })),
+    segs: [],
+  }));
+
+  previewSectors.forEach((sector, sectorIndex) => {
+    const sourceSector = sourceSectors[sectorIndex];
+
+    sector.segs = sourceSector.segs.map((seg) => {
+      const backSector = previewSectors.find((candidate, candidateIndex) => {
+        if (candidateIndex === sectorIndex) return false;
+
+        return sourceSectors[candidateIndex].segs.some((candidateSeg) =>
+          isSameLinedef(seg, candidateSeg),
+        );
+      });
+      const isPortal = Boolean(seg.isTwoSide && seg.isSolid === false && backSector);
+
+      return {
+        ...seg,
+        start: { ...seg.start },
+        end: { ...seg.end },
+        frontSector: sector,
+        backSector: isPortal ? backSector : undefined,
+        isTwoSide: isPortal,
+        isSolid: !isPortal,
+      };
+    });
+  });
+
+  return {
+    camera: {
+      ...source.camera,
+      z: (source.camera.z ?? cameraHeight) * heightScale,
+      height: cameraHeight * heightScale,
+      riseSpeed: source.camera.riseSpeed ?? 10,
+      screen: {
+        width: PREVIEW_CANVAS_WIDTH,
+        height: PREVIEW_CANVAS_HEIGHT,
+      },
+    },
+    level: {
+      ...source.level,
+      linedefs: previewSectors.flatMap((sector) => sector.segs),
+      sectors: previewSectors,
+    },
+  };
+}
+
+function applyPreviewCameraToEditorSettings(source: Settings, previewCamera: Camera): Settings {
+  const sourceSectors = [
+    ...(source.level.sectors ?? []),
+    ...createMissingSectorsFromLinedefs(source.level.linedefs, source.level.sectors),
+  ];
+  const heightScale = getPreviewHeightScale(sourceSectors);
+
+  return {
+    ...source,
+    camera: {
+      ...source.camera,
+      x: previewCamera.x,
+      y: previewCamera.y,
+      angle: new Angle(previewCamera.angle.degrees),
+      z: previewCamera.z === undefined ? undefined : previewCamera.z / heightScale,
+      height: previewCamera.height === undefined ? undefined : previewCamera.height / heightScale,
+    },
+  };
+}
+
 const Editor: Component = () => {
   const [settings, setSettings] = createSignal<Settings>(cloneSettings(defaultSettings));
   const [selectedIndex, setSelectedIndex] = createSignal<number | null>(null);
@@ -108,30 +222,32 @@ const Editor: Component = () => {
 
   const jsonSettings = createMemo(() => toJsonSettings(settings()));
   const json = createMemo(() => JSON.stringify(jsonSettings(), null, 2));
-  const sidebarHint = createMemo(() => {
-    if (isAddingLinedef()) {
-      return pendingLinedefStart()
-        ? 'Укажите вторую точку linedef.'
-        : 'Укажите первую точку linedef.';
-    }
-
-    if (isEditingVertex()) {
-      return 'Нажмите на vertex в радиусе курсора и перетащите его.';
-    }
-
-    if (isEditingCamera()) {
-      return 'Нажмите на маркер камеры в радиусе курсора и перетащите его.';
-    }
-
-    if (isNavigatingMap()) {
-      return 'Перетащите карту мышью, колесом изменяйте zoom вокруг указателя.';
-    }
-
-    return 'Нажмите на элемент на карте, чтобы открыть его редактирование.';
-  });
   const sectorCandidates = createMemo(() =>
     findClosedSectorCandidates(settings().level.linedefs),
   );
+  const previewSettings = createMemo(() => createPreviewSettings(settings()));
+  const previewBspTree = useBspTree({ settings: previewSettings });
+  const hasPreviewSectors = createMemo(() => (previewSettings().level.sectors?.length ?? 0) > 0);
+  const renderLevelPreview = (ctx: CanvasRenderingContext2D, currentSettings: Settings) => {
+    createRender25d({ bspTree: previewBspTree() })(ctx, currentSettings);
+  };
+  const setPreviewSettingsFromControls = (
+    value: Settings | ((previous: Settings) => Settings),
+  ) => {
+    setSettings((prev) => {
+      const previousPreviewSettings = createPreviewSettings(prev);
+      const nextPreviewSettings =
+        typeof value === 'function' ? value(previousPreviewSettings) : value;
+
+      return applyPreviewCameraToEditorSettings(prev, nextPreviewSettings.camera);
+    });
+  };
+
+  useCameraControlsV3({
+    settings: previewSettings,
+    setSettings: setPreviewSettingsFromControls,
+    bspTree: previewBspTree(),
+  });
 
   const viewport = () => ({
     scale: scale(),
@@ -189,6 +305,13 @@ const Editor: Component = () => {
     localStorage.setItem(STORAGE_KEY, json());
   };
 
+  const cancelPendingLinedefStart = () => {
+    if (!isAddingLinedef() || !pendingLinedefStart()) return false;
+
+    setPendingLinedefStart(null);
+    return true;
+  };
+
   const copyJsonToClipboard = async () => {
     try {
       await navigator.clipboard.writeText(json());
@@ -212,7 +335,17 @@ const Editor: Component = () => {
     setSettings(loadInitialSettings());
     setHydrated(true);
 
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key !== 'Escape') return;
+      if (!cancelPendingLinedefStart()) return;
+
+      event.preventDefault();
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+
     onCleanup(() => {
+      window.removeEventListener('keydown', handleKeyDown);
       resizeObserver.disconnect();
     });
   });
@@ -613,6 +746,12 @@ const Editor: Component = () => {
     selectOrCreateSector(point);
   };
 
+  const handleCanvasContextMenu = (event: MouseEvent) => {
+    if (!cancelPendingLinedefStart()) return;
+
+    event.preventDefault();
+  };
+
   const handleCanvasMouseMove = (event: MouseEvent) => {
     const point = eventToWorld(event);
 
@@ -731,89 +870,87 @@ const Editor: Component = () => {
             onZoomOut={() => zoom(0.8)}
           />
 
-          <canvas
-            ref={(canvas) => {
-              canvasRef = canvas;
-            }}
-            width={CANVAS_WIDTH}
-            height={CANVAS_HEIGHT}
-            onClick={handleCanvasClick}
-            onMouseDown={handleCanvasMouseDown}
-            onMouseMove={handleCanvasMouseMove}
-            onMouseUp={handleCanvasMouseUp}
-            onWheel={handleCanvasWheel}
-            onMouseLeave={() => {
-              setCursorPoint(null);
-              setIsDraggingVertex(false);
-              setIsDraggingCamera(false);
-              setIsDraggingMap(false);
-              setLastDragPoint(null);
-            }}
-            class={
-              isNavigatingMap()
-                ? isDraggingMap()
-                  ? editorStyles.editorCanvasGrabbing
-                  : editorStyles.editorCanvasGrab
-                : isEditingVertex() || isEditingCamera()
-                  ? editorStyles.editorCanvasMove
-                  : editorStyles.editorCanvas
-            }
-          />
-        </div>
+          <div class={editorStyles.editorWorkspace}>
+            <canvas
+              ref={(canvas) => {
+                canvasRef = canvas;
+              }}
+              width={CANVAS_WIDTH}
+              height={CANVAS_HEIGHT}
+              onClick={handleCanvasClick}
+              onMouseDown={handleCanvasMouseDown}
+              onMouseMove={handleCanvasMouseMove}
+              onMouseUp={handleCanvasMouseUp}
+              onContextMenu={handleCanvasContextMenu}
+              onWheel={handleCanvasWheel}
+              onMouseLeave={() => {
+                setCursorPoint(null);
+                setIsDraggingVertex(false);
+                setIsDraggingCamera(false);
+                setIsDraggingMap(false);
+                setLastDragPoint(null);
+              }}
+              class={
+                isNavigatingMap()
+                  ? isDraggingMap()
+                    ? editorStyles.editorCanvasGrabbing
+                    : editorStyles.editorCanvasGrab
+                  : isEditingVertex() || isEditingCamera()
+                    ? editorStyles.editorCanvasMove
+                    : editorStyles.editorCanvas
+              }
+            />
 
-        <aside class={editorStyles.editorMainColumn}>
-          <div class={editorStyles.editorHint}>
-            <p class={editorStyles.editorHintText}>{sidebarHint()}</p>
-          </div>
-
-          <Show when={selectedVertex()}>
-            {(vertex) => (
-              <div class={editorStyles.editorPanel}>
-                <h2 class={editorStyles.editorPanelTitle}>Vertex</h2>
-                <div class={editorStyles.editorFormGrid}>
-                  <label class={editorStyles.editorField}>
-                    X
-                    <input
-                      type="number"
-                      value={vertex().x}
-                      onInput={(event) => updateSelectedVertex('x', numberValue(event))}
-                      class={editorStyles.editorInput}
-                    />
-                  </label>
-                  <label class={editorStyles.editorField}>
-                    Y
-                    <input
-                      type="number"
-                      value={vertex().y}
-                      onInput={(event) => updateSelectedVertex('y', numberValue(event))}
-                      class={editorStyles.editorInput}
-                    />
-                  </label>
-                  <div class={editorStyles.editorActionCell}>
-                    <button
-                      type="button"
-                      onClick={deleteSelectedVertex}
-                      class={editorStyles.editorDangerButton}
-                    >
-                      Удалить vertex
-                    </button>
-                  </div>
-                </div>
-              </div>
-            )}
-          </Show>
-
-          <Show when={!selectedVertex()}>
-            <div class={editorStyles.editorPanel}>
+            <aside class={editorStyles.editorInspectorPanel}>
               <Show
-                when={selectedLinedef()}
+                when={selectedVertex() || selectedLinedef() || selectedSector() || isEditingCamera()}
                 fallback={
-                  <p class={editorStyles.editorHelpText}>
-                    Нажмите на linedef на карте, чтобы открыть редактирование.
+                  <p class={editorStyles.editorInspectorEmpty}>
+                    Для редактирования элемента необходимо на него кликнуть.
                   </p>
                 }
               >
-                {(selected) => (
+                <Show when={selectedVertex()}>
+                  {(vertex) => (
+                    <div class={editorStyles.editorPanel}>
+                      <h2 class={editorStyles.editorPanelTitle}>Vertex</h2>
+                      <div class={editorStyles.editorFormGrid}>
+                        <label class={editorStyles.editorField}>
+                          X
+                          <input
+                            type="number"
+                            value={vertex().x}
+                            onInput={(event) => updateSelectedVertex('x', numberValue(event))}
+                            class={editorStyles.editorInput}
+                          />
+                        </label>
+                        <label class={editorStyles.editorField}>
+                          Y
+                          <input
+                            type="number"
+                            value={vertex().y}
+                            onInput={(event) => updateSelectedVertex('y', numberValue(event))}
+                            class={editorStyles.editorInput}
+                          />
+                        </label>
+                        <div class={editorStyles.editorActionCell}>
+                          <button
+                            type="button"
+                            onClick={deleteSelectedVertex}
+                            class={editorStyles.editorDangerButton}
+                          >
+                            Удалить vertex
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </Show>
+
+          <Show when={!selectedVertex()}>
+            <Show when={selectedLinedef()}>
+              {(selected) => (
+                <div class={editorStyles.editorPanel}>
                   <div class={editorStyles.editorFormGrid}>
                     <label class={editorStyles.editorField}>
                       Start X
@@ -899,9 +1036,9 @@ const Editor: Component = () => {
                       </button>
                     </div>
                   </div>
-                )}
-              </Show>
-            </div>
+                </div>
+              )}
+            </Show>
           </Show>
 
           <Show when={selectedSector()}>
@@ -1060,8 +1197,33 @@ const Editor: Component = () => {
               </div>
             </div>
           </Show>
-        </aside>
+              </Show>
+            </aside>
+          </div>
+        </div>
       </div>
+
+      <section class={editorStyles.levelPreviewSection}>
+        <h2 class={editorStyles.editorJsonTitle}>Просмотр уровня</h2>
+        <Show
+          when={hasPreviewSectors()}
+          fallback={
+            <div class={editorStyles.levelPreviewEmpty}>
+              Создайте сектор, чтобы увидеть 2.5D-просмотр уровня.
+            </div>
+          }
+        >
+          <div class={editorStyles.levelPreviewFrame}>
+            <Canvas
+              settings={previewSettings}
+              width={PREVIEW_CANVAS_WIDTH}
+              height={PREVIEW_CANVAS_HEIGHT}
+              render={renderLevelPreview}
+              className={editorStyles.levelPreviewCanvas}
+            />
+          </div>
+        </Show>
+      </section>
 
       <section class={editorStyles.editorJsonSection}>
         <div class={editorStyles.editorHeaderRow}>

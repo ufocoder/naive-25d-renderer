@@ -26,13 +26,6 @@ const MapToolbarGroup: Component<MapToolbarGroupProps> = (props) => (
     >
       <svg
         viewBox="0 0 24 24"
-        width="22"
-        height="22"
-        fill="none"
-        stroke="currentColor"
-        stroke-width="2"
-        stroke-linecap="round"
-        stroke-linejoin="round"
         aria-hidden="true"
       >
         <path d="M12 5v14" />
@@ -50,23 +43,46 @@ const MapToolbarGroup: Component<MapToolbarGroupProps> = (props) => (
         onClick={props.onZoomIn}
         class={editorStyles.toolbarIconButton}
         aria-label="Увеличить масштаб"
+        title="Увеличить масштаб"
       >
-        +
+        <svg
+          viewBox="0 0 24 24"
+          aria-hidden="true"
+        >
+          <path d="M12 5v14" />
+          <path d="M5 12h14" />
+        </svg>
       </button>
       <button
         type="button"
         onClick={props.onZoomOut}
         class={editorStyles.toolbarIconButton}
         aria-label="Уменьшить масштаб"
+        title="Уменьшить масштаб"
       >
-        -
+        <svg
+          viewBox="0 0 24 24"
+          aria-hidden="true"
+        >
+          <path d="M5 12h14" />
+        </svg>
       </button>
       <button
         type="button"
         onClick={props.onCenter}
-        class={editorStyles.toolbarButton}
+        class={editorStyles.toolbarIconButton}
+        aria-label="Сбросить положение карты"
+        title="Сбросить положение карты"
       >
-        Сбросить
+        <svg
+          viewBox="0 0 24 24"
+          aria-hidden="true"
+        >
+          <path d="M4 4v6h6" />
+          <path d="M20 20v-6h-6" />
+          <path d="M20 9a8 8 0 0 0-13.5-3.5L4 8" />
+          <path d="M4 15a8 8 0 0 0 13.5 3.5L20 16" />
+        </svg>
       </button>
     </div>
   </ToolbarGroup>

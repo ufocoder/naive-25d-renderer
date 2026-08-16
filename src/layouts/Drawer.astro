@@ -366,7 +366,7 @@ const drawerClasses = {
   const openButtons = document.querySelectorAll('[data-drawer-open]');
   const closeButtons = document.querySelectorAll('[data-drawer-close]');
   const isMobileDrawer = () => window.matchMedia('(max-width: 1023px)').matches;
-  const setDrawerOpen = (isOpen: boolean) => {
+  const setDrawerOpen = (isOpen) => {
     if (!drawer || !panel) return;
 
     drawer.classList.toggle(drawerClasses.drawerOpen, isOpen);
