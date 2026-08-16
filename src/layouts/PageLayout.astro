@@ -13,9 +13,7 @@ const header = getPageHeader(currentPath);
 const pageTitle = header
   ? `${header.label ?? header.title} | 2.5D Renderer`
   : '2.5D Renderer';
-const serviceWorkerUrl = withBase('/sw.js');
 const serviceWorkerScope = withBase('/');
-const enableServiceWorker = import.meta.env.PROD;
 const yandexMetrikaId = import.meta.env.PROD
   ? import.meta.env.YANDEX_METRIKA_ID ?? '110386071'
   : undefined;
@@ -132,19 +130,22 @@ const translateUrl = `https://translate.google.com/translate?sl=ru&tl=en&u=${enc
         <StageNavigation currentPath={currentPath} />
       </div>
     </div>
-    <script define:vars={{ enableServiceWorker, serviceWorkerScope, serviceWorkerUrl }}>
-      if (enableServiceWorker && 'serviceWorker' in navigator) {
+    <script define:vars={{ serviceWorkerScope }}>
+      if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
-          navigator.serviceWorker.register(serviceWorkerUrl, {
-            scope: serviceWorkerScope,
-            updateViaCache: 'none',
-          });
+          navigator.serviceWorker
+            .getRegistrations()
+            .then((registrations) => {
+              registrations
+                .filter((registration) => registration.scope === serviceWorkerScope)
+                .forEach((registration) => registration.unregister());
+            });
         });
       }
     </script>
     <script>
       const sidebarToggle = document.querySelector('[data-sidebar-toggle]');
-      const translateLink = document.querySelector<HTMLAnchorElement>('[data-translate-link]');
+      const translateLink = document.querySelector('[data-translate-link]');
       const isDesktopSidebar = () => window.matchMedia('(min-width: 1024px)').matches;
       const isRussianLanguage = () => {
         const languages = navigator.languages?.length ? navigator.languages : [navigator.language];

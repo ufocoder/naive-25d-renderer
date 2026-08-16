@@ -372,7 +372,7 @@ const drawerClasses = {
     drawer.classList.toggle(drawerClasses.drawerOpen, isOpen);
     drawer.classList.toggle(drawerClasses.drawerClosed, !isOpen);
     drawer
-      .querySelector('[data-drawer-close]')
+      .querySelector('[data-drawer-close]') 
       ?.classList.toggle(drawerClasses.drawerBackdropVisible, isOpen);
     panel.classList.toggle(drawerClasses.drawerPanelOpen, isOpen);
     document.body.style.overflow = isOpen ? 'hidden' : '';
