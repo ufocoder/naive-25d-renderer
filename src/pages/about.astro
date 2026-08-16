@@ -2,6 +2,7 @@
 import content from '@app/styles/content.module.css';
 import PageLayout from '@app/layouts/PageLayout.astro';
 import type { PageMetadata } from '@app/config/pages';
+import { PROJECT_ISSUES_URL, PROJECT_LICENSE_URL } from '@app/config/repo';
 
 export const metadata: PageMetadata = {
   title: 'О проекте',
@@ -20,7 +21,10 @@ export const metadata: PageMetadata = {
       То, о чем рассказывается на этом ресурсе, — это не пошаговая реализация отрисовщика DOOM, а использование идей из DOOM, поэтому финальный результат может отличаться от оригинала. Здесь я иду своим путем, опираясь на свой и чужой опыт. Например, так же, как и в прошлом, я сделаю все вычисления геометрии и текстур на CPU. Так же, как и в прошлом, я использую понятия секторов и порталов. Так же, как и в прошлом, я изучаю и применяю алгоритм Binary space partitioning.
     </p>
     <p class={content.paragraph}>
-      Проект находится в стадии активной разработки, поэтому если вы найдете опечатки или у вас будут предложения по улучшению этого проекта, не стесняйтесь создавать <a class={content.articleLink} href="https://github.com/ufocoder/25d-renderer/issues/new" target="_blank">issues на GitHub</a>.
+      Проект находится в стадии активной разработки, поэтому если вы найдете опечатки или у вас будут предложения по улучшению этого проекта, не стесняйтесь создавать <a class={content.articleLink} href={PROJECT_ISSUES_URL} target="_blank">issues на GitHub</a>.
+    </p>
+    <p class={content.paragraph}>
+      Вы в праве переиспользовать контент и исходники так как вам пожелается, однако <a class={content.articleLink} href={PROJECT_LICENSE_URL} target="_blank">необходимо</a> указать ссылку на этот проект.
     </p>
     <p class={content.paragraph}>
       Добро пожаловать и приятного чтения!

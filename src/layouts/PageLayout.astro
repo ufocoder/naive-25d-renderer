@@ -3,6 +3,7 @@ import pageStyles from '@app/styles/page.module.css';
 import Drawer from '@app/layouts/Drawer.astro';
 import { YandexMetrika } from 'astro-yandex-metrika';
 import { getPageHeader, normalizePathname, withBase } from '@app/config/pages';
+import { PROJECT_REPO_ROOT_URL } from '@app/config/repo';
 import StageNavigation from '@app/layouts/StageNavigation.astro';
 import styles from '@app/layouts/PageLayout.module.css';
 import '@app/style.css';
@@ -90,7 +91,7 @@ const translateUrl = `https://translate.google.com/translate?sl=ru&tl=en&u=${enc
             </a>
 
             <a
-              href="https://github.com/ufocoder/25d-renderer"
+              href={PROJECT_REPO_ROOT_URL}
               target="_blank"
               rel="noopener noreferrer"
               class={styles.button}

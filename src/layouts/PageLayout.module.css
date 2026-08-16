@@ -162,7 +162,7 @@
   text-decoration-color: currentColor;
 }
 
-.contentCard :global(a[href*="github.com/ufocoder/25d-renderer/blob/main/src/stages/"]::after) {
+.contentCard :global(a[href*="/blob/main/src/stages/"]::after) {
   content: "";
   display: inline-block;
   width: 0.42em;
