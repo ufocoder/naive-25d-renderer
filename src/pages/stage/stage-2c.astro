@@ -45,10 +45,10 @@ const code2Html = await codeToHtml(code2, { lang: 'ts', theme: 'github-light' })
   <section class={content.contentSection}>
 
     <p class={content.paragraph}>
-      На прошлом шаге стена симметрично росла вверх и вниз относительно линии горизонта, что выглядят не совсем корректно для нашего восприятия. Отсюда очевидно, что добавления одной только высоты для сектора это недостаточно. 
+      На прошлом шаге стена симметрично росла вверх и вниз относительно линии горизонта, что выглядит не совсем корректно для нашего восприятия. Отсюда очевидно, что добавления одной только высоты для сектора недостаточно.
     </p>
     <p class={content.paragraph}>
-      Cекторам нужны разные уровни пола или потолка:
+      Секторам нужны разные уровни пола и потолка:
     </p>
     <div set:html={code1Html} />
     <p class={content.paragraph}>
@@ -63,7 +63,7 @@ const code2Html = await codeToHtml(code2, { lang: 'ts', theme: 'github-light' })
     </p>
     <div set:html={code2Html} />
     <p class={content.paragraph}>
-      <a href={`${PROJECT_REPO_URL}/stages/Stage2c/render25d.ts`} target="_blank" rel="noopener noreferrer" class={content.referenceLink} >Реализация шага на github</a>
+      <a href={`${PROJECT_REPO_URL}/stages/Stage2c/render25d.ts`} target="_blank" rel="noopener noreferrer" class={content.referenceLink} >Реализация шага на GitHub</a>
     </p>
   </section>
 </PageLayout>

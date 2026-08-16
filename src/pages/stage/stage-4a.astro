@@ -64,7 +64,7 @@ const [code1Html, code2Html, code3Html] = await Promise.all([
     <p class={content.paragraph}>
       До этого шага камера двигалась по карте почти как точка на плоскости: менялись <code class={content.inlineCode}>x</code> и
       <code class={content.inlineCode}>y</code>, а высота взгляда оставалась условно постоянной. Но в уровне уже есть сектора с разной высотой пола,
-      поэтому при переходе на ступеньку камера должна оказаться выше, а при спуске - ниже.
+      поэтому при переходе на ступеньку камера должна оказаться выше, а при спуске — ниже.
     </p>
     <Stage client:load />
     <p class={content.paragraph}>
@@ -86,11 +86,11 @@ const [code1Html, code2Html, code3Html] = await Promise.all([
     </p>
     <div set:html={code3Html} />
     <p class={content.paragraph}>
-      По итогу горизонтальное перемещение остается прежним, но высота взгляда теперь зависит от сектора. 
+      По итогу горизонтальное перемещение остается прежним, но высота взгляда теперь зависит от сектора.
       Благодаря этому ступени и разные уровни пола начинают ощущаться не только в геометрии стен, но и в поведении камеры.
     </p>
     <p class={content.mutedSpacing}>
-      <a href={`${PROJECT_REPO_URL}/stages/Stage4a/hooks/useCameraControls.ts`} target="_blank" rel="noopener noreferrer" class={content.referenceLink} >Реализация шага на github</a>
+      <a href={`${PROJECT_REPO_URL}/stages/Stage4a/hooks/useCameraControls.ts`} target="_blank" rel="noopener noreferrer" class={content.referenceLink} >Реализация шага на GitHub</a>
     </p>
   </section>
 </PageLayout>

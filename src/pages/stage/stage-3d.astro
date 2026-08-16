@@ -49,7 +49,7 @@ const code1Html = await codeToHtml(code1, { lang: 'ts', theme: 'github-light' })
       Немного кода
     </h2>
     <p class={content.paragraph}>
-      Может показаться, что на каждом кадре строится дерево, на самом деле используется кэш. <code class={content.inlineCode}>Callback</code> функция для <code class={content.inlineCode}>traverseBSPTree</code> обрабатывает листы BSP-дерева, те те самые выпуклые многоуольники. Сегменты из листа BSP-дерева проецируются и передаются функции отрисовки непрозрачной стены:
+      Может показаться, что на каждом кадре строится дерево, но на самом деле используется кэш. Callback-функция для <code class={content.inlineCode}>traverseBSPTree</code> обрабатывает листы BSP-дерева — те самые выпуклые многоугольники. Сегменты из листа BSP-дерева проецируются и передаются функции отрисовки непрозрачной стены:
     </p>
     <div set:html={code1Html} />
   </section>

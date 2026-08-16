@@ -109,7 +109,7 @@ const [code1Html, code2Html, code3Html, code4Html] = await Promise.all([
     <p class={content.paragraph}>
       Вся отдельная логика собрана в <code class={content.inlineCode}>drawTexturedFloorCeil</code>. Один и тот же код подходит и для пола, и для
       потолка: флаг <code class={content.inlineCode}>isFloor</code> выбирает текстуру и сторону экрана. Для пола нужны пиксели ниже центра экрана,
-      для потолка - выше центра.
+      для потолка — выше центра.
     </p>
     <div set:html={code3Html} />
     <p class={content.paragraph}>
@@ -117,7 +117,7 @@ const [code1Html, code2Html, code3Html, code4Html] = await Promise.all([
     </p>
     <div set:html={code4Html} />
     <p class={content.paragraph}>
-      Значение <code class={content.inlineCode}>distToPlane</code> - это расстояние от камеры до горизонтальной плоскости по вертикали.
+      Значение <code class={content.inlineCode}>distToPlane</code> — это расстояние от камеры до горизонтальной плоскости по вертикали.
       Для пола камера находится выше плоскости, поэтому берем <code class={content.inlineCode}>camera.z - floorHeight</code>.
       Для потолка камера находится ниже плоскости, поэтому берем <code class={content.inlineCode}>ceilHeight - camera.z</code>.
       Это не расстояние вперед по взгляду, а именно высотная разница: насколько нужно опуститься до пола или подняться до потолка.
@@ -139,7 +139,7 @@ const [code1Html, code2Html, code3Html, code4Html] = await Promise.all([
     </p>
     <p class={content.paragraph}>
       Затем по экранной координате <code class={content.inlineCode}>x</code> строим направление луча: слева луч чуть повернут к левому краю <code class={content.inlineCode}>FOV</code>,
-      справа - к правому. Умножаем это направление на <code class={content.inlineCode}>rowDistance</code> и получаем мировые координаты
+      справа — к правому. Умножаем это направление на <code class={content.inlineCode}>rowDistance</code> и получаем мировые координаты
       <code class={content.inlineCode}>worldX</code>/<code class={content.inlineCode}>worldY</code>. Эти координаты уже можно превратить в координаты текстуры.
     </p>
     <p class={content.paragraph}>
@@ -147,8 +147,8 @@ const [code1Html, code2Html, code3Html, code4Html] = await Promise.all([
       появляется из-за перевода координаты столбца из диапазона <code class={content.inlineCode}>0..1</code>
       в диапазон <code class={content.inlineCode}>-1..1</code>.
       При <code class={content.inlineCode}>t = 0</code> получаем левый край экранной плоскости,
-      при <code class={content.inlineCode}>t = 0.5</code> - центр, а при
-      <code class={content.inlineCode}>t = 1</code> - правый край.
+      при <code class={content.inlineCode}>t = 0.5</code> — центр, а при
+      <code class={content.inlineCode}>t = 1</code> — правый край.
       Поэтому <code class={content.inlineCode}>planeX/planeY</code> добавляется с отрицательным,
       нулевым или положительным весом.
     </p>
@@ -161,7 +161,7 @@ const [code1Html, code2Html, code3Html, code4Html] = await Promise.all([
       В итоге получается, что стены и горизонтальные поверхности используют одни и те же текстуры, но семплируются по-разному.
     </p>
     <p class={content.mutedSpacing}>
-      <a href={`${PROJECT_REPO_URL}/stages/Stage5d/render25d.ts`} target="_blank" rel="noopener noreferrer" class={content.referenceLink} >Реализация шага на github</a>
+      <a href={`${PROJECT_REPO_URL}/stages/Stage5d/render25d.ts`} target="_blank" rel="noopener noreferrer" class={content.referenceLink} >Реализация шага на GitHub</a>
     </p>
   </section>
 </PageLayout>

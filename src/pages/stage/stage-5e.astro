@@ -88,7 +88,7 @@ const [code0Html, code1Html, code2Html, code3Html, code4Html] = await Promise.al
   <section class={content.contentSection}>
     <Stage part={0} client:load />
     <p class={content.paragraph}>
-      На предыдущих шагах мы научились выбирать цвет из текстуры стены, пола и потолка. Добавим самый простой вариант освещения - коэффициент яркости на уровне сектора. Это не источник света и не расчет теней. Мы просто говорим: весь сектор рисуется с множителем яркости. Значение
+      На предыдущих шагах мы научились выбирать цвет из текстуры стены, пола и потолка. Добавим самый простой вариант освещения — коэффициент яркости на уровне сектора. Это не источник света и не расчет теней. Мы просто говорим: весь сектор рисуется с множителем яркости. Значение
       <code class={content.inlineCode}>1.0</code> оставляет цвет без изменений, <code class={content.inlineCode}>0.8</code> немного затемняет, <code class={content.inlineCode}>0.2</code> делает сектор
       почти темным.
     </p>
@@ -116,7 +116,7 @@ const [code0Html, code1Html, code2Html, code3Html, code4Html] = await Promise.al
       Для пола и потолка принцип такой же. Функция <code class={content.inlineCode}>drawTexturedFloorCeil</code> восстанавливает мировую точку,
       выбирает texel и затемняет его яркостью текущего сектора. В порталах важно брать яркость той части, которую
       рисуем: обычная поверхность использует <code class={content.inlineCode}>sector.brightness</code>, а верхняя или нижняя стенка соседнего
-      сектора - <code class={content.inlineCode}>otherSector.brightness</code>.
+      сектора — <code class={content.inlineCode}>otherSector.brightness</code>.
     </p>
     <p class={content.paragraph}>
       Поэтому достаточно обернуть рассчитанные значения цвета пикселей в <code class={content.inlineCode}>applyBrightness</code> в местах, где
@@ -133,7 +133,7 @@ const [code0Html, code1Html, code2Html, code3Html, code4Html] = await Promise.al
       используют один и тот же набор текстур.
     </p>
     <p class={content.paragraph}>
-      <a href={`${PROJECT_REPO_URL}/stages/Stage5e/render25d.ts`} target="_blank" rel="noopener noreferrer" class={content.referenceLink} >Реализация шага на github</a>
+      <a href={`${PROJECT_REPO_URL}/stages/Stage5e/render25d.ts`} target="_blank" rel="noopener noreferrer" class={content.referenceLink} >Реализация шага на GitHub</a>
     </p>
   </section>
 </PageLayout>
